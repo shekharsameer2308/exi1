@@ -1,123 +1,89 @@
 import streamlit as st
 import pandas as pd
-from sklearn.ensemble import RandomForestRegressor
-import os
+import numpy as np
+import joblib
+import matplotlib.pyplot as plt
 
-# Enforce minimalist design rules from AGENTS.md
-st.set_page_config(page_title="Membrane Reactor Dashboard", layout="wide")
+st.set_page_config(page_title="E-Methanol Reactor", layout="wide")
 
+# Muted minimalist CSS
 st.markdown("""
 <style>
-    /* Muted Color Scheme & Minimalist Aesthetics */
-    h1, h2, h3, h4 { color: #475569; font-family: sans-serif; font-weight: 600; }
+    h1, h2, h3 { color: #475569; font-family: sans-serif; }
     .content-card { 
-        background-color: #f8fafc; 
-        border: 1px solid #e2e8f0; 
-        padding: 1.5rem; 
-        border-radius: 0.5rem; 
-        margin-bottom: 1rem; 
-        color: #475569; 
+        background-color: #f8fafc; border: 1px solid #e2e8f0; 
+        padding: 1.5rem; border-radius: 0.5rem; color: #475569; 
     }
-    .neutral-badge { 
-        background-color: #e2e8f0; 
-        color: #475569; 
-        padding: 0.25rem 0.5rem; 
-        border-radius: 0.25rem; 
-        font-size: 0.875em; 
-        font-weight: 500;
-        border: 1px solid #cbd5e1;
-    }
-    .metric-value { color: #10b981; font-size: 2.2rem; font-weight: bold; margin-top: 0.5rem; }
-    
-    /* Hide emojis in standard st.info/st.warning if possible, maintaining clean look */
-    .stAlert { color: #475569; }
+    .metric-value { color: #10b981; font-size: 2.5rem; font-weight: bold; margin-top: 0.5rem; }
+    .metric-label { font-size: 1rem; color: #6b7280; font-weight: 600; text-transform: uppercase; }
 </style>
 """, unsafe_allow_html=True)
 
 @st.cache_resource
-def load_and_train_models():
-    # Load the DOE dataset
-    csv_path = "outputs/membrane_doe.csv"
-    if not os.path.exists(csv_path):
-        st.error(f"Dataset not found at {csv_path}. Please run scripts/03_generate_doe.py first.")
-        return None
-        
-    df = pd.read_csv(csv_path)
-    features = ['inlet_temperature_k', 'inlet_pressure_bar', 'inlet_flow_mol_s', 'h2_co2_ratio', 'length_m', 'water_permeance_mol_m2_s_pa', 'sweep_water_partial_pressure_bar']
-    targets = ['co2_conversion', 'methanol_selectivity_carbon', 'methanol_sty_kg_m3cat_h']
-    
-    X = df[features]
-    models = {}
-    for target in targets:
-        rf = RandomForestRegressor(n_estimators=100, random_state=42, n_jobs=-1)
-        rf.fit(X, df[target])
-        models[target] = rf
-    return models
+def load_surrogate_model():
+    """Load serialized ML model. Cached to prevent reloading on slider changes."""
+    return joblib.load("surrogate_rf.joblib")
 
-models = load_and_train_models()
+try:
+    model = load_surrogate_model()
+except Exception as e:
+    st.error("Model not found. Please run scripts/03_generate_doe.py and 04_train_surrogate.py first.")
+    st.stop()
 
-st.title("E-Methanol Reactor Predictive Dashboard")
-st.markdown("Real-time surrogate model predictions for membrane reactor performance.")
+st.title("E-Methanol Membrane Reactor Predictor")
+st.markdown("Instantly predict non-isothermal ODE physics using an optimized Machine Learning surrogate.")
 
-# Sidebar Configuration
-st.sidebar.header("Operating Conditions")
-t_in = st.sidebar.slider("Inlet Temperature (K)", 463.15, 533.15, 493.15)
-p_in = st.sidebar.slider("Inlet Pressure (bar)", 20.0, 70.0, 50.0)
-flow = st.sidebar.slider("Inlet Flow (mol/s)", 0.008, 0.030, 0.015)
-ratio = st.sidebar.slider("H2:CO2 Ratio", 3.0, 4.0, 3.2)
-length = st.sidebar.slider("Reactor Length (m)", 0.5, 2.0, 1.0)
-permeance = st.sidebar.number_input("Water Permeance", value=1e-7, format="%.2e")
-sweep_p = st.sidebar.number_input("Sweep Pressure (bar)", value=1e-4, format="%.2e")
+# Sidebar operational inputs
+st.sidebar.header("Operational Parameters")
+t_in = st.sidebar.slider("Inlet Temperature (K)", 463.15, 523.15, 493.15, step=1.0)
+p_in = st.sidebar.slider("Inlet Pressure (bar)", 30.0, 70.0, 50.0, step=1.0)
+ratio = st.sidebar.slider("H2:CO2 Ratio", 2.5, 4.0, 3.0, step=0.1)
+flow = st.sidebar.slider("Inlet Flow (mol/s)", 0.01, 0.03, 0.015, step=0.001)
 
-if models:
-    # Prepare input for prediction
-    input_data = pd.DataFrame([{
-        'inlet_temperature_k': t_in,
-        'inlet_pressure_bar': p_in,
-        'inlet_flow_mol_s': flow,
-        'h2_co2_ratio': ratio,
-        'length_m': length,
-        'water_permeance_mol_m2_s_pa': permeance,
-        'sweep_water_partial_pressure_bar': sweep_p
-    }])
+# Prediction
+input_df = pd.DataFrame([[t_in, p_in, ratio, flow]], 
+                        columns=["T_in_K", "P_in_bar", "h2_co2_ratio", "flow_mol_s"])
 
-    # Predict
-    pred_conv = models['co2_conversion'].predict(input_data)[0]
-    pred_sel = models['methanol_selectivity_carbon'].predict(input_data)[0]
-    pred_sty = models['methanol_sty_kg_m3cat_h'].predict(input_data)[0]
+prediction = model.predict(input_df)[0]
+co2_conv = prediction[0]
+meoh_yield = prediction[1]
 
-    # Display Metrics in strict styled cards
-    col1, col2, col3 = st.columns(3)
-    
-    with col1:
-        st.markdown(f"""
-        <div class="content-card">
-            <h4>CO2 Conversion</h4>
-            <div class="metric-value">{pred_conv * 100:.2f}%</div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with col2:
-        st.markdown(f"""
-        <div class="content-card">
-            <h4>Methanol Selectivity</h4>
-            <div class="metric-value">{pred_sel * 100:.2f}%</div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with col3:
-        st.markdown(f"""
-        <div class="content-card">
-            <h4>Space-Time Yield</h4>
-            <div class="metric-value">{pred_sty:.5f} <span style="font-size: 0.5em; color: #6b7280; font-weight: normal;">kg/m³/h</span></div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    st.markdown("""
-    ### Reactor Information
+# Display Metrics
+col1, col2 = st.columns(2)
+with col1:
+    st.markdown(f"""
     <div class="content-card">
-        <span class="neutral-badge">Kinetics</span> Vanden Bussche & Froment (1996)<br><br>
-        <span class="neutral-badge">Model</span> 1D Non-isothermal Plug Flow<br><br>
-        <span class="neutral-badge">Surrogate</span> Random Forest Regressor (Trained on 200 ODE simulations)
+        <div class="metric-label">CO2 Conversion</div>
+        <div class="metric-value">{co2_conv * 100:.1f}%</div>
     </div>
     """, unsafe_allow_html=True)
+
+with col2:
+    st.markdown(f"""
+    <div class="content-card">
+        <div class="metric-label">Methanol Yield</div>
+        <div class="metric-value">{meoh_yield * 100:.1f}%</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+# Generate Plot Data (Sweep Temperature at current Pressure/Ratio/Flow)
+st.markdown("### Temperature Sweep Analysis")
+temps = np.linspace(463.15, 523.15, 50)
+plot_inputs = pd.DataFrame({
+    "T_in_K": temps,
+    "P_in_bar": p_in,
+    "h2_co2_ratio": ratio,
+    "flow_mol_s": flow
+})
+plot_preds = model.predict(plot_inputs)
+yields = plot_preds[:, 1] * 100 # Convert to percentage
+
+fig, ax = plt.subplots(figsize=(8, 3))
+ax.plot(temps, yields, color="#10b981", linewidth=2.5)
+ax.set_xlabel("Temperature (K)", color="#475569", fontweight="bold")
+ax.set_ylabel("Methanol Yield (%)", color="#475569", fontweight="bold")
+ax.grid(True, linestyle="--", alpha=0.5)
+ax.spines['top'].set_visible(False)
+ax.spines['right'].set_visible(False)
+ax.tick_params(colors="#475569")
+st.pyplot(fig)

@@ -1,53 +1,50 @@
-"""Generate a Design of Experiments (DOE) dataset from the validated model.
-
-Each row is a simulated membrane-reactor case with randomised operating
-conditions.  The DOE is used downstream to train a machine-learning
-surrogate (script 04).
-
-All data in this file is SIMULATED, not experimental.
-"""
-from pathlib import Path
-import sys
 import numpy as np
 import pandas as pd
+import sys
+from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "src"))
-from emethanol.reactor import ReactorConfig, simulate_reactor
+# Add src to python path for imports
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from src.emethanol.reactor import MembraneReactor1D
 
-rng = np.random.default_rng(7)
-N_SAMPLES = 200
-rows = []
-failed = 0
+def generate_synthetic_data(n_samples: int = 200, output_path: str = "membrane_doe.csv"):
+    """Generates a Design of Experiments (DOE) dataset by solving the physical ODEs."""
+    print(f"Generating {n_samples} DOE cases using 1D Membrane Reactor Physics...")
+    rng = np.random.default_rng(42)
+    
+    # Generate randomized inputs
+    T_in = rng.uniform(463.15, 523.15, n_samples)      # 190°C to 250°C
+    P_in = rng.uniform(30.0, 70.0, n_samples)          # 30 to 70 bar
+    h2_co2_ratio = rng.uniform(2.5, 4.0, n_samples)    # Stoichiometric is 3.0
+    flow_in = rng.uniform(0.01, 0.03, n_samples)       # Total inlet flow [mol/s]
+    
+    reactor = MembraneReactor1D(length=1.0, diameter=0.02)
+    
+    results = []
+    for i in range(n_samples):
+        # Solve the ODE for each condition
+        res = reactor.simulate(
+            T_in=T_in[i],
+            P_in=P_in[i],
+            flow_in=flow_in[i],
+            h2_co2_ratio=h2_co2_ratio[i]
+        )
+        
+        results.append({
+            "T_in_K": T_in[i],
+            "P_in_bar": P_in[i],
+            "h2_co2_ratio": h2_co2_ratio[i],
+            "flow_mol_s": flow_in[i],
+            "co2_conversion": res["co2_conversion"],
+            "meoh_yield": res["meoh_yield"]
+        })
+        
+        if (i+1) % 50 == 0:
+            print(f"[{i+1}/{n_samples}] simulations completed.")
+            
+    df = pd.DataFrame(results)
+    df.to_csv(output_path, index=False)
+    print(f"DOE Data saved to {output_path}")
 
-print(f"Generating {N_SAMPLES} DOE cases (membrane reactor, non-isothermal)...")
-
-for i in range(N_SAMPLES):
-    values = dict(
-        inlet_temperature_k=rng.uniform(463.15, 533.15),    # 190 - 260 C
-        inlet_pressure_bar=rng.uniform(20, 70),
-        inlet_flow_mol_s=rng.uniform(0.008, 0.030),
-        h2_co2_ratio=rng.uniform(3.0, 4.0),
-        length_m=rng.uniform(0.5, 2.0),
-        water_permeance_mol_m2_s_pa=10 ** rng.uniform(-8.0, -6.3),
-        sweep_water_partial_pressure_bar=10 ** rng.uniform(-5, -2),
-        membrane_enabled=True,
-        isothermal=False,
-    )
-    try:
-        result = simulate_reactor(ReactorConfig(**values))
-        row = {**values, **result.metrics, "data_source": "simulated_doe"}
-        rows.append(row)
-    except RuntimeError:
-        failed += 1
-        continue
-
-    if (i + 1) % 50 == 0:
-        print(f"  {i + 1}/{N_SAMPLES} completed ({failed} failed)")
-
-out = ROOT / "outputs" / "membrane_doe.csv"
-out.parent.mkdir(exist_ok=True)
-pd.DataFrame(rows).to_csv(out, index=False)
-print(f"\nWrote {len(rows)} successful simulations to {out}")
-if failed:
-    print(f"  ({failed} cases failed to converge and were skipped)")
+if __name__ == "__main__":
+    generate_synthetic_data()
