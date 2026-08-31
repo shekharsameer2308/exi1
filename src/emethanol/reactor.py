@@ -80,14 +80,12 @@ class MembraneReactor1D:
         # Reaction rates
         r_meoh = (
             k5a
-            * 3453.38
             * p_CO2
             * p_H2
             * (1 - (p_MeOH * p_H2O) / (Keq1 * p_CO2 * (p_H2**3)))
             / (denom**3)
         )
-        r_rwgs = (
-            k1 * p_CO2 * p_H2 * (1 - (p_CO * p_H2O) / (Keq3 * p_CO2 * p_H2)) / denom
+        r_rwgs = ((k1 * 1e-4) * p_CO2 * p_H2 * (1 - (p_CO * p_H2O) / (Keq3 * p_CO2 * p_H2)) / denom
         )
 
         return float(r_meoh), float(r_rwgs)
