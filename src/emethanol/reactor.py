@@ -59,7 +59,7 @@ class MembraneReactor1D:
         RT = self.R_gas * T
 
         # Kinetic and adsorption constants
-        k5a = 1.09e5 * np.exp(-87500.0 / RT)
+        k5a = 2.18e12 * np.exp(-87500.0 / RT)
         k1 = 1.22e10 * np.exp(-94765.0 / RT)
         K_H2O_KH2half = 6.62e-11 * np.exp(124119.0 / RT)
         K_H2half = 0.499 * np.exp(17197.0 / RT)
