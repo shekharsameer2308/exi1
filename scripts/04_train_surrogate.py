@@ -6,7 +6,7 @@ import joblib
 
 
 def train_and_serialize_model(
-    data_path: str = "membrane_doe.csv", model_path: str = "surrogate_rf.joblib"
+    data_path: str = "outputs/membrane_doe.csv", model_path: str = "surrogate_rf.joblib"
 ):
     """Trains a multi-output Random Forest to predict Reactor Performance and serializes it."""
     print(f"Loading data from {data_path}...")

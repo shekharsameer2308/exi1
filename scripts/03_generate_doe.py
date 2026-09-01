@@ -9,7 +9,7 @@ from src.emethanol.reactor import MembraneReactor1D, ODENonConvergenceError
 
 
 def generate_synthetic_data(
-    n_samples: int = 500, output_path: str = "membrane_doe.csv"
+    n_samples: int = 500, output_path: str = "outputs/membrane_doe.csv"
 ):
     """Generates a deterministic Design of Experiments (DOE) dataset."""
     print(f"Generating {n_samples} DOE cases using 1D Membrane Reactor Physics...")
