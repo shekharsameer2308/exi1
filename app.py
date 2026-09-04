@@ -1,6 +1,6 @@
 """
 E-Methanol Membrane Reactor Engineering Dashboard.
-Physics Engine, Validation, DOE, ML Surrogate, Contours, and Optimization.
+Physics Engine, Validation, DOE, ML Surrogate, Contours, Full-Length Industrial Design, and Optimization.
 """
 import streamlit as st
 import pandas as pd
@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 
 from src.emethanol.reactor import simulate_reactor, MembraneReactor1D, ModelConfig, ReactorSimulationResult
+from src.emethanol.design import design_full_length_reactor, IndustrialReactorDesignResult
 from src.emethanol.visualization import (
     generate_reactor_contour,
     plot_reactor_geometry,
@@ -61,7 +62,7 @@ surrogate_model = load_surrogate_model()
 
 # Header
 st.title("E-Methanol Membrane Reactor Engineering System")
-st.caption("Scientific Reaction Engineering, Multicomponent Transport, and Surrogate Acceleration Framework")
+st.caption("Scientific Reaction Engineering, Multicomponent Transport, Full-Length Industrial Sizing, and Surrogate Acceleration Framework")
 
 # 10 Engineering Tabs
 tabs = st.tabs([
@@ -70,11 +71,11 @@ tabs = st.tabs([
     "Axial Profiles",
     "Reactor Contours",
     "Parameter Sweeps",
+    "Industrial Sizing",
     "Optimization",
     "ML Surrogate",
     "Physics vs ML",
     "Validation & Diagnostics",
-    "Model Information",
 ])
 
 
@@ -90,7 +91,7 @@ with tabs[0]:
             """
         <div class="content-card">
             <h4>Direct CO2 Hydrogenation to E-Methanol</h4>
-            <p>This engineering platform simulates and optimizes a 1D non-isothermal catalytic membrane reactor for synthetic e-methanol production:</p>
+            <p>This engineering platform simulates, sizes, and optimizes full-length non-isothermal catalytic membrane reactors for synthetic e-methanol production:</p>
             <ul>
                 <li><strong>Methanol Synthesis:</strong> CO2 + 3H2 ⇌ CH3OH + H2O (ΔH°298 = -49.5 kJ/mol)</li>
                 <li><strong>Reverse Water-Gas Shift:</strong> CO2 + H2 ⇌ CO + H2O (ΔH°298 = +41.2 kJ/mol)</li>
@@ -108,7 +109,7 @@ with tabs[0]:
             <p><strong>Primary Literature:</strong> <em>Energy Advances</em> (2025) - "Design parameter optimization of a membrane reactor for methanol synthesis using a sophisticated CFD model".</p>
             <p><span class="neutral-badge">Model Classification: Level 2 / Level 3 1D Membrane Reactor</span></p>
             <p style="font-size: 0.85rem; color: #6b7280; margin-top: 0.5rem;">
-                Stiff ODE integration (BDF/Radau), LHHW kinetics (VBF & Mignard-Pritchard), non-isothermal energy balances, and automated elemental conservation verification.
+                Stiff ODE integration (BDF/Radau), LHHW kinetics (VBF & Mignard-Pritchard), non-isothermal energy balances, multi-tubular bundle sizing, and automated elemental conservation verification.
             </p>
         </div>
         """,
@@ -133,16 +134,16 @@ with tabs[1]:
         sim_P = st.slider("Operating Pressure P_in (bar)", 20.0, 80.0, 50.0, 1.0)
         sim_ratio = st.slider("H2 / CO2 Feed Ratio", 2.0, 5.0, 3.0, 0.1)
     with col_in2:
-        sim_flow = st.slider("Inlet Feed Flow (mol/s)", 0.005, 0.040, 0.015, 0.001)
+        sim_flow = st.slider("Inlet Feed Flow (mol/s)", 0.005, 0.080, 0.015, 0.001)
         sim_perm = st.slider("H2O Permeance (10⁻⁷ mol/(m²·s·Pa))", 0.0, 4.0, 1.5, 0.1) * 1e-7
-        sim_L = st.slider("Reactor Length (m)", 0.2, 3.0, 1.0, 0.1)
+        sim_L = st.slider("Reactor Length (m)", 0.5, 8.0, 1.0, 0.1, help="Bench (1m), Pilot (3m), Industrial Full-Length (6m)")
     with col_in3:
-        sim_D = st.slider("Tube Diameter (m)", 0.01, 0.05, 0.02, 0.005)
+        sim_D = st.slider("Tube Diameter (m)", 0.01, 0.06, 0.02, 0.002)
         sim_kin = st.selectbox("Kinetic Formulation", ["VBF", "MIGNARD_PRITCHARD"])
         sim_mem_model = st.selectbox("Membrane Model", ["LDF", "MAXWELL_STEFAN"])
         sim_mr_mode = st.checkbox("Membrane Active (MR vs TR)", value=True)
         sim_thermal = st.checkbox("Non-Isothermal Heat Balance", value=True)
-        sim_ergun = st.checkbox("Packed Bed Pressure Drop (Ergun)", value=False)
+        sim_ergun = st.checkbox("Packed Bed Pressure Drop (Ergun)", value=True)
 
     # Run deterministic simulation
     res_sim = simulate_reactor(
@@ -228,7 +229,7 @@ with tabs[1]:
 # TAB 3: AXIAL PROFILES
 # ==========================================
 with tabs[2]:
-    st.subheader("Spatial 1D Axial Profiles")
+    st.subheader(f"Spatial 1D Axial Profiles (Full Length L = {sim_L:.1f} m)")
     setup_matplotlib_style()
 
     p_type = st.radio("Display Mode", ["Mole Fractions (mol %)", "Molar Flow Rates (mol/s)", "Thermal & Kinetic Profiles"], horizontal=True)
@@ -242,7 +243,7 @@ with tabs[2]:
         ax.plot(res_sim.z_grid, res_sim.y_CO * 100, color=COLORS["co"], lw=1.8, ls=":", label="CO")
         ax.set_xlabel("Axial Position z (m)")
         ax.set_ylabel("Gas Mole Fraction (mol %)")
-        ax.set_title("Axial Composition Trajectories")
+        ax.set_title(f"Axial Composition Trajectories across {sim_L:.1f} m Bed Length")
         ax.grid(True)
         ax.legend(frameon=True)
         st.pyplot(fig)
@@ -257,7 +258,7 @@ with tabs[2]:
         ax.plot(res_sim.z_grid, res_sim.cumulative_h2o_removed * 1000, color=COLORS["red"], lw=2, ls="--", label="Permeated H2O (mmol/s)")
         ax.set_xlabel("Axial Position z (m)")
         ax.set_ylabel("Molar Flow Rate (mmol/s)")
-        ax.set_title("Species Mass Flow Rates & Permeation")
+        ax.set_title(f"Species Mass Flow Rates & Water Permeation (L = {sim_L:.1f} m)")
         ax.grid(True)
         ax.legend(frameon=True)
         st.pyplot(fig)
@@ -268,7 +269,7 @@ with tabs[2]:
         ax1.plot(res_sim.z_grid, res_sim.T_profile - 273.15, color=COLORS["temp"], lw=2.2)
         ax1.set_xlabel("Axial Position z (m)")
         ax1.set_ylabel("Bed Temperature (°C)")
-        ax1.set_title("Axial Bed Temperature")
+        ax1.set_title("Axial Bed Temperature Profile")
         ax1.grid(True)
 
         ax2.plot(res_sim.z_grid, res_sim.r_meoh_profile, color=COLORS["emerald"], lw=2, label="r_MeOH")
@@ -305,7 +306,7 @@ with tabs[3]:
     elif sweep_param == "water_permeance":
         vals = np.linspace(0.2e-7, 3.0e-7, 20)
     elif sweep_param == "total_flow":
-        vals = np.linspace(0.008, 0.035, 20)
+        vals = np.linspace(0.008, 0.050, 20)
     else:
         vals = np.linspace(2.2, 4.5, 20)
 
@@ -313,7 +314,7 @@ with tabs[3]:
         parameter_name=sweep_param,
         parameter_values=vals,
         target_variable=target_var,
-        fixed_conditions={"temperature": sim_T, "pressure": sim_P, "h2_co2_ratio": sim_ratio, "water_permeance": sim_perm},
+        fixed_conditions={"temperature": sim_T, "pressure": sim_P, "h2_co2_ratio": sim_ratio, "water_permeance": sim_perm, "reactor_length": sim_L},
     )
 
     fig, ax = plt.subplots(figsize=(8.5, 5), dpi=300)
@@ -347,7 +348,7 @@ with tabs[4]:
         sw_temps = np.linspace(473.15, 533.15, 20)
         yields, convs, sels = [], [], []
         for T in sw_temps:
-            r = simulate_reactor(temperature=float(T), pressure=sim_P, total_flow=sim_flow, h2_co2_ratio=sim_ratio, water_permeance=sim_perm)
+            r = simulate_reactor(temperature=float(T), pressure=sim_P, total_flow=sim_flow, h2_co2_ratio=sim_ratio, water_permeance=sim_perm, reactor_length=sim_L)
             yields.append(r.meoh_yield * 100)
             convs.append(r.co2_conversion * 100)
             sels.append(r.meoh_selectivity * 100)
@@ -368,7 +369,7 @@ with tabs[4]:
         sw_press = np.linspace(20.0, 80.0, 20)
         yields, convs = [], []
         for P in sw_press:
-            r = simulate_reactor(temperature=sim_T, pressure=float(P), total_flow=sim_flow, h2_co2_ratio=sim_ratio, water_permeance=sim_perm)
+            r = simulate_reactor(temperature=sim_T, pressure=float(P), total_flow=sim_flow, h2_co2_ratio=sim_ratio, water_permeance=sim_perm, reactor_length=sim_L)
             yields.append(r.meoh_yield * 100)
             convs.append(r.co2_conversion * 100)
         
@@ -387,7 +388,7 @@ with tabs[4]:
         sw_perms = np.linspace(0.0, 3.0e-7, 20)
         yields, h2o_rems = [], []
         for q in sw_perms:
-            r = simulate_reactor(temperature=sim_T, pressure=sim_P, total_flow=sim_flow, water_permeance=float(q), membrane_enabled=(q > 0))
+            r = simulate_reactor(temperature=sim_T, pressure=sim_P, total_flow=sim_flow, water_permeance=float(q), membrane_enabled=(q > 0), reactor_length=sim_L)
             yields.append(r.meoh_yield * 100)
             h2o_rems.append(r.h2o_removal_fraction * 100)
         
@@ -405,9 +406,102 @@ with tabs[4]:
 
 
 # ==========================================
-# TAB 6: OPTIMIZATION
+# TAB 6: INDUSTRIAL SIZING & FULL-LENGTH DESIGN
 # ==========================================
 with tabs[5]:
+    st.subheader("Full-Length Industrial Multi-Tubular Reactor Design & Sizing")
+    st.markdown("Scale up from single-tube 1D physics to multi-thousand tube industrial reactor bundles.")
+
+    col_ds1, col_ds2, col_ds3 = st.columns(3)
+    with col_ds1:
+        target_tpd = st.number_input("Target Methanol Capacity (Metric Tons / Day)", min_value=0.1, max_value=2000.0, value=100.0, step=10.0)
+        ind_L = st.slider("Industrial Tube Length (m)", 3.0, 8.0, 6.0, 0.5)
+    with col_ds2:
+        ind_Dt = st.slider("Tube Inner Diameter (mm)", 20.0, 50.0, 38.0, 2.0) * 1e-3
+        ind_flow_tube = st.slider("Flow per Tube (mol/s)", 0.010, 0.100, 0.040, 0.005)
+    with col_ds3:
+        ind_T = st.slider("Inlet Temp (°C)", 200.0, 260.0, 230.0, 5.0) + 273.15
+        ind_P = st.slider("Inlet Pressure (bar)", 30.0, 80.0, 60.0, 5.0)
+
+    # Calculate full-length multi-tubular design
+    design_res = design_full_length_reactor(
+        target_production_tpd=target_tpd,
+        tube_length=ind_L,
+        tube_diameter=ind_Dt,
+        temperature=ind_T,
+        pressure=ind_P,
+        single_tube_flow=ind_flow_tube,
+        h2_co2_ratio=sim_ratio,
+        water_permeance=sim_perm,
+    )
+
+    st.markdown("---")
+    st.subheader(f"Multi-Tubular Bundle Specifications ({target_tpd:.0f} TPD Methanol Plant)")
+
+    d_col1, d_col2, d_col3, d_col4 = st.columns(4)
+    with d_col1:
+        st.markdown(
+            f"""
+        <div class="content-card">
+            <div class="metric-label">Number of Tubes</div>
+            <div class="metric-value-slate">{design_res.number_of_tubes:,}</div>
+            <div style="font-size: 0.8rem; color: #6b7280;">Shell Diameter: {design_res.shell_diameter_m:.2f} m</div>
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+    with d_col2:
+        st.markdown(
+            f"""
+        <div class="content-card">
+            <div class="metric-label">Total Catalyst Mass</div>
+            <div class="metric-value">{design_res.total_catalyst_mass_tonnes:.2f} t</div>
+            <div style="font-size: 0.8rem; color: #6b7280;">Bed Volume: {design_res.reactor_total_volume_m3:.1f} m³</div>
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+    with d_col3:
+        st.markdown(
+            f"""
+        <div class="content-card">
+            <div class="metric-label">Total Membrane Area</div>
+            <div class="metric-value">{design_res.total_membrane_area_m2:.1f} m²</div>
+            <div style="font-size: 0.8rem; color: #6b7280;">Area/Vol: {design_res.membrane_area_to_volume_ratio:.1f} m²/m³</div>
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+    with d_col4:
+        st.markdown(
+            f"""
+        <div class="content-card">
+            <div class="metric-label">Electrolyzer Power</div>
+            <div class="metric-value-red">{design_res.electrolyzer_power_mw:.1f} MW</div>
+            <div style="font-size: 0.8rem; color: #6b7280;">H2 Feed: {design_res.h2_feed_tpd:.1f} TPD</div>
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+    # Detailed Material & Energy Balance Table
+    st.subheader("Plant Material & Energy Balance Summary")
+    df_bal = pd.DataFrame([
+        {"Parameter": "Methanol Production", "Value": f"{design_res.actual_production_tpd:.1f}", "Unit": "TPD (Metric Tons/Day)"},
+        {"Parameter": "CO2 Feedstock Required", "Value": f"{design_res.co2_feed_tpd:.1f}", "Unit": "TPD"},
+        {"Parameter": "Green H2 Required", "Value": f"{design_res.h2_feed_tpd:.1f}", "Unit": "TPD"},
+        {"Parameter": "H2O Extracted via Membrane", "Value": f"{design_res.water_extracted_membrane_tpd:.1f}", "Unit": "TPD"},
+        {"Parameter": "Reactor Cooling Duty (Steam Gen)", "Value": f"{design_res.cooling_duty_mw:.2f}", "Unit": "MW (Thermal)"},
+        {"Parameter": "Gas Hourly Space Velocity (GHSV)", "Value": f"{design_res.ghsv_h_inv:.0f}", "Unit": "h⁻¹"},
+        {"Parameter": "Bed Pressure Drop (Ergun)", "Value": f"{design_res.pressure_drop_bar:.2f}", "Unit": "bar"},
+    ])
+    st.dataframe(df_bal, use_container_width=True)
+
+
+# ==========================================
+# TAB 7: OPTIMIZATION
+# ==========================================
+with tabs[6]:
     st.subheader("Constrained Reactor Optimization (Physics-Engine Verified)")
     st.markdown("Automated constrained optimization targeting maximum methanol yield with strict physics verification.")
 
@@ -470,9 +564,9 @@ with tabs[5]:
 
 
 # ==========================================
-# TAB 7: ML SURROGATE
+# TAB 8: ML SURROGATE
 # ==========================================
-with tabs[6]:
+with tabs[7]:
     st.subheader("Machine Learning Surrogate Predictor")
 
     if surrogate_model is not None:
@@ -510,9 +604,9 @@ with tabs[6]:
 
 
 # ==========================================
-# TAB 8: PHYSICS VS ML
+# TAB 9: PHYSICS VS ML
 # ==========================================
-with tabs[7]:
+with tabs[8]:
     st.subheader("Physics Engine vs ML Surrogate Parity Benchmark")
     
     col_par1, col_par2 = st.columns(2)
@@ -533,9 +627,9 @@ with tabs[7]:
 
 
 # ==========================================
-# TAB 9: VALIDATION & DIAGNOSTICS
+# TAB 10: VALIDATION & DIAGNOSTICS
 # ==========================================
-with tabs[8]:
+with tabs[9]:
     st.subheader("Validation Test Diagnostics & Conservation Verification")
 
     col_v1, col_v2 = st.columns(2)
@@ -569,25 +663,3 @@ with tabs[8]:
         """,
             unsafe_allow_html=True,
         )
-
-
-# ==========================================
-# TAB 10: MODEL INFORMATION
-# ==========================================
-with tabs[9]:
-    st.subheader("Model Information & Documentation")
-    
-    st.markdown(
-        """
-    <div class="content-card">
-        <h4>Model Classification Hierarchy</h4>
-        <ul>
-            <li><strong>Level 1 (Legacy):</strong> Isothermal, isobaric 1D ODE with simplified LDF water removal.</li>
-            <li><strong>Level 2 (Enhanced 1D):</strong> Non-isothermal energy balance, temperature-dependent Cp and permeance, Ergun pressure drop, automated elemental conservation QC.</li>
-            <li><strong>Level 3 (Reference-Aligned):</strong> Mignard & Pritchard (2008) kinetics, coupled Maxwell-Stefan multicomponent zeolite transport, counter-current sweep mass balance.</li>
-            <li><strong>Level 4 (CFD Reference):</strong> 3D Navier-Stokes + species transport in Fluent/OpenFOAM (as documented in 2025 Energy Advances paper).</li>
-        </ul>
-    </div>
-    """,
-        unsafe_allow_html=True,
-    )
