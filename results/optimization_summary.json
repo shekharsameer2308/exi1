@@ -1,0 +1,34 @@
+{
+    "optimal_conditions": {
+        "T_in_K": 514.1668546339179,
+        "P_in_bar": 62.59617339989187,
+        "flow_mol_s": 0.008,
+        "h2_co2_ratio": 4.5,
+        "water_permeance": 3e-07
+    },
+    "physics_result": {
+        "co2_conversion": 0.7748925530987796,
+        "meoh_yield": 0.7142363575361796,
+        "meoh_selectivity": 0.921723088807556,
+        "h2o_removal_fraction": 0.9814252156838272,
+        "h2_loss_fraction": 0.02683086423959718,
+        "co_formation_fraction": 0.06065619556259924,
+        "outlet_temperature": 522.3162551009094,
+        "max_temperature": 539.9976484551208,
+        "outlet_pressure": 62.59617339989187,
+        "pressure_drop_bar": 0.0,
+        "carbon_balance_error": 7.453889935837842e-16,
+        "hydrogen_balance_error": 2.6502719771867885e-16,
+        "oxygen_balance_error": 5.963111948670273e-16,
+        "solver_success": true,
+        "solver_message": "Convergence achieved",
+        "is_physically_valid": true,
+        "validation_message": "PASSED"
+    },
+    "surrogate_result": {
+        "error": "The feature names should match those that were passed during fit.\nFeature names seen at fit time, yet now missing:\n- water_permeance\n"
+    },
+    "prediction_error": {},
+    "optimization_success": false,
+    "optimization_message": "ABNORMAL_TERMINATION_IN_LNSRCH"
+}

@@ -1,0 +1,12 @@
+{
+    "model_version": "2.0.0",
+    "kinetic_model": "VBF",
+    "membrane_model": "LDF",
+    "solver": "scipy.solve_ivp_BDF",
+    "n_samples_requested": 500,
+    "n_valid_accepted": 500,
+    "n_invalid_rejected": 0,
+    "elapsed_seconds": 11.208348989486694,
+    "random_seed": 42,
+    "sampling_method": "LHS"
+}

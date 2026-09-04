@@ -1,0 +1,18 @@
+{
+    "operating_conditions": {
+        "T_in_K": 493.15,
+        "P_in_bar": 50.0,
+        "flow_mol_s": 0.015,
+        "h2_co2_ratio": 3.0,
+        "water_permeance": 1e-07,
+        "reactor_length_m": 1.0,
+        "reactor_diameter_m": 0.02
+    },
+    "results": {
+        "co2_conversion": 0.03628638856462361,
+        "meoh_yield": 0.03240077564400286,
+        "meoh_selectivity": 0.8929181691999816,
+        "solver_success": true,
+        "runtime_sec": 0.016080141067504883
+    }
+}
