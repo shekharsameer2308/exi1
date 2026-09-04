@@ -9,10 +9,10 @@
         "reactor_diameter_m": 0.02
     },
     "results": {
-        "co2_conversion": 0.03628638856462361,
-        "meoh_yield": 0.03240077564400286,
-        "meoh_selectivity": 0.8929181691999816,
+        "co2_conversion": 0.039917923816138394,
+        "meoh_yield": 0.035673501161183105,
+        "meoh_selectivity": 0.8936712571900016,
         "solver_success": true,
-        "runtime_sec": 0.016080141067504883
+        "runtime_sec": 0.028805971145629883
     }
 }

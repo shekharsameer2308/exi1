@@ -6,7 +6,7 @@
     "n_samples_requested": 500,
     "n_valid_accepted": 500,
     "n_invalid_rejected": 0,
-    "elapsed_seconds": 11.208348989486694,
+    "elapsed_seconds": 10.846742868423462,
     "random_seed": 42,
     "sampling_method": "LHS"
 }
