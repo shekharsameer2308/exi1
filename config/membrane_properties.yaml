@@ -1,0 +1,30 @@
+# Membrane Properties Configuration for Intensified Catalytic Membrane Reactor
+# Material: Pure-silica Chabazite (Si-CHA) / High-Silica Zeolitic Membrane
+# Function: Highly selective in-situ water extraction under hydrothermal conditions
+
+membrane:
+  material: "Si-CHA (Pure-silica Chabazite)"
+  baseline_water_permeance_mol_m2_s_Pa: 2.5e-7 # mol / (m^2 * s * Pa)
+  activation_energy_kJ_mol: 12.0 # kJ / mol
+  T_ref_K: 503.15 # 230 °C reference temperature
+  separation_factors:
+    H2O_over_H2: 220.0
+    H2O_over_CO2: 450.0
+    H2O_over_CH3OH: 600.0
+    H2O_over_CO: 500.0
+    H2O_over_N2: 500.0
+
+thermodynamics_and_heat:
+  dH_desorption_zeolite_kJ_mol: 45.0 # kJ / mol endothermic desorption enthalpy from lattice
+  latent_heat_vaporization_kJ_mol: 40.65 # kJ / mol
+
+operational_envelope:
+  target_water_extraction_min: 0.60 # 60%
+  target_water_extraction_max: 0.75 # 75%
+  hard_min_p_H2O_bar: 0.75 # Hard boundary preventing active Cu+ reduction
+  sweep_gas:
+    composition: "dry_steam_or_vacuum"
+    pressure_bar: 1.2
+    temperature_K: 483.15 # 210 °C
+  auxiliary_compressor_isentropic_efficiency: 0.78
+  motor_efficiency: 0.95
