@@ -9,45 +9,93 @@ A scientific computing and machine learning (SciML) framework for simulating, de
 
 ---
 
-## 1. Process Overview & Intensification Architecture
+## 1. Physical & Computational Architecture
 
-In conventional fixed-bed reactors, methanol synthesis is severely limited by thermodynamic equilibrium, yielding only $15\% - 22\%$ conversion per pass at industrial pressures. The catalytic membrane reactor (CMR) breaks this limit by continuously extracting water vapor in-situ through a permselective zeolite membrane, leveraging Le Chatelier's principle to drive the reaction forward.
+The framework is divided into two coupled domains: the physical 2D axisymmetric transport environment and the hybrid scientific machine learning (SciML) solver.
 
-### Process Flow Diagram
+### A. 2D Physical Reactor Domain (Intensification Mechanism)
 
 ```mermaid
-graph LR
-    subgraph "High-Pressure Retentate Zone (100 bar, 250°C)"
-        A["Syngas Feed<br>CO2 + 3H2"] --> B("Cu/ZnO/Al2O3 Catalyst Bed<br>Reaction: CO2 + 3H2 &hArr; CH3OH + H2O")
-        B --> C["Methanol-Rich Retentate"]
+flowchart LR
+    subgraph Retentate["High-Pressure Retentate Zone (P_ret = 100 bar, T = 250 °C)"]
+        direction TB
+        F1["Feed (CO2 + 3H2)<br>GHSV = 500 h⁻¹"] --> Bed["Catalytic Packed Bed (Cu/ZnO/Al2O3)<br>r_MeOH & r_RWGS (Mignard & Pritchard)"]
+        Bed --> RetOut["High-Yield Methanol<br>CO2 Conversion > 52%"]
+    end
+
+    subgraph Membrane["NaA Zeolite Membrane Boundary (r = r_m)"]
+        direction TB
+        M1["Coupled Maxwell-Stefan Matrix<br>J = -ρ_m [q_sat] [B]⁻¹ [Γ] ∇θ"]
+    end
+
+    subgraph Permeate["Low-Pressure Sweep Zone (P_perm = 1 bar)"]
+        direction TB
+        S1["Sweep Gas In<br>(S/F = 10)"] --> Sweep["Counter-Current Extraction<br>Δp = 99 bar driving force"]
+        Sweep --> S2["Water-Rich Permeate<br>H2O Extraction > 88%"]
+    end
+
+    Bed ===>|Concentration Polarization & Radial Dispersion| Membrane
+    Membrane ===>|Selective H2O Transport (J_H2O)| Sweep
+    
+    classDef highPressure fill:#fcf3cf,stroke:#f39c12,stroke-width:2px;
+    classDef lowPressure fill:#ebf5fb,stroke:#2980b9,stroke-width:2px;
+    classDef memb fill:#e8f8f5,stroke:#1abc9c,stroke-width:3px,stroke-dasharray: 5 5;
+    
+    class Retentate,F1,Bed,RetOut highPressure;
+    class Permeate,S1,Sweep,S2 lowPressure;
+    class Membrane,M1 memb;
+```
+
+### B. SciML Software Execution Pipeline
+
+```mermaid
+graph TD
+    subgraph "Phase 1: Deterministic CFD Validation"
+        A1["2D BVP Solver<br>(scipy.integrate.solve_ivp)"] --> A2["Stiff Maxwell-Stefan UDF<br>Explicit Matrix Inversion"]
+        A2 --> A3[("High-Fidelity Training Grid")]
+    end
+
+    subgraph "Phase 2: Grey-Box Neural ODE (PyTorch)"
+        B1["Known Physics Backbone<br>dC/dz = Convection + Kinetics"] --> B3{"torchdiffeq<br>Adjoint Solver"}
+        B2["DeepONet Surrogate NN_φ<br>Bypasses [B]⁻¹ Matrix Inversion"] -.->|Learned Flux J_i| B3
+        A3 -.->|MSE Loss + Conservation Penalty| B3
+    end
+
+    subgraph "Phase 3: Multi-Objective Optimization"
+        C1["BoTorch / GPyTorch<br>Gaussian Process"] --> C2{"qEI Acquisition<br>Target: Yield vs. Duty"}
+        C2 -->|Geometric Tuning (OM/Vr)| B1
     end
     
-    subgraph "Coupled Maxwell-Stefan Permeation"
-        B -.->|"In-Situ H2O Extraction"| D{"NaA Zeolite Membrane"}
-    end
-    
-    subgraph "Low-Pressure Sweep Zone (1 bar)"
-        D --> E("Permeate Channel")
-        F["Sweep Gas In"] --> E
-        E --> G["Water-Rich Permeate Out"]
-    end
-    
-    classDef highPressure fill:#f9d0c4,stroke:#333,stroke-width:2px;
-    classDef lowPressure fill:#d4e6f1,stroke:#333,stroke-width:2px;
-    classDef membrane fill:#fcf3cf,stroke:#f39c12,stroke-width:3px,stroke-dasharray: 5 5;
-    
-    class A,B,C highPressure;
-    class E,F,G lowPressure;
-    class D membrane;
+    style A2 fill:#e74c3c,color:#fff,stroke:#c0392b
+    style B2 fill:#2ecc71,color:#fff,stroke:#27ae60
+    style C1 fill:#9b59b6,color:#fff,stroke:#8e44ad
 ```
 
 ---
 
-## 2. Mathematical Formulation & Physics Engine
+## 2. Visualizing the Intensification (Diagnostic Dashboard)
+
+Execution of `python visualization/dashboard.py` generates a publication-grade 4-panel dashboard (`reports/figures/reactor_intensification_dashboard.png`) that maps the reactor's performance against conventional thermodynamic limits.
+
+| Panel A: Thermodynamic Breakthrough | Panel B: Catalyst Protection Envelope |
+| :--- | :--- |
+| <img src="reports/figures/panel_a_yield.png" width="400" alt="Axial Yield Profile"> | <img src="reports/figures/panel_b_water.png" width="400" alt="Water Partial Pressure"> |
+| **The Le Chatelier Shift:** Plots axial methanol yield against reactor length ($z$). The conventional fixed-bed (TR) plateaus at the $25.7\%$ closed equilibrium ceiling. The intensified membrane reactor (MR) breaks through this boundary, achieving $40.5\%$ single-pass yield. | **The Over-Reduction Constraint:** Tracks the retentate water partial pressure $p_{\text{H}_2\text{O}}$ axially. The extraction profile proves that the membrane removes $88.1\%$ of the steam without ever breaching the critical $1.50\text{ bar}$ minimum threshold required to prevent $\text{Cu/ZnO}$ catalyst degradation. |
+
+| Panel C: Dimensionless Regime Map | Panel D: Pareto Optimization Frontier |
+| :--- | :--- |
+| <img src="reports/figures/panel_c_regime.png" width="400" alt="Dimensionless Regime Map"> | <img src="reports/figures/panel_d_pareto.png" width="400" alt="Pareto Optimization"> |
+| **The Intensification Sweet Spot:** A cross-plot of the Permeation Number ($\theta_m$) vs. Damköhler Number ($Da$). Showcases the transition from a "Permeation-Choked" geometry ($O_M/V_r = 26.67\text{ m}^{-1}$) to the highly intensified regime ($O_M/V_r = 133.33\text{ m}^{-1}$) mapped by Hauth et al. (2025). | **BoTorch Trade-off Analysis:** A 2D Gaussian Process surrogate mapping the trade-off between maximizing Volumetric Space-Time Yield ($\text{STY}$) and minimizing Specific Loop Energy ($\text{kWh}/\text{kg}_{\text{MeOH}}$) across different sweep-to-feed ($S/F$) ratios. |
+
+> **Note on Reproducibility:** To generate these plots locally using the exact baseline parameters from Hauth et al. (2025) ($100\text{ bar}$, $250^\circ\text{C}$, $\Delta p = 99\text{ bar}$), simply run the automated CLI benchmark suite.
+
+---
+
+## 3. Mathematical Formulation & Physics Engine
 
 The core physics engine relies on a 2D axisymmetric heterogeneous packed-bed formulation.
 
-### 2.1 Reaction Kinetics
+### 3.1 Reaction Kinetics
 
 Modeled using the Mignard & Pritchard formulation over $\text{Cu/ZnO/Al}_2\text{O}_3$:
 
@@ -55,7 +103,7 @@ $$r_{\text{MeOH}} = \frac{k_1 p_{\text{CO}_2} p_{\text{H}_2} \left(1 - \dfrac{p_
 
 $$r_{\text{RWGS}} = \frac{k_2 p_{\text{CO}_2} \left(1 - \dfrac{p_{\text{H}_2\text{O}} p_{\text{CO}}}{K_{\text{eq},2} p_{\text{H}_2} p_{\text{CO}_2}}\right)}{1 + K_{\text{H}_2\text{O}/\text{H}_2}\dfrac{p_{\text{H}_2\text{O}}}{p_{\text{H}_2}} + \sqrt{K_{\text{H}_2} p_{\text{H}_2}} + K_{\text{H}_2\text{O}} p_{\text{H}_2\text{O}}}$$
 
-### 2.2 Coupled Maxwell-Stefan Permeation
+### 3.2 Coupled Maxwell-Stefan Permeation
 
 Permeation across the NaA zeolite membrane is driven by the coupled Maxwell-Stefan matrix equations, accounting for competitive adsorption and intermolecular drag:
 
@@ -63,7 +111,7 @@ $$\mathbf{J} = -\rho_m [q_{\text{sat}}] [B]^{-1} [\Gamma] \frac{d\boldsymbol{\th
 
 Where $[\Gamma]$ is the thermodynamic correction matrix ($\Gamma_{ij} = \delta_{ij} + \theta_i/\theta_v$) and $[B]$ is the friction matrix linking individual species diffusivities $D_i$ and exchange diffusivities $D_{ij}$.
 
-### 2.3 2D Heterogeneous Conservation Balances
+### 3.3 2D Heterogeneous Conservation Balances
 
 The continuous annular reaction domain ($r \in [r_m, r_w]$, $z \in [0, L]$) is governed by coupled 2D partial differential equations:
 
@@ -78,44 +126,6 @@ The continuous annular reaction domain ($r \in [r_m, r_w]$, $z \in [0, L]$) is g
 
 - **Dynamic Ergun Pressure Drop**:
   $$\frac{dP}{dz} = -\left[ 150 \frac{\mu(1-\epsilon)^2}{d_p^2 \epsilon^3} u_s(z) + 1.75 \frac{\rho_g(1-\epsilon)}{d_p \epsilon^3} u_s(z)^2 \right]$$
-
----
-
-## 3. Scientific Machine Learning (SciML) Pipeline
-
-Inverting the stiff $3 \times 3$ Maxwell-Stefan friction matrix at every spatial integration node creates an intractable computational bottleneck for multi-objective optimization. We bypass this using a Grey-Box Neural ODE.
-
-### Software Architecture
-
-```mermaid
-graph TD
-    subgraph "Data Generation (CFD Baseline)"
-        A1["2D Heterogeneous BVP Solver"] --> A2["Rigorous Maxwell-Stefan UDF"]
-        A2 --> A3[("High-Fidelity Spatial Dataset")]
-    end
-
-    subgraph "SciML Hybrid Training"
-        B1["Physics Base:<br>Convection + Kinetics"] --> B3(("ODE Integrator"))
-        B2["Neural Net: NN_phi<br>Flux Surrogate"] --> B3
-        A3 -.->|"Loss Computation"| B3
-        B3 --> B4["Backprop via Adjoint Method"]
-        B4 -.->|"Update Weights"| B2
-    end
-
-    subgraph "Bayesian Optimization"
-        C1["BoTorch Gaussian Process"] --> C2{"Acquisition Function<br>qEI"}
-        C2 -->|"Sample: GHSV, OM/Vr, P"| B1
-        B3 -->|"Objectives:<br>Yield, Energy Duty"| C1
-    end
-    
-    style A2 fill:#e74c3c,color:#fff
-    style B2 fill:#2ecc71,color:#fff
-    style C1 fill:#9b59b6,color:#fff
-```
-
-- **Hard Physics Enforcement**: Stoichiometric conservation, convection, and radial dispersion remain strictly hardcoded.
-- **Neural Surrogate**: A deep neural network $\mathbf{NN}_{\phi}(\mathbf{p}, T, \Delta p)$ predicts the permeate flux vector $\mathbf{J}$, bypassing matrix inversion while preserving asymptotic zero-flux physical constraints via softplus activations:
-  $$\frac{d\mathbf{C}}{dz} = \mathbf{f}_{\text{physics}}(\mathbf{C}, T) - \frac{4 d_m}{d_w^2 - d_m^2} \cdot \mathbf{NN}_{\phi}(\mathbf{p}, T, \Delta p)$$
 
 ---
 
@@ -169,8 +179,6 @@ python ml/bayesian_opt.py --trials 50
 python visualization/dashboard.py
 ```
 
-*(The generated dashboard will be saved to `reports/figures/reactor_intensification_dashboard.png`)*
-
 ---
 
 ## 6. Repository Layout
@@ -190,7 +198,7 @@ membrane-reactor-sciml/
 
 ---
 
-## Citation & Intellectual Property
+## Citation & Academic Attribution
 
 Core reaction kinetic parameters and the Maxwell-Stefan multicomponent zeolite permeation formulations are derived directly from:
 
