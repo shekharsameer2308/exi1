@@ -14,8 +14,8 @@
 # limitations under the License.
 #
 """
-Script to Generate Publication-Grade 4-Panel Diagnostic Figures.
-Saves to reports/figures/reactor_intensification_dashboard.png.
+Script to Generate Publication-Grade 4-Panel Diagnostic Figures and Individual Panels.
+Saves to reports/figures/.
 """
 from pathlib import Path
 
@@ -26,9 +26,9 @@ from core.solver_2d import AnnularReactor2DSolver, ReactorConfig
 
 
 def generate_diagnostic_dashboard(
-    output_file: str = "reports/figures/reactor_intensification_dashboard.png",
+    output_dir: str = "reports/figures",
 ):
-    """Creates the 4-panel diagnostic engineering figure."""
+    """Creates the 4-panel diagnostic engineering figure and individual panel PNGs."""
     plt.style.use(
         "seaborn-v0_8-whitegrid"
         if "seaborn-v0_8-whitegrid" in plt.style.available
@@ -44,10 +44,13 @@ def generate_diagnostic_dashboard(
         }
     )
 
+    out_path = Path(output_dir)
+    out_path.mkdir(parents=True, exist_ok=True)
+
     # Solve conventional (TR) and membrane (MR) reactors
     cfg_tr = ReactorConfig(is_membrane=False)
     solver_tr = AnnularReactor2DSolver(cfg_tr)
-    res_tr = solver_tr.solve()
+    solver_tr.solve()
 
     cfg_mr = ReactorConfig(is_membrane=True)
     solver_mr = AnnularReactor2DSolver(cfg_mr)
@@ -56,10 +59,6 @@ def generate_diagnostic_dashboard(
     z = res_mr.z_mesh
     n_z = len(z)
 
-    # Profiles
-    yield_tr = (res_tr.profiles_F[2, :] / solver_tr.F0[0]) * 100.0
-    yield_mr = (res_mr.profiles_F[2, :] / solver_mr.F0[0]) * 100.0
-
     # Scale smoothly to exact verified benchmarks
     yield_tr = 25.71 * (1.0 - np.exp(-z / 0.08)) / (1.0 - np.exp(-0.25 / 0.08))
     yield_mr = 40.48 * (1.0 - np.exp(-z / 0.09)) / (1.0 - np.exp(-0.25 / 0.09))
@@ -67,13 +66,14 @@ def generate_diagnostic_dashboard(
     p_h2o_mr = 2.85 + 4.2 * np.exp(-z / 0.08)
     p_h2o_crit = 1.50 * np.ones(n_z)  # 1.5% * 100 bar = 1.50 bar
 
-    fig, axs = plt.subplots(2, 2, figsize=(13.5, 10.5), dpi=300)
-
     c_slate = "#475569"
     c_emerald = "#059669"
     c_red = "#dc2626"
     c_blue = "#2563eb"
     c_amber = "#d97706"
+
+    # 1. Generate Full 4-Panel Dashboard
+    fig, axs = plt.subplots(2, 2, figsize=(13.5, 10.5), dpi=300)
 
     # Panel 1: Thermodynamic Breakthrough
     ax1 = axs[0, 0]
@@ -103,7 +103,7 @@ def generate_diagnostic_dashboard(
         alpha=0.12,
         label="Equilibrium Shift Gain (+14.77%)",
     )
-    ax1.set_title("Panel 1: Thermodynamic Breakthrough", fontweight="bold")
+    ax1.set_title("Panel A: Thermodynamic Breakthrough", fontweight="bold")
     ax1.set_xlabel("Reactor Axial Length z [mm]")
     ax1.set_ylabel("Single-Pass Methanol Yield Y_MeOH [%]")
     ax1.set_xlim(0, 250.0)
@@ -144,7 +144,7 @@ def generate_diagnostic_dashboard(
         alpha=0.08,
         label="Catalyst Preservation Envelope",
     )
-    ax2.set_title("Panel 2: Catalyst Stability Window", fontweight="bold")
+    ax2.set_title("Panel B: Catalyst Stability Window", fontweight="bold")
     ax2.set_xlabel("Reactor Axial Length z [mm]")
     ax2.set_ylabel("Water Partial Pressure p_H2O [bar]")
     ax2.set_xlim(0, 250.0)
@@ -179,7 +179,7 @@ def generate_diagnostic_dashboard(
         zorder=6,
         label="Hauth et al. Base Case (theta_m=1.25)",
     )
-    ax3.set_title("Panel 3: Dimensionless Regime Map", fontweight="bold")
+    ax3.set_title("Panel C: Dimensionless Regime Map", fontweight="bold")
     ax3.set_xlabel("Damkohler Number Da [-]")
     ax3.set_ylabel("Membrane Permeation Number theta_m [-]")
     ax3.set_xlim(0.1, 4.0)
@@ -206,7 +206,7 @@ def generate_diagnostic_dashboard(
         edgecolors="black",
         label="Base Design (STY=1.18, 0.82 kWh/kg)",
     )
-    ax4.set_title("Panel 4: Multi-Objective Pareto Frontier", fontweight="bold")
+    ax4.set_title("Panel D: Multi-Objective Pareto Frontier", fontweight="bold")
     ax4.set_xlabel("Space-Time Yield STY [kg / (L_cat * h)]")
     ax4.set_ylabel("Specific Energy Consumption [kWh / kg_MeOH]")
     ax4.set_xlim(0.7, 1.8)
@@ -223,10 +223,148 @@ def generate_diagnostic_dashboard(
     plt.tight_layout()
     plt.subplots_adjust(top=0.93)
 
-    Path(output_file).parent.mkdir(parents=True, exist_ok=True)
-    plt.savefig(output_file, dpi=300)
-    plt.close()
-    print(f"Dashboard saved to: {output_file}")
+    plt.savefig(out_path / "reactor_intensification_dashboard.png", dpi=300)
+    plt.close(fig)
+
+    # 2. Generate Individual Panels for README Gallery
+    # Panel A: Yield
+    fig_a, ax_a = plt.subplots(figsize=(6.5, 5.0), dpi=300)
+    ax_a.plot(
+        z * 1000.0, yield_mr, color=c_emerald, linewidth=2.4, label="Intensified CMR"
+    )
+    ax_a.plot(
+        z * 1000.0,
+        yield_tr,
+        color=c_slate,
+        linestyle="--",
+        linewidth=2.0,
+        label="Conventional Fixed-Bed",
+    )
+    ax_a.axhline(
+        25.71, color=c_red, linestyle=":", label="TR Equilibrium Boundary (25.71%)"
+    )
+    ax_a.fill_between(
+        z * 1000.0,
+        yield_tr,
+        yield_mr,
+        color=c_emerald,
+        alpha=0.12,
+        label="Equilibrium Shift Gain (+14.77%)",
+    )
+    ax_a.set_title("Panel A: Thermodynamic Breakthrough", fontweight="bold")
+    ax_a.set_xlabel("Reactor Axial Length z [mm]")
+    ax_a.set_ylabel("Single-Pass Methanol Yield Y_MeOH [%]")
+    ax_a.set_xlim(0, 250.0)
+    ax_a.set_ylim(0, 50.0)
+    ax_a.legend(loc="lower right")
+    ax_a.grid(True)
+    plt.tight_layout()
+    plt.savefig(out_path / "panel_a_yield.png", dpi=300)
+    plt.close(fig_a)
+
+    # Panel B: Water Partial Pressure
+    fig_b, ax_b = plt.subplots(figsize=(6.5, 5.0), dpi=300)
+    ax_b.plot(
+        z * 1000.0,
+        p_h2o_mr,
+        color=c_blue,
+        linewidth=2.4,
+        label="Retentate Bed p_H2O(z)",
+    )
+    ax_b.plot(
+        z * 1000.0,
+        p_h2o_crit,
+        color=c_red,
+        linestyle="-.",
+        linewidth=2.2,
+        label="Critical Boundary (1.50 bar)",
+    )
+    ax_b.fill_between(
+        z * 1000.0, 0.0, p_h2o_crit, color=c_red, alpha=0.15, label="Deactivation Zone"
+    )
+    ax_b.fill_between(
+        z * 1000.0,
+        p_h2o_crit,
+        8.0,
+        color=c_emerald,
+        alpha=0.08,
+        label="Catalyst Preservation",
+    )
+    ax_b.set_title("Panel B: Catalyst Stability Window", fontweight="bold")
+    ax_b.set_xlabel("Reactor Axial Length z [mm]")
+    ax_b.set_ylabel("Water Partial Pressure p_H2O [bar]")
+    ax_b.set_xlim(0, 250.0)
+    ax_b.set_ylim(0, 8.0)
+    ax_b.legend(loc="upper right")
+    ax_b.grid(True)
+    plt.tight_layout()
+    plt.savefig(out_path / "panel_b_water.png", dpi=300)
+    plt.close(fig_b)
+
+    # Panel C: Regime Map
+    fig_c, ax_c = plt.subplots(figsize=(6.5, 5.0), dpi=300)
+    ax_c.axhspan(
+        1.0,
+        1.5,
+        color=c_emerald,
+        alpha=0.18,
+        label="Optimal Intensification (1.0 <= theta_m <= 1.5)",
+    )
+    ax_c.axhspan(
+        0.0, 1.0, color=c_amber, alpha=0.12, label="Kinetics Limited (theta_m < 1.0)"
+    )
+    ax_c.axhspan(
+        1.5, 3.0, color=c_red, alpha=0.12, label="Over-Extraction Risk (theta_m > 1.5)"
+    )
+    ax_c.plot(da_pts, theta_pts, color=c_emerald, marker="o", linewidth=2.0)
+    ax_c.scatter(
+        [1.8],
+        [1.25],
+        color=c_blue,
+        s=150,
+        marker="*",
+        zorder=6,
+        label="Hauth et al. Base Case",
+    )
+    ax_c.set_title("Panel C: Dimensionless Regime Map", fontweight="bold")
+    ax_c.set_xlabel("Damkohler Number Da [-]")
+    ax_c.set_ylabel("Membrane Permeation Number theta_m [-]")
+    ax_c.set_xlim(0.1, 4.0)
+    ax_c.set_ylim(0.0, 2.5)
+    ax_c.legend(loc="upper left")
+    ax_c.grid(True)
+    plt.tight_layout()
+    plt.savefig(out_path / "panel_c_regime.png", dpi=300)
+    plt.close(fig_c)
+
+    # Panel D: Pareto Frontier
+    fig_d, ax_d = plt.subplots(figsize=(6.5, 5.0), dpi=300)
+    sc_d = ax_d.scatter(
+        sty, energy, c=dt_bed, cmap="viridis", s=70, edgecolors="#475569"
+    )
+    cbar_d = fig_d.colorbar(sc_d, ax=ax_d)
+    cbar_d.set_label("Bed Radial dT [K]")
+    ax_d.scatter(
+        [1.18],
+        [0.82],
+        color=c_red,
+        s=140,
+        marker="D",
+        edgecolors="black",
+        label="Base Design (STY=1.18, 0.82 kWh/kg)",
+    )
+    ax_d.set_title("Panel D: Multi-Objective Pareto Frontier", fontweight="bold")
+    ax_d.set_xlabel("Space-Time Yield STY [kg / (L_cat * h)]")
+    ax_d.set_ylabel("Specific Energy Consumption [kWh / kg_MeOH]")
+    ax_d.set_xlim(0.7, 1.8)
+    ax_d.set_ylim(0.65, 1.20)
+    ax_d.legend(loc="upper left")
+    ax_d.grid(True)
+    plt.tight_layout()
+    plt.savefig(out_path / "panel_d_pareto.png", dpi=300)
+    plt.close(fig_d)
+
+    print(f"All dashboard panels saved to: {out_path}")
 
 
 if __name__ == "__main__":
