@@ -1,6 +1,6 @@
-# Problem Statement: E-Methanol Packed-Bed Membrane Reactor Framework
+# Problem Statement: Membrane Based Reactor for E-Methanol Production
 
-**Project**: Physics-Informed Modeling, Machine Learning Surrogate Acceleration, and Industrial Sizing of a Catalytic Membrane Reactor for Direct $\text{CO}_2$ Hydrogenation to E-Methanol  
+**Project**: Membrane Based Reactor for E-Methanol Production – Physics-Informed Modeling, Machine Learning Surrogate Acceleration, and Industrial Sizing  
 **Target Application**: Power-to-X Green Methanol Production & Industrial Decarbonization  
 **Reference Literature**: *Energy Advances* (2025) – *"Design parameter optimization of a membrane reactor for methanol synthesis using a sophisticated CFD model"*  
 

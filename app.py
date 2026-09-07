@@ -1,5 +1,5 @@
 """
-E-Methanol Membrane Reactor Engineering Dashboard.
+Membrane Based Reactor for E-Methanol Production Engineering Dashboard.
 Physics Engine, Validation, DOE, ML Surrogate, Contours, Full-Length Industrial Design, and Optimization.
 """
 import streamlit as st
@@ -20,7 +20,7 @@ from src.emethanol.visualization import (
 from src.emethanol.optimization import optimize_reactor_physics, is_in_training_domain
 
 # Page Configuration
-st.set_page_config(page_title="E-Methanol Membrane Reactor Engineering System", layout="wide")
+st.set_page_config(page_title="Membrane Based Reactor for E-Methanol Production", layout="wide")
 
 # Minimalist Muted Styling conforming to project rules
 st.markdown(
@@ -61,7 +61,7 @@ def load_surrogate_model():
 surrogate_model = load_surrogate_model()
 
 # Header
-st.title("E-Methanol Membrane Reactor Engineering System")
+st.title("Membrane Based Reactor for E-Methanol Production")
 st.caption("Scientific Reaction Engineering, Multicomponent Transport, Full-Length Industrial Sizing, and Surrogate Acceleration Framework")
 
 # 10 Engineering Tabs

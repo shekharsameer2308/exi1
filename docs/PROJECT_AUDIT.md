@@ -1,4 +1,4 @@
-# Project Audit: E-Methanol Membrane Reactor
+# Project Audit: Membrane Based Reactor for E-Methanol Production
 
 **Date**: 2026-09-04  
 **Repository**: `https://github.com/shekharsameer2308/exi1`  

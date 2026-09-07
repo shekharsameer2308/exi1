@@ -1,4 +1,4 @@
-# E-Methanol Membrane Reactor
+# Membrane Based Reactor for E-Methanol Production
 
 ![Python](https://img.shields.io/badge/python-3.9%2B-blue)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.36-FF4B4B)
@@ -6,7 +6,7 @@
 ![License](https://img.shields.io/badge/License-MIT-gray)
 
 ## Overview
-E-Methanol Membrane Reactors represent a critical frontier in green energy, utilizing captured CO₂ and renewable hydrogen to synthesize clean liquid fuels. Traditional methanol synthesis is severely limited by thermodynamic equilibrium. By introducing a water-selective membrane into the reactor core, we continuously remove the H₂O byproduct, dynamically shifting the chemical equilibrium forward (via Le Chatelier's Principle) to dramatically increase single-pass CO₂ conversion and methanol yield.
+Membrane based reactors for e-methanol production represent a critical frontier in green energy, utilizing captured CO₂ and renewable hydrogen to synthesize clean liquid fuels. Traditional methanol synthesis is severely limited by thermodynamic equilibrium. By introducing a water-selective membrane into the reactor core, we continuously remove the H₂O byproduct, dynamically shifting the chemical equilibrium forward (via Le Chatelier's Principle) to dramatically increase single-pass CO₂ conversion and methanol yield.
 
 Simulating these complex, non-isothermal reaction profiles traditionally requires solving highly stiff ordinary differential equations (ODEs), which is computationally expensive and slow to optimize. This project bridges first-principles chemical engineering with Scientific Machine Learning (SciML) to eliminate that computational bottleneck.
 

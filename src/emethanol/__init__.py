@@ -1,5 +1,5 @@
 """
-E-Methanol Membrane Reactor Package.
+Membrane Based Reactor for E-Methanol Production Package.
 Scientific Reaction Engineering, Membrane Transport, Full-Length Industrial Sizing, and Machine Learning Surrogate Suite.
 """
 from src.emethanol.reactor import (
