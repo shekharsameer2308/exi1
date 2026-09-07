@@ -1,9 +1,24 @@
+#
+# Copyright 2026 Membrane-Reactor-SciML Contributors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 """
 Thermodynamic Package for CO2 Hydrogenation to E-Methanol.
 Includes Peng-Robinson Equation of State, NASA polynomial heat capacities,
 Graaf chemical equilibrium correlations, and real-gas fugacity calculations.
 """
-from typing import Dict, Tuple, List
+
 import numpy as np
 
 # Gas Constant
@@ -15,14 +30,16 @@ SPECIES_IDX = {name: i for i, name in enumerate(SPECIES)}
 N_SPECIES = len(SPECIES)
 
 # Molecular weights [kg / mol]
-MOLAR_MASSES = np.array([
-    0.04401,   # CO2
-    0.002016,  # H2
-    0.03204,   # CH3OH
-    0.018015,  # H2O
-    0.02801,   # CO
-    0.028013,  # N2
-])
+MOLAR_MASSES = np.array(
+    [
+        0.04401,  # CO2
+        0.002016,  # H2
+        0.03204,  # CH3OH
+        0.018015,  # H2O
+        0.02801,  # CO
+        0.028013,  # N2
+    ]
+)
 
 # Critical parameters: [Tc (K), Pc (Pa), omega (acentric factor)]
 CRITICAL_PROPS = {
@@ -36,12 +53,24 @@ CRITICAL_PROPS = {
 
 # NASA 7-coefficient polynomials for Cp / R = a0 + a1*T + a2*T^2 + a3*T^3 + a4*T^4
 NASA_CP_COEFFS = {
-    "CO2": np.array([2.35677352e0, 8.98459677e-3, -7.12356269e-6, 2.45919022e-9, -1.43699548e-13]),
-    "H2": np.array([3.2981240e0, 8.2494417e-4, -8.1430155e-7, -9.4754343e-11, 4.1348722e-13]),
-    "CH3OH": np.array([2.660104e0, 1.638841e-2, -6.643764e-6, -1.189512e-9, 1.344795e-12]),
-    "H2O": np.array([4.19864056e0, -2.03663310e-3, 6.52040211e-6, -5.48797062e-9, 1.77197812e-12]),
-    "CO": np.array([3.2624516e0, 1.5119409e-3, -3.8817556e-6, 5.5819442e-9, -2.4749514e-12]),
-    "N2": np.array([3.53100528e0, -1.23660988e-4, -5.02999433e-7, 2.43530612e-9, -1.40881235e-12]),
+    "CO2": np.array(
+        [2.35677352e0, 8.98459677e-3, -7.12356269e-6, 2.45919022e-9, -1.43699548e-13]
+    ),
+    "H2": np.array(
+        [3.2981240e0, 8.2494417e-4, -8.1430155e-7, -9.4754343e-11, 4.1348722e-13]
+    ),
+    "CH3OH": np.array(
+        [2.660104e0, 1.638841e-2, -6.643764e-6, -1.189512e-9, 1.344795e-12]
+    ),
+    "H2O": np.array(
+        [4.19864056e0, -2.03663310e-3, 6.52040211e-6, -5.48797062e-9, 1.77197812e-12]
+    ),
+    "CO": np.array(
+        [3.2624516e0, 1.5119409e-3, -3.8817556e-6, 5.5819442e-9, -2.4749514e-12]
+    ),
+    "N2": np.array(
+        [3.53100528e0, -1.23660988e-4, -5.02999433e-7, 2.43530612e-9, -1.40881235e-12]
+    ),
 }
 
 
@@ -54,86 +83,89 @@ def get_pure_heat_capacity(species: str, T_K: float) -> float:
 
 def get_mixture_heat_capacity(y: np.ndarray, T_K: float) -> float:
     """Calculates molar heat capacity of gas mixture in J / (mol * K)."""
-    cps = np.array([get_pure_heat_capacity(sp, T_K) for sp in SPECIES[:len(y)]])
+    cps = np.array([get_pure_heat_capacity(sp, T_K) for sp in SPECIES[: len(y)]])
     return float(np.sum(y * cps))
 
 
-def get_reaction_enthalpies(T_K: float) -> Tuple[float, float]:
+def get_reaction_enthalpies(T_K: float) -> tuple[float, float]:
     """
     Returns standard reaction enthalpies at temperature T_K in J / mol.
     dH1: CO2 + 3 H2 <=> CH3OH + H2O
     dH2: CO2 + H2 <=> CO + H2O
     """
     dH1_298 = -49.50e3  # J / mol
-    dH2_298 = 41.20e3   # J / mol
-    
+    dH2_298 = 41.20e3  # J / mol
+
     T_mid = 0.5 * (298.15 + T_K)
     cp_co2 = get_pure_heat_capacity("CO2", T_mid)
     cp_h2 = get_pure_heat_capacity("H2", T_mid)
     cp_meoh = get_pure_heat_capacity("CH3OH", T_mid)
     cp_h2o = get_pure_heat_capacity("H2O", T_mid)
     cp_co = get_pure_heat_capacity("CO", T_mid)
-    
+
     dCp1 = (cp_meoh + cp_h2o) - (cp_co2 + 3.0 * cp_h2)
     dCp2 = (cp_co + cp_h2o) - (cp_co2 + cp_h2)
-    
+
     dT = T_K - 298.15
     return dH1_298 + dCp1 * dT, dH2_298 + dCp2 * dT
 
 
-def get_equilibrium_constants(T_K: float) -> Tuple[float, float]:
+def get_equilibrium_constants(T_K: float) -> tuple[float, float]:
     """
     Graaf thermodynamic equilibrium models:
     log10(Keq1) = 3066.0 / T - 10.592 [bar^-2]
     log10(Keq2) = -2073.0 / T + 2.029 [-]
     """
     log10_Keq1 = 3066.0 / T_K - 10.592
-    Keq1 = 10.0 ** log10_Keq1  # bar^-2
-    
+    Keq1 = 10.0**log10_Keq1  # bar^-2
+
     log10_Keq2 = -2073.0 / T_K + 2.029
-    Keq2 = 10.0 ** log10_Keq2  # dimensionless
-    
+    Keq2 = 10.0**log10_Keq2  # dimensionless
+
     return Keq1, Keq2
 
 
-def peng_robinson_eos(y: np.ndarray, T_K: float, P_Pa: float) -> Tuple[float, float]:
+def peng_robinson_eos(y: np.ndarray, T_K: float, P_Pa: float) -> tuple[float, float]:
     """
     Computes Peng-Robinson Z-factor and mixture density [kg / m^3].
     """
     N = len(y)
     a_pure = np.zeros(N)
     b_pure = np.zeros(N)
-    
+
     for i in range(N):
         sp = SPECIES[i]
         Tc, Pc, omega = CRITICAL_PROPS[sp]
         Tr = T_K / Tc
         m_i = 0.37464 + 1.54226 * omega - 0.26992 * omega**2
-        alpha_i = (1.0 + m_i * (1.0 - np.sqrt(Tr)))**2
-        a_pure[i] = 0.45724 * (R_GAS * Tc)**2 / Pc * alpha_i
+        alpha_i = (1.0 + m_i * (1.0 - np.sqrt(Tr))) ** 2
+        a_pure[i] = 0.45724 * (R_GAS * Tc) ** 2 / Pc * alpha_i
         b_pure[i] = 0.07780 * (R_GAS * Tc) / Pc
-        
+
     a_mix = np.sum(np.outer(y, y) * np.sqrt(np.outer(a_pure, a_pure)))
     b_mix = np.sum(y * b_pure)
-    
-    A = a_mix * P_Pa / (R_GAS * T_K)**2
+
+    A = a_mix * P_Pa / (R_GAS * T_K) ** 2
     B = b_mix * P_Pa / (R_GAS * T_K)
-    
+
     c3 = 1.0
     c2 = -(1.0 - B)
     c1 = A - 3.0 * B**2 - 2.0 * B
     c0 = -(A * B - B**2 - B**3)
-    
+
     roots = np.roots([c3, c2, c1, c0])
     real_roots = roots[np.isreal(roots)].real
     valid_roots = real_roots[real_roots > B]
-    
+
     Z = float(np.max(valid_roots)) if len(valid_roots) > 0 else 1.0
     MW_mix = np.sum(y * MOLAR_MASSES[:N])
     rho_kg_m3 = (P_Pa * MW_mix) / (Z * R_GAS * T_K)
-    
+
     return Z, rho_kg_m3
 
-def peng_robinson_compressibility(y: np.ndarray, T_K: float, P_Pa: float) -> Tuple[float, float]:
+
+def peng_robinson_compressibility(
+    y: np.ndarray, T_K: float, P_Pa: float
+) -> tuple[float, float]:
     """Alias for peng_robinson_eos."""
     return peng_robinson_eos(y, T_K, P_Pa)

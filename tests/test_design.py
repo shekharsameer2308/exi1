@@ -1,8 +1,22 @@
+#
+# Copyright 2026 Membrane-Reactor-SciML Contributors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 """
 Unit tests for full-length industrial reactor design and multi-tubular bundle sizing.
 """
-import pytest
-import numpy as np
+
 from src.emethanol.design import design_full_length_reactor
 
 
@@ -19,7 +33,9 @@ def test_full_length_reactor_design_commercial_scale():
         single_tube_flow=0.040,
     )
 
-    assert design.number_of_tubes > 50, f"Expected multi-tube bundle, got {design.number_of_tubes}"
+    assert (
+        design.number_of_tubes > 50
+    ), f"Expected multi-tube bundle, got {design.number_of_tubes}"
     assert design.actual_production_tpd >= 100.0
     assert design.total_catalyst_mass_tonnes > 1.0
     assert design.total_membrane_area_m2 > 100.0

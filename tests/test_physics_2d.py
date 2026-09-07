@@ -1,22 +1,42 @@
+#
+# Copyright 2026 Membrane-Reactor-SciML Contributors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 """
 Test suite for 2D Heterogeneous Catalytic Membrane Reactor (CMR) Physics & Transport.
 """
-import pytest
 import numpy as np
-from core.thermodynamics import get_reaction_enthalpies, get_equilibrium_constants, peng_robinson_compressibility
-from core.kinetics import calculate_reaction_rates, check_catalyst_preservation
-from core.transport_2d import compute_radial_dispersion, compute_effective_radial_conductivity, update_dynamic_ergun
-from core.reactor_engine import ReactorParameters, ReactorEngine2D
+
+from core.kinetics import check_catalyst_preservation
+from core.reactor_engine import ReactorEngine2D, ReactorParameters
+from core.transport_2d import (
+    update_dynamic_ergun,
+)
 
 
 def test_catalyst_preservation_boundary():
     """Verify that water partial pressure boundary prevents active Cu+ reduction."""
-    is_safe, margin, status = check_catalyst_preservation(0.86, 50.0, min_fraction=0.015)
+    is_safe, margin, status = check_catalyst_preservation(
+        0.86, 50.0, min_fraction=0.015
+    )
     assert is_safe is True
     assert margin > 0.0
     assert status == "PRESERVED"
-    
-    is_safe_viol, margin_viol, status_viol = check_catalyst_preservation(0.60, 50.0, min_fraction=0.015)
+
+    is_safe_viol, margin_viol, status_viol = check_catalyst_preservation(
+        0.60, 50.0, min_fraction=0.015
+    )
     assert is_safe_viol is False
     assert margin_viol < 0.0
     assert "WARNING" in status_viol

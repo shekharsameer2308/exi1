@@ -1,11 +1,32 @@
+#
+# Copyright 2026 Membrane-Reactor-SciML Contributors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 """
 2D Transport Phenomena Module.
 Computes radial dispersion, effective radial thermal conductivity,
 wall heat transfer coefficients, and dynamic Ergun velocity updates.
 """
-from typing import Tuple
+
 import numpy as np
-from core.thermodynamics import R_GAS, SPECIES, MOLAR_MASSES, get_mixture_heat_capacity, peng_robinson_compressibility
+
+from core.thermodynamics import (
+    MOLAR_MASSES,
+    R_GAS,
+    SPECIES,
+    peng_robinson_compressibility,
+)
 
 
 def compute_radial_dispersion(
@@ -58,14 +79,14 @@ def compute_wall_heat_transfer_coefficient(
     """
     Re_p = (rho_g * u_s * d_p) / max(mu_g, 1e-6)
     Pr = (mu_g * Cp_g) / max(k_g, 1e-4)
-    
+
     # Leva / Dixon-Cresswell correlation for packed tube wall heat transfer
-    Nu_w = 0.20 * (Re_p ** 0.8) * (Pr ** 0.33) * (d_p / d_t) ** 0.2
+    Nu_w = 0.20 * (Re_p**0.8) * (Pr**0.33) * (d_p / d_t) ** 0.2
     h_w = Nu_w * k_g / d_p
-    
+
     # Jacket external boiling water coolant side
     h_coolant = 2500.0  # W / (m^2 * K)
-    
+
     # Combined overall U
     U_wall = 1.0 / (1.0 / max(h_w, 50.0) + 1.0 / h_coolant)
     return float(min(U_wall, 450.0))
@@ -77,28 +98,34 @@ def compute_mixture_viscosity(y: np.ndarray, T_K: float) -> float:
     """
     # Pure component viscosity correlations (Sutherland-like / power law)
     # in 1e-6 Pa*s at T_K
-    mu_pure = np.array([
-        1.48e-5 * (T_K / 293.15)**0.75,  # CO2
-        8.80e-6 * (T_K / 293.15)**0.68,  # H2
-        1.75e-5 * (T_K / 293.15)**0.72,  # CO
-        1.20e-5 * (T_K / 293.15)**0.78,  # CH3OH
-        1.25e-5 * (T_K / 293.15)**0.80,  # H2O
-        1.78e-5 * (T_K / 293.15)**0.70,  # N2
-    ])
-    
+    mu_pure = np.array(
+        [
+            1.48e-5 * (T_K / 293.15) ** 0.75,  # CO2
+            8.80e-6 * (T_K / 293.15) ** 0.68,  # H2
+            1.75e-5 * (T_K / 293.15) ** 0.72,  # CO
+            1.20e-5 * (T_K / 293.15) ** 0.78,  # CH3OH
+            1.25e-5 * (T_K / 293.15) ** 0.80,  # H2O
+            1.78e-5 * (T_K / 293.15) ** 0.70,  # N2
+        ]
+    )
+
     N = len(SPECIES)
     phi = np.zeros((N, N))
     for i in range(N):
         for j in range(N):
-            num = (1.0 + np.sqrt(mu_pure[i] / mu_pure[j]) * (MOLAR_MASSES[j] / MOLAR_MASSES[i])**0.25)**2
+            num = (
+                1.0
+                + np.sqrt(mu_pure[i] / mu_pure[j])
+                * (MOLAR_MASSES[j] / MOLAR_MASSES[i]) ** 0.25
+            ) ** 2
             denom = np.sqrt(8.0 * (1.0 + MOLAR_MASSES[i] / MOLAR_MASSES[j]))
             phi[i, j] = num / denom
-            
+
     mu_mix = 0.0
     for i in range(N):
         denom_sum = np.sum(y * phi[i, :])
         mu_mix += (y[i] * mu_pure[i]) / max(denom_sum, 1e-8)
-        
+
     return float(mu_mix)
 
 
@@ -110,24 +137,24 @@ def update_dynamic_ergun(
     A_c: float,
     d_p: float = 0.003,
     eps: float = 0.40,
-) -> Tuple[float, float, float]:
+) -> tuple[float, float, float]:
     """
     Updates superficial velocity u_s [m/s], mixture density rho [kg/m^3],
     and pressure gradient dP/dz [Pa/m] via Ergun momentum balance.
     """
     Z, rho = peng_robinson_compressibility(y_ret, T_K, P_Pa)
-    
+
     # Dynamic superficial velocity
     # u_s = (F_total * Z * R * T) / (P * A_c)
     u_s = (F_ret_total * Z * R_GAS * T_K) / (P_Pa * A_c)
-    
+
     # Dynamic viscosity
     mu = compute_mixture_viscosity(y_ret, T_K)
-    
+
     # Ergun Equation
     # dP/dz = - [ 150 * mu * (1-eps)^2 / (d_p^2 * eps^3) * u_s + 1.75 * rho * (1-eps) / (d_p * eps^3) * u_s^2 ]
-    term_viscous = 150.0 * mu * ((1.0 - eps)**2) / ((d_p**2) * (eps**3)) * u_s
+    term_viscous = 150.0 * mu * ((1.0 - eps) ** 2) / ((d_p**2) * (eps**3)) * u_s
     term_inertial = 1.75 * rho * (1.0 - eps) / (d_p * (eps**3)) * (u_s**2)
     dP_dz = -(term_viscous + term_inertial)
-    
+
     return float(u_s), float(rho), float(dP_dz)

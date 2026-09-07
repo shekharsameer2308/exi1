@@ -1,9 +1,23 @@
+#
+# Copyright 2026 Membrane-Reactor-SciML Contributors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 """
 Regression test suite comparing improved modular engine with baseline behavior.
 """
-import pytest
-import numpy as np
-from src.emethanol.reactor import MembraneReactor1D, ModelConfig, simulate_reactor
+
+from src.emethanol.reactor import MembraneReactor1D, simulate_reactor
 
 
 def test_baseline_compatibility():
@@ -25,8 +39,16 @@ def test_baseline_compatibility():
 
 def test_tr_vs_mr_improvement():
     """Verify that MR achieves lower H2O mole fraction and improved yield over TR."""
-    res_tr = simulate_reactor(temperature=493.15, pressure=50.0, total_flow=0.015, membrane_enabled=False)
-    res_mr = simulate_reactor(temperature=493.15, pressure=50.0, total_flow=0.015, membrane_enabled=True, water_permeance=2e-7)
+    res_tr = simulate_reactor(
+        temperature=493.15, pressure=50.0, total_flow=0.015, membrane_enabled=False
+    )
+    res_mr = simulate_reactor(
+        temperature=493.15,
+        pressure=50.0,
+        total_flow=0.015,
+        membrane_enabled=True,
+        water_permeance=2e-7,
+    )
 
     # In MR, water is selectively removed, shifting equilibrium forward
     assert res_mr.y_H2O[-1] < res_tr.y_H2O[-1]
