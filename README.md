@@ -13,35 +13,41 @@ A scientific computing and machine learning (SciML) framework for simulating, de
 
 The framework is divided into two coupled domains: the physical 2D axisymmetric transport environment and the hybrid scientific machine learning (SciML) solver.
 
-### A. 2D Physical Reactor Domain (Intensification Mechanism)
+### A. Advanced Multi-Stage Intensification Mechanism (ST-CMR & Staged Dehydration)
+
+To eliminate radial concentration polarization and prevent catalyst over-reduction ($\alpha\text{-CuZn}$ brass deactivation at $p_{\text{H}_2\text{O}} < 1.5\text{ bar}$), the reactor implements a **staged multi-tubular shell-and-tube membrane architecture**:
+1. **Kinetic Ignition Zone ($z/L: 0.0 - 0.25$):** Solid non-permeable wall allows steam partial pressure to safely build above $4\text{ bar}$, protecting active $\text{Cu}^+$ sites.
+2. **Selective Dehydration Zone ($z/L: 0.25 - 1.0$):** High-flux NaA zeolite membrane tubes ($O_M/V_r = 133.3\text{ m}^{-1}$) selectively extract steam via coupled Maxwell-Stefan driving forces.
+3. **Isothermal Boiling Shell:** Pressurized boiling water shell ($250\text{ °C}$) absorbs the $-49.5\text{ kJ/mol}$ reaction heat directly.
 
 ```mermaid
 flowchart LR
     subgraph Retentate["High-Pressure Retentate Zone (P_ret = 100 bar, T = 250 °C)"]
         direction TB
-        F1["Feed (CO2 + 3H2)<br>GHSV = 500 h⁻¹"] --> Bed["Catalytic Packed Bed (Cu/ZnO/Al2O3)<br>r_MeOH and r_RWGS"]
-        Bed --> RetOut["High-Yield Methanol<br>CO2 Conversion > 52%"]
+        F1["Syngas Feed (CO2 + 3H2)<br>GHSV = 500 h⁻¹"] --> Z1["Stage 1: Kinetic Ignition (0 <= z/L < 0.25)<br>Solid Wall • Rapid p_H2O Ignition > 4.0 bar"]
+        Z1 --> Z2["Stage 2: Selective Dehydration (0.25 <= z/L <= 1.0)<br>Annular Bed (OM/Vr = 133.3 m⁻¹)"]
+        Z2 --> RetOut["High-Yield Methanol Retentate<br>Single-Pass CO2 Conv > 52%"]
     end
 
     subgraph Membrane["NaA Zeolite Membrane Boundary (r = r_m)"]
         direction TB
-        M1["Coupled Maxwell-Stefan Matrix<br>J = -ρ_m [q_sat] [B]⁻¹ [Γ] ∇θ"]
+        M1["Coupled Maxwell-Stefan Diffusion<br>J = -ρ_m [q_sat] [B]⁻¹ [Γ] ∇θ<br>Zero Methanol Loss at T = 250 °C"]
     end
 
     subgraph Permeate["Low-Pressure Sweep Zone (P_perm = 1 bar)"]
         direction TB
-        S1["Sweep Gas In<br>(S/F = 10)"] --> Sweep["Counter-Current Extraction<br>Δp = 99 bar driving force"]
+        S1["Sweep Gas In (S/F = 10)"] --> Sweep["Counter-Current Extraction<br>Δp = 99 bar driving force"]
         Sweep --> S2["Water-Rich Permeate<br>H2O Extraction > 88%"]
     end
 
-    Bed ===>|"Concentration Polarization & Radial Dispersion"| Membrane
-    Membrane ===>|"Selective H2O Transport (J_H2O)"| Sweep
+    Z2 ===>|"Selective In-Situ Extraction"| Membrane
+    Membrane ===>|"Steam Permeation (J_H2O)"| Sweep
     
     classDef highPressure fill:#fcf3cf,stroke:#f39c12,stroke-width:2px;
     classDef lowPressure fill:#ebf5fb,stroke:#2980b9,stroke-width:2px;
     classDef memb fill:#e8f8f5,stroke:#1abc9c,stroke-width:3px,stroke-dasharray: 5 5;
     
-    class Retentate,F1,Bed,RetOut highPressure;
+    class Retentate,F1,Z1,Z2,RetOut highPressure;
     class Permeate,S1,Sweep,S2 lowPressure;
     class Membrane,M1 memb;
 ```
