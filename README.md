@@ -22,31 +22,31 @@ To eliminate radial concentration polarization and prevent catalyst over-reducti
 
 ```mermaid
 flowchart LR
-    subgraph Retentate["High-Pressure Retentate Zone (P_ret = 100 bar, T = 250 °C)"]
+    subgraph Retentate["High-Pressure Retentate (P = 100 bar, T = 250 °C)"]
         direction TB
-        F1["Syngas Feed (CO2 + 3H2)<br>GHSV = 500 h⁻¹"] --> Z1["Stage 1: Kinetic Ignition (0 <= z/L < 0.25)<br>Solid Wall • Rapid p_H2O Ignition > 4.0 bar"]
-        Z1 --> Z2["Stage 2: Selective Dehydration (0.25 <= z/L <= 1.0)<br>Annular Bed (OM/Vr = 133.3 m⁻¹)"]
-        Z2 --> RetOut["High-Yield Methanol Retentate<br>Single-Pass CO2 Conv > 52%"]
+        F1["Syngas Feed: CO₂ + 3H₂<br>GHSV = 500 h⁻¹"] --> Z1["Stage 1: Kinetic Ignition (0 ≤ z/L < 0.25)<br>Solid Wall • Safe pH₂O Ignition > 4.0 bar"]
+        Z1 --> Z2["Stage 2: Selective Dehydration (0.25 ≤ z/L ≤ 1.0)<br>Annular Catalyst Bed (OM/Vr = 133.3 m⁻¹)"]
+        Z2 --> RetOut["High-Yield Methanol Retentate<br>Single-Pass CO₂ Conversion > 52%"]
     end
 
-    subgraph Membrane["NaA Zeolite Membrane Boundary (r = r_m)"]
+    subgraph Membrane["NaA Zeolite Membrane Boundary (r = rm)"]
         direction TB
-        M1["Coupled Maxwell-Stefan Diffusion<br>J = -ρ_m [q_sat] [B]⁻¹ [Γ] ∇θ<br>Zero Methanol Loss at T = 250 °C"]
+        M1["Coupled Maxwell-Stefan Matrix<br>J = -ρm · [q_sat] · [B]⁻¹ · [Γ] · dθ/dr<br>Zero Methanol Loss at T = 250 °C"]
     end
 
-    subgraph Permeate["Low-Pressure Sweep Zone (P_perm = 1 bar)"]
+    subgraph Permeate["Low-Pressure Sweep Zone (P = 1 bar)"]
         direction TB
-        S1["Sweep Gas In (S/F = 10)"] --> Sweep["Counter-Current Extraction<br>Δp = 99 bar driving force"]
-        Sweep --> S2["Water-Rich Permeate<br>H2O Extraction > 88%"]
+        S1["Sweep Gas In (S/F = 10)"] --> Sweep["Counter-Current Extraction<br>Δp = 99 bar Driving Force"]
+        Sweep --> S2["Water-Rich Permeate<br>H₂O Extraction > 88%"]
     end
 
-    Z2 ===>|"Selective In-Situ Extraction"| Membrane
-    Membrane ===>|"Steam Permeation (J_H2O)"| Sweep
-    
-    classDef highPressure fill:#fcf3cf,stroke:#f39c12,stroke-width:2px;
+    Z2 ===>|"Selective Steam Extraction"| Membrane
+    Membrane ===>|"Permeate Flux: JH₂O"| Sweep
+
+    classDef highPressure fill:#fef9e7,stroke:#d4ac0d,stroke-width:2px;
     classDef lowPressure fill:#ebf5fb,stroke:#2980b9,stroke-width:2px;
-    classDef memb fill:#e8f8f5,stroke:#1abc9c,stroke-width:3px,stroke-dasharray: 5 5;
-    
+    classDef memb fill:#e8f8f5,stroke:#16a085,stroke-width:2.5px,stroke-dasharray: 5 5;
+
     class Retentate,F1,Z1,Z2,RetOut highPressure;
     class Permeate,S1,Sweep,S2 lowPressure;
     class Membrane,M1 memb;
@@ -55,26 +55,26 @@ flowchart LR
 ### B. SciML Software Execution Pipeline
 
 ```mermaid
-graph TD
-    subgraph "Phase 1: Deterministic CFD Validation"
-        A1["2D BVP Solver<br>(scipy.integrate.solve_ivp)"] --> A2["Stiff Maxwell-Stefan UDF<br>Explicit Matrix Inversion"]
-        A2 --> A3[("High-Fidelity Training Grid")]
+flowchart TD
+    subgraph P1["Phase 1: Deterministic CFD Validation"]
+        A1["2D BVP Solver<br>(scipy.integrate.solve_ivp)"] --> A2["Stiff Maxwell-Stefan UDF<br>Explicit Matrix Inversion: [B]⁻¹ · [Γ]"]
+        A2 --> A3[("High-Fidelity Training Grid<br>Spatial Profiles: C_i(r, z), T(r, z)")]
     end
 
-    subgraph "Phase 2: Grey-Box Neural ODE (PyTorch)"
-        B1["Known Physics Backbone<br>dC/dz = Convection + Kinetics"] --> B3{"torchdiffeq<br>Adjoint Solver"}
-        B2["DeepONet Surrogate NN_phi<br>Bypasses Matrix Inversion"] -.->|"Learned Flux J_i"| B3
-        A3 -.->|"MSE Loss + Conservation Penalty"| B3
+    subgraph P2["Phase 2: Grey-Box Neural ODE (PyTorch)"]
+        B1["Known Physics Backbone<br>dC/dz = Convection + Kinetics"] --> B3{"torchdiffeq<br>Adjoint ODE Solver"}
+        B2["DeepONet Surrogate NN_φ(p, T, Δp)<br>Bypasses [B]⁻¹ Inversion"] -.->|"Learned Flux: J_pred"| B3
+        A3 -.->|"Physics + MSE Loss Function"| B3
     end
 
-    subgraph "Phase 3: Multi-Objective Optimization"
-        C1["BoTorch / GPyTorch<br>Gaussian Process"] --> C2{"qEI Acquisition<br>Target: Yield vs. Duty"}
-        C2 -->|"Geometric Tuning (OM/Vr)"| B1
+    subgraph P3["Phase 3: Multi-Objective Optimization"]
+        C1["BoTorch / GPyTorch<br>Gaussian Process Surrogates"] --> C2{"qEI Acquisition Function<br>Multi-Objective Tradeoff"}
+        C2 -->|"Explore: GHSV, OM/Vr, P"| B1
     end
-    
-    style A2 fill:#e74c3c,color:#fff,stroke:#c0392b
-    style B2 fill:#2ecc71,color:#fff,stroke:#27ae60
-    style C1 fill:#9b59b6,color:#fff,stroke:#8e44ad
+
+    style A2 fill:#fadbd8,stroke:#c0392b,stroke-width:2px;
+    style B2 fill:#d5f5e3,stroke:#27ae60,stroke-width:2px;
+    style C1 fill:#ebdef0,stroke:#8e44ad,stroke-width:2px;
 ```
 
 ---
