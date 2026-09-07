@@ -19,7 +19,7 @@ The framework is divided into two coupled domains: the physical 2D axisymmetric 
 flowchart LR
     subgraph Retentate["High-Pressure Retentate Zone (P_ret = 100 bar, T = 250 °C)"]
         direction TB
-        F1["Feed (CO2 + 3H2)<br>GHSV = 500 h⁻¹"] --> Bed["Catalytic Packed Bed (Cu/ZnO/Al2O3)<br>r_MeOH & r_RWGS (Mignard & Pritchard)"]
+        F1["Feed (CO2 + 3H2)<br>GHSV = 500 h⁻¹"] --> Bed["Catalytic Packed Bed (Cu/ZnO/Al2O3)<br>r_MeOH and r_RWGS"]
         Bed --> RetOut["High-Yield Methanol<br>CO2 Conversion > 52%"]
     end
 
@@ -34,8 +34,8 @@ flowchart LR
         Sweep --> S2["Water-Rich Permeate<br>H2O Extraction > 88%"]
     end
 
-    Bed ===>|Concentration Polarization & Radial Dispersion| Membrane
-    Membrane ===>|Selective H2O Transport (J_H2O)| Sweep
+    Bed ===>|"Concentration Polarization & Radial Dispersion"| Membrane
+    Membrane ===>|"Selective H2O Transport (J_H2O)"| Sweep
     
     classDef highPressure fill:#fcf3cf,stroke:#f39c12,stroke-width:2px;
     classDef lowPressure fill:#ebf5fb,stroke:#2980b9,stroke-width:2px;
@@ -57,13 +57,13 @@ graph TD
 
     subgraph "Phase 2: Grey-Box Neural ODE (PyTorch)"
         B1["Known Physics Backbone<br>dC/dz = Convection + Kinetics"] --> B3{"torchdiffeq<br>Adjoint Solver"}
-        B2["DeepONet Surrogate NN_φ<br>Bypasses [B]⁻¹ Matrix Inversion"] -.->|Learned Flux J_i| B3
-        A3 -.->|MSE Loss + Conservation Penalty| B3
+        B2["DeepONet Surrogate NN_phi<br>Bypasses Matrix Inversion"] -.->|"Learned Flux J_i"| B3
+        A3 -.->|"MSE Loss + Conservation Penalty"| B3
     end
 
     subgraph "Phase 3: Multi-Objective Optimization"
         C1["BoTorch / GPyTorch<br>Gaussian Process"] --> C2{"qEI Acquisition<br>Target: Yield vs. Duty"}
-        C2 -->|Geometric Tuning (OM/Vr)| B1
+        C2 -->|"Geometric Tuning (OM/Vr)"| B1
     end
     
     style A2 fill:#e74c3c,color:#fff,stroke:#c0392b
