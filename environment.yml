@@ -1,0 +1,20 @@
+name: membrane-sciml
+channels:
+  - pytorch
+  - conda-forge
+  - defaults
+dependencies:
+  - python>=3.10
+  - pytorch>=2.0.0
+  - scipy>=1.10.0
+  - numpy>=1.23.0
+  - pandas>=2.0.0
+  - matplotlib>=3.7.0
+  - scikit-learn>=1.3.0
+  - pyyaml>=6.0
+  - pytest>=7.4.0
+  - pip
+  - pip:
+      - torchdiffeq>=0.2.3
+      - botorch>=0.9.0
+      - gpytorch>=1.10

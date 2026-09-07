@@ -1,0 +1,17 @@
+# Intensified Reactor Geometry Configuration (Hauth et al. 2025)
+
+geometry:
+  case_name: "Intensified Annular Membrane Reactor (OM/Vr = 133.3 m^-1)"
+  length_m: 0.25 # 250 mm
+  d_wall_m: 0.020 # 20 mm tube outer wall
+  d_membrane_m: 0.010 # 10 mm membrane inner core
+  annular_gap_m: 0.005 # 5 mm radial diffusion path
+  specific_membrane_area_m_inv: 133.33 # OM / Vr = pi*dm / Ac
+
+operating_conditions:
+  T_in_K: 523.15 # 250 °C
+  P_retentate_Pa: 100.0e5 # 100 bar
+  P_permeate_Pa: 1.0e5 # 1 bar (delta_P = 99 bar)
+  GHSV_h: 500.0 # h^-1 STP
+  feed_H2_CO2_ratio: 3.0
+  sweep_to_feed_ratio: 10.0

@@ -1,0 +1,23 @@
+# Maxwell-Stefan Multicomponent Membrane Transport (Hauth et al. 2025 Table 3)
+# Material: NaA Zeolite (LTA) / Pure-silica Chabazite
+
+species:
+  indices:
+    0: "H2O"
+    1: "CH3OH"
+    2: "H2"
+
+adsorption:
+  b0: [1.64e-12, 5.64e-15, 3.22e-9] # Pa^-1
+  dH_ads: [-40000.0, -65000.0, -5900.0] # J / mol
+  q_sat: [15.0, 6.2, 7.08e-4] # mol / kg_memb
+
+diffusivity:
+  D0: [7.08e-4, 1.03e-7, 1.70e-8] # m^2 / s
+  E_A: [36000.0, 17000.0, 1900.0] # J / mol
+  D_H2O_CH3OH: 3.0e-9 # m^2 / s (coupled binary exchange diffusivity)
+
+membrane_layer:
+  thickness_m: 0.0015 # 1.5 mm
+  density_kg_m3: 1900.0 # kg_memb / m^3
+  T_ref_K: 523.15 # 250 °C

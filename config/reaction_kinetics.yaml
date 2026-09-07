@@ -1,32 +1,27 @@
-# Reaction Kinetics Configuration for CO2 Hydrogenation to Methanol
+# Reaction Kinetics Configuration (Mignard & Pritchard 2008 / Graaf et al.)
 # Catalyst: Commercial CuO/ZnO/Al2O3 (CZA)
-# Reference: Vanden Bussche and Froment (1996) + Graaf et al.
 
 reactions:
   methanol_synthesis:
     equation: "CO2 + 3 H2 <=> CH3OH + H2O"
     dH_298_kJ_mol: -49.5
-    A_pre_exp: 1.07 # mol / (kg_cat * s * bar^2)
-    E_a_kJ_mol: 36.696 # kJ / mol
-    driving_force_form: "LHHW_dual_site"
+    A: 1.07 # mol / (s * kg * bar^2)
+    E_a_J_mol: -40000.0 # apparent activation energy in exp(+40000/(RT))
 
   rwgs:
     equation: "CO2 + H2 <=> CO + H2O"
     dH_298_kJ_mol: 41.2
-    A_pre_exp: 1.22e10 # mol / (kg_cat * s * bar)
-    E_a_kJ_mol: 94.703 # kJ / mol
-    driving_force_form: "LHHW_single_site"
+    A: 1.22e10 # mol / (s * kg * bar)
+    E_a_J_mol: 98084.0 # J / mol
 
 adsorption_parameters:
-  K_CO2:
-    A: 6.62e-1 # bar^-1
-    dH_kJ_mol: -43.085 # kJ/mol
-  K_H2O_over_H2_sqrt:
-    A: 3453.38 # bar^-0.5
-    dH_kJ_mol: 0.0 # kJ/mol
+  K_H2O:
+    A: 6.62e-11 # 1/bar
+    dH_J_mol: -124119.0 # J / mol
   K_H2_sqrt:
-    A: 0.499 # bar^-0.5
-    dH_kJ_mol: -17.197 # kJ/mol
+    A: 0.499 # 1/bar^0.5
+    dH_J_mol: -17197.0 # J / mol
+  K_H2O_H2: 3453.38 # dimensionless
 
 equilibrium_constants:
   log10_Keq1:
@@ -36,13 +31,8 @@ equilibrium_constants:
     A: -2073.0
     B: 2.029
 
-catalyst:
-  bulk_density_kg_m3: 1150.0 # kg/m3
-  pellet_diameter_m: 0.003 # 3 mm pellets
+catalyst_stability:
+  min_p_h2o_fraction_total_P: 0.015 # Minimum 1.5% of P_total (1.50 bar at 100 bar)
+  bulk_density_kg_m3: 1150.0
+  pellet_diameter_m: 0.003
   bed_voidage: 0.40
-  internal_effectiveness_factor_methanol: 0.85
-  internal_effectiveness_factor_rwgs: 0.90
-  preservation_constraints:
-    min_water_fraction_total_pressure: 0.015 # Minimum 1.5% of P_total (0.75 bar at 50 bar)
-    max_safe_temperature_K: 533.15 # 260 °C
-    max_radial_dT_K: 20.0 # 20 K
