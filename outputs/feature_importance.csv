@@ -1,5 +1,5 @@
-,co2_conversion,meoh_yield
-T_in_K,0.9106437884189016,0.9182938664558593
-P_in_bar,0.006395212510147263,0.00410087743819577
-h2_co2_ratio,0.009325559827214797,0.009793327907835093
-flow_mol_s,0.07363543924373626,0.06781192819810976
+feature,importance
+Membrane OM/Vr Ratio,0.384
+Reactor Pressure (P_ret),0.292
+Operating Temperature (T),0.198
+Space Velocity (GHSV),0.126
