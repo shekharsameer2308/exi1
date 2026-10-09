@@ -46,12 +46,12 @@ The system is modeled as a set of stiff ODEs solved via SciPy's `solve_ivp` util
 ### 8.1 Module A (CO2 to Methanol)
 | Case | X_TR (%) | X_MR (%) | Gain (pp) | Water Removal (%) |
 |------|----------|----------|-----------|-------------------|
-| Base Case | 24.8 | 25.0 | +0.2 | 2.0 |
-| GHSV 500 | 32.6 | 34.6 | +2.0 | 17.3 |
+| Base Case | 30.6 | 30.8 | +0.2 | 2.1 |
+| GHSV 500 | 33.5 | 35.8 | +2.3 | 18.5 |
 | High Area | 30.6 | 31.6 | +1.0 | 9.4 |
-| Fast Sweep | 24.8 | 25.0 | +0.2 | 2.1 |
+| Fast Sweep | 30.6 | 30.8 | +0.2 | 2.1 |
 | Best Case (Fig 12 Discrepancy) | 33.5 | 44.5 | +11.0 | 60.7 |
-| Best Case (Text Discrepancy) | 32.6 | 34.8 | +2.2 | 18.8 |
+| Best Case (Text Discrepancy) | 33.5 | 36.0 | +2.5 | 20.1 |
 | Best Case + dP 99 bar | 33.5 | 45.1 | +11.6 | 62.5 |
 
 
@@ -64,7 +64,7 @@ The system is modeled as a set of stiff ODEs solved via SciPy's `solve_ivp` util
 
 ## 9. DISCUSSION
 ### Intensification Levers
-The **Base Case** barely benefits from the membrane (water removal ~2.0%) because the permeation area to reactor volume ratio ($O_M/V_r$) is too low. The reactor is *permeation-limited*.
+The **Base Case** barely benefits from the membrane (water removal ~2.1%) because the permeation area to reactor volume ratio ($O_M/V_r$) is too low. The reactor is *permeation-limited*.
 Increasing $O_M/V_r$ to 133.33 combined with a lower space velocity (GHSV = 500) allows the membrane to strip away 60.7% of the water, forcing the reaction massively past equilibrium. Applying a 99 bar trans-membrane pressure difference further accelerates Maxwell-Stefan transport, achieving extreme conversions.
 
 ### System Level Trade-offs
