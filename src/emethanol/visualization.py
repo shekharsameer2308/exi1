@@ -134,59 +134,77 @@ def generate_reactor_contour(
 
 def plot_reactor_geometry(save_path: Optional[str] = None) -> plt.Figure:
     """
-    Renders an engineering longitudinal cross-section schematic of the tube-in-tube membrane reactor.
+    Renders a detailed engineering longitudinal cross-section schematic of the
+    intensified multi-stage catalytic membrane reactor (ST-CMR).
     """
     setup_matplotlib_style()
-    fig, ax = plt.subplots(figsize=(10, 4.5), dpi=300)
+    fig, ax = plt.subplots(figsize=(11.5, 5.0), dpi=300)
     
-    # Outer reactor tube (shell)
-    ax.fill_between([0, 10], [3, 3], [4, 4], color="#f1f5f9", edgecolor="#475569", linewidth=1.5, label="Sweep Channel (Shell)")
-    ax.fill_between([0, 10], [-4, -4], [-3, -3], color="#f1f5f9", edgecolor="#475569", linewidth=1.5)
+    # Outer Boiling Water Cooling Shell / Jacket
+    ax.fill_between([0, 10], [3.2, 3.2], [4.2, 4.2], color="#f1f5f9", edgecolor="#475569", linewidth=1.5, label="Isothermal Boiling Shell (250 °C)")
+    ax.fill_between([0, 10], [-4.2, -4.2], [-3.2, -3.2], color="#f1f5f9", edgecolor="#475569", linewidth=1.5)
     
-    # Selective Membrane layer (NaA Zeolite on Ceramic Support)
-    ax.fill_between([1, 9], [2.2, 2.2], [2.5, 2.5], color="#fde047", edgecolor="#ca8a04", hatch="//", label="NaA Zeolite Membrane")
-    ax.fill_between([1, 9], [-2.5, -2.5], [-2.2, -2.2], color="#fde047", edgecolor="#ca8a04", hatch="//")
-    
-    # Inner Reaction Zone (Packed with CZA catalyst)
-    ax.fill_between([0, 10], [-2.2, -2.2], [2.2, 2.2], color="#dbeafe", edgecolor="#2563eb", alpha=0.6, label="Reaction Zone (CZA Packed Bed)")
+    # Sweep gas channels
+    ax.fill_between([2.5, 9.8], [2.2, 2.2], [3.2, 3.2], color="#e0f2fe", edgecolor="#38bdf8", alpha=0.5, label="Permeate Sweep Channel (P_sweep = 1 bar)")
+    ax.fill_between([2.5, 9.8], [-3.2, -3.2], [-2.2, -2.2], color="#e0f2fe", edgecolor="#38bdf8", alpha=0.5)
 
-    # Flow arrows
-    # Synthesis Gas Feed (Left to Right)
-    ax.annotate("Feed Gas (CO2 + H2) ->\nT_in = 200-250 C, P = 30-80 bar", xy=(0.2, 0), xytext=(-3.5, 0),
-                arrowprops=dict(arrowstyle="->", color="#1e293b", lw=2),
-                fontsize=10, fontweight="bold", va="center", color="#1e293b")
+    # Stage 1: Solid Non-Permeable Wall (Ignition Zone 0 <= z/L < 0.25)
+    ax.fill_between([0.2, 2.5], [2.2, 2.2], [2.5, 2.5], color="#94a3b8", edgecolor="#475569", linewidth=1.5, label="Stage 1: Solid Wall (Ignition Zone, z/L < 0.25)")
+    ax.fill_between([0.2, 2.5], [-2.5, -2.5], [-2.2, -2.2], color="#94a3b8", edgecolor="#475569", linewidth=1.5)
+
+    # Stage 2: Selective NaA Zeolite Membrane (Dehydration Zone 0.25 <= z/L <= 1.0)
+    ax.fill_between([2.5, 9.8], [2.2, 2.2], [2.5, 2.5], color="#fde047", edgecolor="#ca8a04", hatch="//", label="Stage 2: NaA Zeolite Membrane (OM/Vr = 133.3 m^-1)")
+    ax.fill_between([2.5, 9.8], [-2.5, -2.5], [-2.2, -2.2], color="#fde047", edgecolor="#ca8a04", hatch="//")
     
-    # Products Outlet
-    ax.annotate("-> Products (CH3OH + CO + unreacted)\nTo separator / condenser", xy=(9.8, 0), xytext=(10.3, 0),
-                arrowprops=dict(arrowstyle="<-", color="#10b981", lw=2),
-                fontsize=10, fontweight="bold", va="center", color="#10b981")
+    # Inner Reaction Zone (Annular Bed Packed with CZA Catalyst)
+    ax.fill_between([0.2, 9.8], [-2.2, -2.2], [2.2, 2.2], color="#dbeafe", edgecolor="#2563eb", alpha=0.5, label="Annular Bed (CuO/ZnO/Al2O3 Pellets, rho_b = 1150 kg/m^3)")
+
+    # Flow arrows: Feed Syngas (Left to Right)
+    ax.annotate("Feed Syngas (CO2 + 4.5 H2)\nT_in = 241 °C, P = 62.6 bar", xy=(0.3, 0), xytext=(-3.6, 0),
+                arrowprops=dict(arrowstyle="->", color="#0f172a", lw=2.2),
+                fontsize=9.5, fontweight="bold", va="center", color="#0f172a")
+    
+    # Products Outlet (Retentate)
+    ax.annotate("High-Yield Retentate\n(CH3OH Yield = 71.4%)\nCO2 Conv = 77.5%", xy=(9.7, 0), xytext=(10.3, 0),
+                arrowprops=dict(arrowstyle="<-", color="#059669", lw=2.2),
+                fontsize=9.5, fontweight="bold", va="center", color="#059669")
 
     # Sweep Gas (Counter-Current: Right to Left)
-    ax.annotate("<- Sweep Gas (N2)", xy=(8.5, 3.5), xytext=(10.3, 3.5),
-                arrowprops=dict(arrowstyle="->", color="#64748b", lw=1.8),
-                fontsize=9, fontweight="bold", va="center", color="#475569")
-    ax.annotate("Sweep + Permeated H2O <-", xy=(1.5, 3.5), xytext=(-3.5, 3.5),
-                arrowprops=dict(arrowstyle="<-", color="#ef4444", lw=1.8),
-                fontsize=9, fontweight="bold", va="center", color="#ef4444")
+    ax.annotate("Sweep In (N2, 1 bar)\nS/F = 10", xy=(9.5, 2.7), xytext=(10.3, 2.7),
+                arrowprops=dict(arrowstyle="->", color="#0284c7", lw=1.8),
+                fontsize=8.5, fontweight="bold", va="center", color="#0284c7")
+    ax.annotate("Permeate Out\n(H2O Removal = 98.1%)", xy=(2.7, 2.7), xytext=(-3.6, 2.7),
+                arrowprops=dict(arrowstyle="<-", color="#dc2626", lw=1.8),
+                fontsize=8.5, fontweight="bold", va="center", color="#dc2626")
 
-    # Membrane Permeation arrows (H2O escaping radially)
-    for x in np.linspace(2.5, 7.5, 5):
-        ax.annotate("", xy=(x, 2.9), xytext=(x, 1.8),
-                    arrowprops=dict(arrowstyle="->", color="#ef4444", lw=1.8))
-        ax.annotate("", xy=(x, -2.9), xytext=(x, -1.8),
-                    arrowprops=dict(arrowstyle="->", color="#ef4444", lw=1.8))
+    # Radial Steam Extraction Arrows
+    for x in np.linspace(3.5, 9.0, 5):
+        ax.annotate("", xy=(x, 2.8), xytext=(x, 1.6),
+                    arrowprops=dict(arrowstyle="->", color="#dc2626", lw=1.6))
+        ax.annotate("", xy=(x, -2.8), xytext=(x, -1.6),
+                    arrowprops=dict(arrowstyle="->", color="#dc2626", lw=1.6))
     
-    ax.text(5.0, 1.2, "CO2 + 3H2 <=> CH3OH + H2O (Exothermic)\nCO2 + H2 <=> CO + H2O (RWGS)",
-            ha="center", va="center", fontsize=9, fontweight="bold", color="#1e3a8a",
+    # Reactor Reaction & Safety annotations
+    ax.text(1.35, 0.0, "Kinetic Ignition\np_H2O > 4.0 bar\n(Protects Cu+)",
+            ha="center", va="center", fontsize=8.0, fontweight="bold", color="#334155",
+            bbox=dict(boxstyle="round,pad=0.25", fc="#ffffff", ec="#94a3b8", lw=1))
+
+    ax.text(6.15, 0.5, "CO2 + 3H2 <=> CH3OH + H2O (dH = -49.5 kJ/mol)\nCO2 + H2 <=> CO + H2O (RWGS)",
+            ha="center", va="center", fontsize=8.5, fontweight="bold", color="#1e3a8a",
             bbox=dict(boxstyle="round,pad=0.3", fc="#ffffff", ec="#93c5fd", lw=1))
 
-    ax.text(5.0, 2.7, "Selective H2O Permeation (J_H2O)", ha="center", va="center", fontsize=8, color="#ef4444", fontweight="bold")
+    ax.text(6.15, -0.7, "Equilibrium Shift: Delta p = 61.6 bar Driving Force | Exit p_H2O >= 1.50 bar",
+            ha="center", va="center", fontsize=8.0, fontweight="bold", color="#047857",
+            bbox=dict(boxstyle="round,pad=0.25", fc="#ffffff", ec="#a7f3d0", lw=1))
 
-    ax.set_xlim(-4.0, 14.0)
+    ax.text(6.15, 3.7, "Pressurized Boiling Water Shell: Isothermal Exothermic Heat Sinking (T_shell = 250 °C)",
+            ha="center", va="center", fontsize=8.0, fontweight="bold", color="#475569")
+
+    ax.set_xlim(-4.0, 14.2)
     ax.set_ylim(-5.0, 5.0)
     ax.axis("off")
-    ax.set_title("Reduced-Order Membrane Reactor Geometry (Tube-in-Tube Counter-Current)", fontsize=12, fontweight="bold", pad=15, color="#1e293b")
-    ax.legend(loc="lower center", bbox_to_anchor=(0.5, -0.15), ncol=3, frameon=False)
+    ax.set_title("Intensified Catalytic Membrane Reactor (ST-CMR) Architecture & Boundary Conditions", fontsize=11.5, fontweight="bold", pad=12, color="#0f172a")
+    ax.legend(loc="lower center", bbox_to_anchor=(0.5, -0.16), ncol=3, frameon=False, fontsize=8)
     plt.tight_layout()
 
     if save_path:
