@@ -1,13 +1,9 @@
-# Membrane Reactor Optimization Results
+# Membrane Reactor Full Analytical Results
 
-This document presents the detailed execution results of the 1D steady-state co-current model across both reactor modules.
+This document presents the detailed execution results of the 1D steady-state co-current model across both reactor modules, followed by a comprehensive data-driven contour and surrogate model analysis.
 
-## Module B (Ammonia Decomposition - Catalyst in Lumen)
-As highlighted by Sitar et al. (2022), the decomposition of ammonia is highly endothermic and limited by equilibrium. The architecture utilizes a **Pd membrane on a Ru/YSZ support**, with the **catalyst packed bed inside the lumen region**. 
-
-- **Feed:** Pure NH₃ enters the central lumen.
-- **Permeate:** Hydrogen selectively permeates outward through the Pd membrane into the sweep/shell side.
-- **Retentate:** N₂ and residual unreacted NH₃ exit the lumen.
+## 1. Module B (Ammonia Decomposition)
+**Architecture:** Catalyst packed inside the **lumen**, Pd membrane wrapper, H₂ permeating outward.
 
 ### Performance Data
 | Operating Case | TR Conversion (%) | MR Conversion (%) | Absolute Gain (pp) | H₂ Recovery Factor (HRF %) |
@@ -22,8 +18,8 @@ As highlighted by Sitar et al. (2022), the decomposition of ammonia is highly en
 
 ---
 
-## Module A (CO₂ Hydrogenation - Catalyst in Annulus)
-CO₂ hydrogenation to e-methanol operates in a tube-in-tube configuration with the **catalyst in the annulus** and a **Zeolite NaA water-selective membrane**.
+## 2. Module A (CO₂ Hydrogenation)
+**Architecture:** Catalyst packed in the **annulus**, Zeolite NaA membrane in the center, H₂O permeating inward.
 
 ### Performance Data
 | Operating Case | TR Conversion (%) | MR Conversion (%) | Absolute Gain (pp) | Water Removal (%) |
@@ -38,5 +34,42 @@ CO₂ hydrogenation to e-methanol operates in a tube-in-tube configuration with 
 
 ---
 
-### Mass Balance Integrity
-The co-current numerical IVP formulation enforces strict mass conservation. Across all simulated nodes, the element balance closure (C, H, O, N) remains strictly below 0.1% error (observed Base Case error: `{{ "%0.6f"|format(results_a['Base Case']['C_error']) }}%`).
+## 3. Detailed Process Profiles (Original Reactor Model)
+The following profiles detail the internal reaction-diffusion behavior across the reactor length.
+
+### Axial Temperature & Reaction
+![Temperature Profile](results/figures/01_temperature_profile.png)
+![Reaction Rates](results/figures/03_reaction_rates.png)
+
+### Species & Permeation
+![Species Profiles](results/figures/02_species_profiles.png)
+![Membrane Flux](results/figures/04_membrane_flux.png)
+![H2O Removal](results/figures/05_h2o_removal.png)
+
+---
+
+## 4. Intensification Maps & Contours
+The surrogate modeling maps reveal the multidimensional operating landscape for the membrane reactor.
+
+### Operating Sensitivity
+![Temp vs Pressure](results/figures/06_temperature_pressure_map.png)
+![Temp vs GHSV](results/figures/07_temperature_gHSV_map.png)
+![Pressure vs Sweep-to-Feed (S/F)](results/figures/08_pressure_SF_map.png)
+
+### Membrane Area (O_m / V_r) Effects
+![Membrane Area Map](results/figures/09_membrane_area_map.png)
+
+### Final Contour Maps
+![Conversion Contour](results/figures/10_conversion_contour.png)
+![Methanol Yield Contour](results/figures/11_methanol_yield_contour.png)
+![Optimization Landscape](results/figures/15_optimization_landscape.png)
+
+---
+
+## 5. Surrogate Machine Learning Performance
+A Random Forest surrogate was trained on a Design of Experiments (DOE) grid to map the physics parameter space to the conversion gains.
+
+![Feature Importance](results/figures/14_feature_importance.png)
+![Surrogate Parity](results/figures/12_surrogate_parity.png)
+![Surrogate Residuals](results/figures/13_surrogate_residuals.png)
+
