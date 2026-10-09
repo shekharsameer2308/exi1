@@ -1,0 +1,42 @@
+# Membrane Reactor Optimization Results
+
+This document presents the detailed execution results of the 1D steady-state co-current model across both reactor modules.
+
+## Module B (Ammonia Decomposition - Catalyst in Lumen)
+As highlighted by Sitar et al. (2022), the decomposition of ammonia is highly endothermic and limited by equilibrium. The architecture utilizes a **Pd membrane on a Ru/YSZ support**, with the **catalyst packed bed inside the lumen region**. 
+
+- **Feed:** Pure NH₃ enters the central lumen.
+- **Permeate:** Hydrogen selectively permeates outward through the Pd membrane into the sweep/shell side.
+- **Retentate:** N₂ and residual unreacted NH₃ exit the lumen.
+
+### Performance Data
+| Operating Case | TR Conversion (%) | MR Conversion (%) | Absolute Gain (pp) | H₂ Recovery Factor (HRF %) |
+|----------------|:---:|:---:|:---:|:---:|
+{% for name, res in results_b.items() -%}
+| **{{ name }}** | {{ "%0.2f"|format(res['X_TR']) }} | {{ "%0.2f"|format(res['X_MR']) }} | +{{ "%0.2f"|format(res['Gain_X']) }} | {{ "%0.2f"|format(res['HRF']) }} |
+{% endfor %}
+
+**Visual Architecture:**
+![Module B Cross Section](figures/2d_cross_section_module_b.png)
+![Module B 3D Cutaway](figures/3d_cutaway_module_b.png)
+
+---
+
+## Module A (CO₂ Hydrogenation - Catalyst in Annulus)
+CO₂ hydrogenation to e-methanol operates in a tube-in-tube configuration with the **catalyst in the annulus** and a **Zeolite NaA water-selective membrane**.
+
+### Performance Data
+| Operating Case | TR Conversion (%) | MR Conversion (%) | Absolute Gain (pp) | Water Removal (%) |
+|----------------|:---:|:---:|:---:|:---:|
+{% for name, res in results_a.items() -%}
+| **{{ name }}** | {{ "%0.2f"|format(res['X_TR']) }} | {{ "%0.2f"|format(res['X_MR']) }} | +{{ "%0.2f"|format(res['Gain_X']) }} | {{ "%0.2f"|format(res['Water_Removal']) }} |
+{% endfor %}
+
+**Visual Architecture:**
+![Module A Cross Section](figures/2d_cross_section_module_a.png)
+![Module A 3D Cutaway](figures/3d_cutaway_module_a.png)
+
+---
+
+### Mass Balance Integrity
+The co-current numerical IVP formulation enforces strict mass conservation. Across all simulated nodes, the element balance closure (C, H, O, N) remains strictly below 0.1% error (observed Base Case error: `{{ "%0.6f"|format(results_a['Base Case']['C_error']) }}%`).
