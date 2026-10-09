@@ -104,3 +104,17 @@ with open('slides/outline.md', 'w') as f:
     f.write(slides)
 
 print("Report generation complete.")
+
+# Generate RESULTS.md
+with open('templates/RESULTS.md.jinja', 'r') as f:
+    results_template_str = f.read()
+
+results_template = jinja2.Template(results_template_str)
+results_content = results_template.render(
+    results_a=results['module_a'],
+    results_b=results['module_b']
+)
+
+with open('RESULTS.md', 'w') as f:
+    f.write(results_content)
+print("Generated RESULTS.md.")
