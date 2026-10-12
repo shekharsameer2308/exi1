@@ -187,7 +187,6 @@ As highlighted by Sitar et al. (2022) and P1, ammonia cracking is endothermic an
 | **Jiang 2021 Target** | 4.50 | 81.06 | 84.42 | +3.36 | 26.16 |
 
 
-**In-Depth Physical Analysis:**
 Ammonia decomposition ($2\text{NH}_3 \rightleftharpoons \text{N}_2 + 3\text{H}_2$) produces two moles of nitrogen and three moles of hydrogen from two moles of ammonia ($\Delta n = +2$). In a traditional reactor, as conversion progresses along the bed, hydrogen partial pressure builds up, poisoning the active ruthenium sites via the competitive adsorption denominator $(1 + K_{\text{H}_2} p_{\text{H}_2})$ and accelerating the reverse synthesis rate. 
 
 By encasing the packed bed within a hydrogen-permeable Pd membrane tube (lumen configuration), atomic hydrogen is extracted continuously down its partial pressure gradient. In the **Jiang 2021 Target** case ($\text{SMA} = 4.50\text{ cm}^2/\text{g}$), the membrane extracts **26.16%** of the generated hydrogen directly through the wall. This selective sink suppresses the reverse rate and relieves site blocking, enabling single-pass conversion to climb from the equilibrium plateau of $81.06\%$ up to **84.42%** (+3.36 pp).
@@ -215,11 +214,10 @@ $\text{CO}_2$ hydrogenation to e-methanol operates in a tube-in-tube topology at
 | **Best Case + dP 99 bar** | 500 | 133.33 | 10.0 | 99 | 33.52 | 45.10 | +11.58 | 62.48 |
 
 
-**In-Depth Physical Analysis of the Cases:**
-1. **Base Case ($O_M/V_r = 26.67\text{ m}^{-1}, \text{GHSV} = 5000\text{ h}^{-1}$)**: In this operating state, convective flow dominates over radial diffusion. With a superficial contact time under $0.8\text{ s}$, water is produced far faster than the modest zeolite area can extract it. Only **2.06%** of water permeates into the sweep, resulting in an unnoticeable $+0.21\text{ pp}$ gain. The reactor is firmly locked in the **permeation-limited regime**.
+1. **Base Case ($O_M/V_r = 26.67\text{ m}^{-1}, \text{GHSV} = 5000\text{ h}^{-1}$)**: Convective flow dominates over radial diffusion. With superficial residence time under $0.8\text{ s}$, water is produced far faster than the modest zeolite area can extract it. Only **2.06%** of water permeates into the sweep, resulting in an unnoticeable $+0.21\text{ pp}$ gain. The reactor is firmly in the **permeation-limited regime**.
 2. **GHSV 500 Case ($O_M/V_r = 26.67\text{ m}^{-1}, \text{GHSV} = 500\text{ h}^{-1}$)**: Increasing residence time tenfold allows more time for Maxwell-Stefan diffusion across the $5\text{ mm}$ membrane wall. Water removal increases to **18.54%**, yielding a $+2.28\text{ pp}$ conversion gain over TR ($35.81\%$ vs. $33.54\%$).
-3. **High Area Case ($O_M/V_r = 133.33\text{ m}^{-1}, \text{GHSV} = 5000\text{ h}^{-1}$)**: Narrowing the annular gap ($d_w = 20\text{ mm}$ vs $40\text{ mm}$) increases the extraction surface fivefold. However, because flow remains high ($\text{GHSV} = 5000\text{ h}^{-1}$), water removal only reaches **9.41%**, giving a modest $+1.03\text{ pp}$ conversion advantage. This demonstrates that high surface area alone cannot overcome insufficient residence time.
-4. **Best Case Synergy ($O_M/V_r = 133.33\text{ m}^{-1}, \text{GHSV} = 500\text{ h}^{-1}, S/F = 10$)**: Here, reaction kinetics, fluid residence time, and mass transfer flux are matched. Water extraction spikes to **60.70%**. Consequently, the reaction quotient $Q_c$ remains depressed along the entire axial length, driving single-pass conversion to **44.54%**—an absolute leap of **+11.02 pp** (+32.9% relative increase).
+3. **High Area Case ($O_M/V_r = 133.33\text{ m}^{-1}, \text{GHSV} = 5000\text{ h}^{-1}$)**: Narrowing the annular gap ($d_w = 20\text{ mm}$ vs $40\text{ mm}$) increases the extraction surface fivefold. However, because flow remains high ($\text{GHSV} = 5000\text{ h}^{-1}$), water removal only reaches **9.41%**, giving a modest $+1.03\text{ pp}$ gain. High surface area alone cannot compensate for insufficient residence time.
+4. **Best Case Synergy ($O_M/V_r = 133.33\text{ m}^{-1}, \text{GHSV} = 500\text{ h}^{-1}, S/F = 10$)**: Kinetics, fluid residence time, and mass transfer flux are balanced. Water extraction reaches **60.70%**. The reaction quotient $Q_c$ remains suppressed along the entire length, driving single-pass conversion to **44.54%**—an absolute leap of **+11.02 pp** (+32.9% relative increase).
 5. **Trans-Membrane Driving Force ($\Delta P = 99\text{ bar}$)**: Depressurizing the permeate lumen to atmospheric pressure ($1\text{ bar}$) against $100\text{ bar}$ in the retentate maximizes the chemical potential driving force $\Delta \mu_{\text{H}_2\text{O}}$, driving water extraction to **62.48%** and pushing conversion to **45.10%**.
 
 **Visual Architecture:**
@@ -234,23 +232,28 @@ The five axial profiles illustrate the spatial evolution of the reaction-diffusi
 
 ### 7.1 Axial Temperature Profile (Figure 01)
 ![Temperature Profile](results/figures/01_temperature_profile.png)
-*Detailed Explanation:* In an exothermic reaction bed ($\Delta H^\circ_{298} = -49.5\text{ kJ/mol}$ for methanol synthesis), rapid reaction initiation near the inlet ($z < 0.05\text{ m}$) releases significant heat. In non-isothermal simulations or real reactors with wall cooling, a distinct thermal peak develops. In our isothermal benchmark ($T = 250^\circ\text{C}$ wall control), the profile confirms stable thermal operation without runaway hotspots, ensuring kinetic constants remain in the selective regime.
+
+In an exothermic synthesis bed ($\Delta H^\circ_{298} = -49.5\text{ kJ/mol}$), rapid reaction near the inlet ($z < 0.05\text{ m}$) releases significant heat. With isothermal wall boundary control ($T = 250^\circ\text{C}$), the profile remains flat, preventing thermal runaway and keeping kinetic constants in the high-selectivity regime.
 
 ### 7.2 Axial Reaction Rates (Figure 03)
 ![Reaction Rates](results/figures/03_reaction_rates.png)
-*Detailed Explanation:* In the Traditional Reactor (TR, dashed lines), $r_{\text{CO}_2}$ starts high near the feed inlet where reactants are fresh, but decays rapidly to near zero by $z = 0.10\text{ m}$ as product water accumulates and drives the reverse rate term $(p_{\text{H}_2\text{O}} p_{\text{CH}_3\text{OH}})/(K_{eq1} p_{\text{H}_2}^3 p_{\text{CO}_2}) \to 1$. In stark contrast, in the Membrane Reactor (MR, solid line), $r_{\text{CO}_2}$ remains positive along the entire reactor length because the continuous water extraction prevents the reverse reaction term from reaching equilibrium, sustaining forward catalyst productivity across all 250 mm.
+
+In the Traditional Reactor (TR, dashed line), $r_{\text{CO}_2}$ starts high at the fresh feed inlet but drops rapidly to near zero by $z = 0.10\text{ m}$ as product water accumulates and drives the reverse rate term $(p_{\text{H}_2\text{O}} p_{\text{CH}_3\text{OH}})/(K_{eq1} p_{\text{H}_2}^3 p_{\text{CO}_2}) \to 1$. In the Membrane Reactor (MR, solid line), $r_{\text{CO}_2}$ remains positive along the entire reactor length because in-situ water removal suppresses the reverse reaction, sustaining forward catalytic productivity across all 250 mm.
 
 ### 7.3 Axial Species Molar Flows (Figure 02)
 ![Species Profiles](results/figures/02_species_profiles.png)
-*Detailed Explanation:* As syngas flows from $z = 0$ to $z = L$, $\text{CO}_2$ and $\text{H}_2$ flows decline continuously. In TR, water and methanol flows rise monotonically until plateauing at the equilibrium ceiling. In MR, the $\text{H}_2\text{O}$ molar flow in the retentate peaks early, then plateaus and declines as the rate of radial extraction exceeds the rate of kinetic production, while the cumulative $\text{CH}_3\text{OH}$ yield continues climbing well above the traditional limit.
+
+As syngas flows from $z = 0$ to $z = L$, $\text{CO}_2$ and $\text{H}_2$ flows decline continuously. In TR, water and methanol molar flows level off at the equilibrium barrier. In MR, $\text{H}_2\text{O}$ molar flow in the retentate peaks early and then declines as radial extraction surpasses production, while cumulative $\text{CH}_3\text{OH}$ yield continues climbing well above the traditional limit.
 
 ### 7.4 Membrane Permeation Flux (Figure 04)
 ![Membrane Flux](results/figures/04_membrane_flux.png)
-*Detailed Explanation:* The local water permeation flux $J_{\text{H}_2\text{O}}$ starts at zero at the inlet (where no water has yet formed), rises sharply in the first 50 mm as reaction (1a) produces moisture, and reaches a peak governed by maximum Langmuir zeolite surface loading $\theta_{\text{H}_2\text{O}}$. Downstream, as the retentate partial pressure $p_{\text{H}_2\text{O}}$ stabilizes, the flux levels off, providing a steady sink that protects the remaining catalyst bed from hydrothermal deactivation.
+
+Local water permeation flux $J_{\text{H}_2\text{O}}$ starts at zero at the inlet, rises sharply in the first 50 mm as reaction (1a) produces moisture, and reaches a plateau dictated by maximum Langmuir zeolite surface loading $\theta_{\text{H}_2\text{O}}$. Downstream, as retentate water partial pressure $p_{\text{H}_2\text{O}}$ stabilizes, the permeation flux levels off, providing a continuous extraction sink.
 
 ### 7.5 Cumulative Water Removal Fraction (Figure 05)
 ![H2O Removal](results/figures/05_h2o_removal.png)
-*Detailed Explanation:* Tracks the integral water extracted into the sweep stream relative to total water generated. In the optimized membrane cases, the curve climbs steadily toward $60\text{--}62\%$, providing direct visual confirmation of how and where the product-selective membrane uncouples reaction kinetics from thermodynamic equilibrium.
+
+This curve tracks the percentage of total generated water extracted into the permeate stream. In optimized membrane cases, water removal climbs steadily to $60\text{--}62\%$, illustrating how selective mass transfer uncouples local kinetics from thermodynamic equilibrium.
 
 ---
 
@@ -288,40 +291,46 @@ A 5-dimensional Latin Hypercube Sampling (LHS) grid generated 500 validated simu
 
 ### 8.3 Feature Importance Ranking (Figure 14)
 ![Feature Importance](results/figures/14_feature_importance.png)
-*Detailed Explanation:* Gini impurity decomposition across the ensemble trees isolates the controlling design parameters:
-1. **Total Flow Rate ($F_{\text{tot}}$, proxy for GHSV)** ranks as the single most dominant feature for conversion and yield ($>45\%$ relative importance). It directly fixes contact time: if gas velocity is too high, reactants bypass the bed before mass transfer can occur.
-2. **Inlet Temperature ($T_{\text{in}}$)** is the secondary controlling lever, exhibiting an optimum trade-off: higher temperatures accelerate forward kinetics exponentially via Arrhenius activation, but depress the exothermic equilibrium constant $K_{eq1}$.
-3. **Water Permeance ($\Pi_{\text{H}_2\text{O}}$)** dominates the water removal fraction target, confirming that membrane permeability dictates the extent of equilibrium surpass.
-4. **Operating Pressure ($P_{\text{in}}$)** increases reactant partial pressures, accelerating reaction rates and increasing the driving force for permeation.
+
+Gini impurity decomposition across the ensemble trees isolates the controlling design parameters:
+1. **Total Flow Rate ($F_{\text{tot}}$, proxy for GHSV)**: Dominates conversion and yield ($>45\%$ relative importance) by setting contact time. High velocities bypass the bed before mass transfer can occur.
+2. **Inlet Temperature ($T_{\text{in}}$)**: Acts as the secondary controlling lever. Higher temperatures accelerate forward kinetics exponentially via Arrhenius activation, but depress the exothermic equilibrium constant $K_{eq1}$.
+3. **Water Permeance ($\Pi_{\text{H}_2\text{O}}$)**: Dominates the water removal target, confirming that membrane mass-transfer capacity dictates the extent of equilibrium surpass.
+4. **Operating Pressure ($P_{\text{in}}$)**: Increases reactant partial pressures, accelerating reaction kinetics and expanding the permeation driving force.
 
 ### 8.4 Surrogate Diagnostics: Parity and Residuals (Figures 12 & 13)
 ![Surrogate Parity](results/figures/12_surrogate_parity.png)
 ![Surrogate Residuals](results/figures/13_surrogate_residuals.png)
-*Detailed Explanation:* 
-- **Parity Plot (Figure 12)**: Shows simulated physics values on the x-axis vs. surrogate predictions on the y-axis. The data points cluster tightly along the $1:1$ dashed line across the full range of operating values ($0\text{--}40\%$ conversion, $0\text{--}90\%$ water removal), demonstrating that the surrogate faithfully captures non-linear transport without saturation artifacts.
-- **Residual Error Histograms (Figure 13)**: The four subplots display prediction error residuals ($\text{Actual} - \text{Predicted}$ in percentage points). All four distributions are unimodal, symmetric, and tightly centered at $0.0\%$, with standard deviations under $2\%$. This confirms the model has no systematic bias and exhibits stable generalization.
+
+- **Parity Plot (Figure 12)**: Predicted values track simulated physics values closely along the 1:1 diagonal across all operating ranges ($0\text{--}40\%$ conversion, $0\text{--}90\%$ water removal), verifying that the surrogate captures non-linear transport without saturation artifacts.
+- **Residual Error Histograms (Figure 13)**: Prediction residuals ($\text{Actual} - \text{Predicted}$) across all four targets are unimodal, symmetric, and tightly centered at $0.0\%$, with standard deviations under $2\%$, indicating no systematic model bias.
 
 ### 8.5 2D Response Surfaces & Contour Landscapes (Figures 06–11, 15)
-The 2D response maps plot the performance topography of the membrane reactor across operational pairs:
 
 ![Temp vs Pressure Map](results/figures/06_temperature_pressure_map.png)
-*Figure 06 (Temperature vs. Pressure):* Shows that increasing pressure from 20 to 80 bar expands the viable operating temperature window, shifting the optimal trade-off zone toward higher temperatures where kinetics are rapid.
+
+Increasing operating pressure from 20 to 80 bar expands the viable operating temperature window, shifting the optimal trade-off zone toward higher temperatures where kinetics are rapid.
 
 ![Temp vs GHSV Map](results/figures/07_temperature_gHSV_map.png)
-*Figure 07 (Temperature vs. GHSV):* Confirms the existence of an optimal "sweet spot" at low space velocities ($<1000\text{ h}^{-1}$) and moderate temperatures ($230\text{--}250^\circ\text{C}$), where residence time matches the permeation timescale.
+
+An optimal operating window exists at low space velocities ($<1000\text{ h}^{-1}$) and moderate temperatures ($230\text{--}250^\circ\text{C}$), where residence time matches the permeation timescale.
 
 ![Pressure vs Sweep-to-Feed Map](results/figures/08_pressure_SF_map.png)
-*Figure 08 (Pressure vs. Sweep-to-Feed Ratio):* Illustrates diminishing returns: increasing $S/F$ beyond $5\text{--}10$ provides minimal additional conversion gain while escalating downstream sweep-gas separation energy.
+
+Increasing $S/F$ beyond $5\text{--}10$ provides minimal conversion gain while drastically escalating downstream sweep-gas separation energy.
 
 ![Membrane Area Map](results/figures/09_membrane_area_map.png)
-*Figure 09 (Membrane Area Map):* Demonstrates the steep non-linear gain in methanol yield as $O_M/V_r$ transitions from $20\text{ m}^{-1}$ to $>100\text{ m}^{-1}$, providing visual evidence of the transition from the permeation-limited to the reaction-intensified regime.
+
+Methanol yield exhibits a steep non-linear rise as $O_M/V_r$ transitions from $20\text{ m}^{-1}$ to $>100\text{ m}^{-1}$, highlighting the shift from the permeation-limited to the reaction-intensified regime.
 
 ![Conversion Contour](results/figures/10_conversion_contour.png)
 ![Methanol Yield Contour](results/figures/11_methanol_yield_contour.png)
-*Figures 10 & 11 (Conversion and Yield Contours):* Map single-pass $\text{CO}_2$ conversion and methanol yield across the multi-parameter design space, illustrating the boundary lines separating feasible from unfeasible operating conditions.
+
+Single-pass $\text{CO}_2$ conversion and methanol yield contours map boundaries separating feasible from unfeasible operating conditions across the design envelope.
 
 ![Optimization Landscape](results/figures/15_optimization_landscape.png)
-*Figure 15 (Optimization Performance Landscape):* Combines the competing trade-offs into a single objective response surface. The global optimum is marked by a star at **$250^\circ\text{C}$ and $75\text{--}80\text{ bar}$**, representing the highest achievable single-pass methanol yield.
+
+The global optimum is identified at **$250^\circ\text{C}$ and $75\text{--}80\text{ bar}$** (marked by the white star), representing the highest achievable single-pass methanol yield.
 
 ---
 
