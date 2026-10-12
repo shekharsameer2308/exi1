@@ -30,14 +30,15 @@ def generate_ml_and_research_visuals():
         
         # Figure 12: Surrogate Parity Plots (4 subplots)
         fig, axes = plt.subplots(2, 2, figsize=(10, 9), dpi=300)
-        targets = [
-            ("co2_conversion", "CO2 Conversion", axes[0, 0]),
-            ("meoh_yield", "MeOH Yield", axes[0, 1]),
-            ("meoh_selectivity", "MeOH Selectivity", axes[1, 0]),
-            ("h2o_removal_fraction", "H2O Removal Fraction", axes[1, 1]),
+        target_configs = [
+            ("co2_conversion", "CO2 Conversion"),
+            ("meoh_yield", "MeOH Yield"),
+            ("meoh_selectivity", "MeOH Selectivity"),
+            ("h2o_removal_fraction", "H2O Removal Fraction"),
         ]
 
-        for target_key, title, ax in targets:
+        for i, (target_key, title) in enumerate(target_configs):
+            ax = axes.flatten()[i]
             if f"actual_{target_key}" in df_preds.columns:
                 y_act = df_preds[f"actual_{target_key}"] * 100.0
                 y_pred = df_preds[f"pred_{target_key}"] * 100.0
@@ -61,7 +62,8 @@ def generate_ml_and_research_visuals():
 
         # Figure 13: Residual Distribution Plots
         fig, axes = plt.subplots(2, 2, figsize=(10, 8), dpi=300)
-        for i, (target_key, title, ax) in enumerate(targets):
+        for i, (target_key, title) in enumerate(target_configs):
+            ax = axes.flatten()[i]
             if f"residual_{target_key}" in df_preds.columns:
                 res = df_preds[f"residual_{target_key}"] * 100.0
                 sns.histplot(res, kde=True, ax=ax, color=COLORS["cyan"], edgecolor="white")
