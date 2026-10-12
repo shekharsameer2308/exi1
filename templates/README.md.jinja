@@ -157,30 +157,17 @@ $$
 
 ### 4.5 Performance Metric Definitions
 
-- **CO₂ Conversion ($X_{\text{CO}_2}$)**:
-  $X_{\text{CO}_2} = \left(\frac{F_{\text{CO}_2,\text{in}} - F_{\text{CO}_2,\text{out}}}{F_{\text{CO}_2,\text{in}}}\right) \times 100$
-
-- **Methanol Selectivity ($S_{\text{CH}_3\text{OH}}$)**:
-  $S_{\text{CH}_3\text{OH}} = \left(\frac{F_{\text{CH}_3\text{OH},\text{out}}}{F_{\text{CO}_2,\text{in}} - F_{\text{CO}_2,\text{out}}}\right) \times 100$
-
-- **Methanol Yield ($Y_{\text{CH}_3\text{OH}}$)**:
-  $Y_{\text{CH}_3\text{OH}} = \frac{X_{\text{CO}_2} \cdot S_{\text{CH}_3\text{OH}}}{100}$
-
-- **Water Removal Fraction ($R_{\text{H}_2\text{O}}$)**:
-  $R_{\text{H}_2\text{O}} = \left(\frac{F_{\text{H}_2\text{O},\text{sweep,out}}}{F_{\text{H}_2\text{O},\text{sweep,out}} + F_{\text{H}_2\text{O},\text{ret,out}}}\right) \times 100$
-
-- **Gas Hourly Space Velocity (GHSV)**:
-  $\text{GHSV} = \frac{\dot{V}_{\text{feed,STP}}}{V_r} \quad (\text{h}^{-1})$
-
-- **Sweep-to-Feed Ratio ($S/F$)**:
-  $S/F = \frac{F_{\text{sweep,in}}}{F_{\text{feed,in}}}$
-
-- **Membrane Area to Reactor Volume Ratio ($O_M/V_r$)**:
-  $\frac{O_M}{V_r} = \frac{\pi d_m L}{\frac{\pi}{4}(d_w^2 - d_m^2)L} = \frac{4 d_m}{d_w^2 - d_m^2} \quad (\text{m}^{-1})$
-
-- **Absolute Gain & Relative Improvement**:
-  $\text{Absolute Gain} = X_{\text{MR}} - X_{\text{TR}} \quad (\text{pp})$  
-  $\text{Relative Improvement} = \left(\frac{X_{\text{MR}} - X_{\text{TR}}}{X_{\text{MR}}}\right) \times 100$
+| Performance Metric | Symbol | Governing Mathematical Formula | Unit |
+|:---|:---:|:---:|:---:|
+| $\text{CO}_2$ Conversion | $X_{\text{CO}_2}$ | $\left(\frac{F_{\text{CO}_2,\text{in}} - F_{\text{CO}_2,\text{out}}}{F_{\text{CO}_2,\text{in}}}\right) \times 100$ | $\%$ |
+| Methanol Selectivity | $S_{\text{CH}_3\text{OH}}$ | $\left(\frac{F_{\text{CH}_3\text{OH},\text{out}}}{F_{\text{CO}_2,\text{in}} - F_{\text{CO}_2,\text{out}}}\right) \times 100$ | $\%$ |
+| Methanol Yield | $Y_{\text{CH}_3\text{OH}}$ | $\frac{X_{\text{CO}_2} \cdot S_{\text{CH}_3\text{OH}}}{100}$ | $\%$ |
+| Water Removal Fraction | $R_{\text{H}_2\text{O}}$ | $\left(\frac{F_{\text{H}_2\text{O},\text{sweep,out}}}{F_{\text{H}_2\text{O},\text{sweep,out}} + F_{\text{H}_2\text{O},\text{ret,out}}}\right) \times 100$ | $\%$ |
+| Gas Hourly Space Velocity | $\text{GHSV}$ | $\frac{\dot{V}_{\text{feed,STP}}}{V_r}$ | $\text{h}^{-1}$ |
+| Sweep-to-Feed Ratio | $S/F$ | $\frac{F_{\text{sweep,in}}}{F_{\text{feed,in}}}$ | — |
+| Specific Membrane Area | $O_M/V_r$ | $\frac{4 d_m}{d_w^2 - d_m^2}$ | $\text{m}^{-1}$ |
+| Absolute Conversion Gain | $\Delta X$ | $X_{\text{MR}} - X_{\text{TR}}$ | $\text{pp}$ |
+| Relative Improvement | $\text{RI}$ | $\left(\frac{X_{\text{MR}} - X_{\text{TR}}}{X_{\text{MR}}}\right) \times 100$ | $\%$ |
 
 ---
 
