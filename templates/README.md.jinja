@@ -74,15 +74,33 @@ A catalytic membrane reactor operates within one of two distinct regimes dependi
 ## 3. Reaction Network, Thermodynamics & Mechanism
 
 ### 3.1 Reaction Stoichiometry
-$$\text{(1a) } \text{CO}_2 + 3\text{H}_2 \rightleftharpoons \text{CH}_3\text{OH} + \text{H}_2\text{O}, \quad \Delta H^\circ_{298} = -49.5\text{ kJ/mol}$$
-$$\text{(1b) } \text{CO} + 2\text{H}_2 \rightleftharpoons \text{CH}_3\text{OH}, \quad \Delta H^\circ_{298} = -90.7\text{ kJ/mol}$$
-$$\text{(1c) } \text{CO}_2 + \text{H}_2 \rightleftharpoons \text{CO} + \text{H}_2\text{O}\text{ (RWGS)}, \quad \Delta H^\circ_{298} = +41.2\text{ kJ/mol}$$
-$$\text{(2) } \text{NH}_3 \rightleftharpoons \frac{1}{2}\text{N}_2 + \frac{3}{2}\text{H}_2, \quad \Delta H^\circ_{298} = +45.92\text{ kJ/mol}$$
+
+$$
+\text{(1a) } \text{CO}_2 + 3\text{H}_2 \rightleftharpoons \text{CH}_3\text{OH} + \text{H}_2\text{O}, \quad \Delta H^\circ_{298} = -49.5\text{ kJ/mol}
+$$
+
+$$
+\text{(1b) } \text{CO} + 2\text{H}_2 \rightleftharpoons \text{CH}_3\text{OH}, \quad \Delta H^\circ_{298} = -90.7\text{ kJ/mol}
+$$
+
+$$
+\text{(1c) } \text{CO}_2 + \text{H}_2 \rightleftharpoons \text{CO} + \text{H}_2\text{O}\text{ (RWGS)}, \quad \Delta H^\circ_{298} = +41.2\text{ kJ/mol}
+$$
+
+$$
+\text{(2) } \text{NH}_3 \rightleftharpoons \frac{1}{2}\text{N}_2 + \frac{3}{2}\text{H}_2, \quad \Delta H^\circ_{298} = +45.92\text{ kJ/mol}
+$$
 
 ### 3.2 Thermodynamic Equilibrium Constants
 From empirical fits to experimental free energy data (P3 Table 2):
-$$\log_{10} K_{eq1} = \frac{3066}{T} - 10.592 \implies K_{eq1} = 10^{\left(\frac{3066}{T} - 10.592\right)}\text{ bar}^{-2}$$
-$$\log_{10} K_{eq2} = -\frac{2073}{T} + 2.029 \implies K_{eq2} = 10^{\left(-\frac{2073}{T} + 2.029\right)}\text{ dimensionless}$$
+
+$$
+\log_{10} K_{eq1} = \frac{3066}{T} - 10.592 \implies K_{eq1} = 10^{\left(\frac{3066}{T} - 10.592\right)}\text{ bar}^{-2}
+$$
+
+$$
+\log_{10} K_{eq2} = -\frac{2073}{T} + 2.029 \implies K_{eq2} = 10^{\left(-\frac{2073}{T} + 2.029\right)}\text{ dimensionless}
+$$
 
 ---
 
@@ -91,45 +109,77 @@ $$\log_{10} K_{eq2} = -\frac{2073}{T} + 2.029 \implies K_{eq2} = 10^{\left(-\fra
 ### 4.1 Chemical Kinetics (Mignard & Pritchard Modification)
 The reaction rates ($r_{\text{CO}_2}$ and $r_{\text{RWGS}}$ in $\text{mol}/(\text{kg}_{\text{cat}}\cdot\text{s})$) account for competitive adsorption:
 
-$$r_{\text{CO}_2} = \frac{k_1 p_{\text{CO}_2} p_{\text{H}_2} \left[ 1 - \frac{p_{\text{H}_2\text{O}} p_{\text{CH}_3\text{OH}}}{K_{eq1} p_{\text{H}_2}^3 p_{\text{CO}_2}} \right]}{D^3}$$
+$$
+r_{\text{CO}_2} = \frac{k_1 p_{\text{CO}_2} p_{\text{H}_2} \left[ 1 - \frac{p_{\text{H}_2\text{O}} p_{\text{CH}_3\text{OH}}}{K_{eq1} p_{\text{H}_2}^3 p_{\text{CO}_2}} \right]}{D^3}
+$$
 
-$$r_{\text{RWGS}} = \frac{k_2 p_{\text{CO}_2} \left[ 1 - \frac{p_{\text{H}_2\text{O}} p_{\text{CO}}}{K_{eq2} p_{\text{H}_2} p_{\text{CO}_2}} \right]}{D}$$
+$$
+r_{\text{RWGS}} = \frac{k_2 p_{\text{CO}_2} \left[ 1 - \frac{p_{\text{H}_2\text{O}} p_{\text{CO}}}{K_{eq2} p_{\text{H}_2} p_{\text{CO}_2}} \right]}{D}
+$$
 
-$$D = 1 + K_{\text{H}_2\text{O},\text{H}_2}\left(\frac{p_{\text{H}_2\text{O}}}{p_{\text{H}_2}}\right) + \sqrt{K_{\text{H}_2} p_{\text{H}_2}} + K_{\text{H}_2\text{O}} p_{\text{H}_2\text{O}}$$
+$$
+D = 1 + K_{\text{H}_2\text{O},\text{H}_2}\left(\frac{p_{\text{H}_2\text{O}}}{p_{\text{H}_2}}\right) + \sqrt{K_{\text{H}_2} p_{\text{H}_2}} + K_{\text{H}_2\text{O}} p_{\text{H}_2\text{O}}
+$$
 
 ### 4.2 Maxwell-Stefan Zeolite Permeation (Module A)
 The flux vector $(J) = [J_{\text{H}_2\text{O}}, J_{\text{CH}_3\text{OH}}, J_{\text{H}_2}]^T$ down the surface loading gradient:
-$$\theta_i = \frac{b_i p_i}{1 + \sum_{j} b_j p_j}, \quad \theta_v = 1 - \sum_i \theta_i$$
-$$(J) = \rho_m [q_{\text{sat}}] [B]^{-1} [\Gamma] \frac{d\theta}{dz}$$
-$$[B]_{ii} = \frac{1}{D_i} + \sum_{k \neq i} \frac{\theta_k}{D_{ik}}, \quad [B]_{ij} = -\frac{\theta_i}{D_{ij}}, \quad [\Gamma]_{ij} = \delta_{ij} + \frac{\theta_i}{\theta_v}$$
+
+$$
+\theta_i = \frac{b_i p_i}{1 + \sum_{j} b_j p_j}, \quad \theta_v = 1 - \sum_i \theta_i
+$$
+
+$$
+(J) = \rho_m [q_{\text{sat}}] [B]^{-1} [\Gamma] \frac{d\theta}{dz}
+$$
+
+$$
+[B]_{ii} = \frac{1}{D_i} + \sum_{k \neq i} \frac{\theta_k}{D_{ik}}, \quad [B]_{ij} = -\frac{\theta_i}{D_{ij}}, \quad [\Gamma]_{ij} = \delta_{ij} + \frac{\theta_i}{\theta_v}
+$$
 
 ### 4.3 Sieverts' Law (Module B)
-$$J_{\text{H}_2} = \frac{P_{e,\text{H}_2}}{t_m} \left( \sqrt{p_{\text{H}_2,\text{ret}}} - \sqrt{p_{\text{H}_2,\text{perm}}} \right)$$
+
+$$
+J_{\text{H}_2} = \frac{P_{e,\text{H}_2}}{t_m} \left( \sqrt{p_{\text{H}_2,\text{ret}}} - \sqrt{p_{\text{H}_2,\text{perm}}} \right)
+$$
 
 ### 4.4 Differential Mass Balances
 Reaction zone:
-$$\frac{dF_i}{dz} = A_{\text{cross}} \rho_B \sum_{j} \nu_{ij} r_j - A_m J_i$$
+
+$$
+\frac{dF_i}{dz} = A_{\text{cross}} \rho_B \sum_{j} \nu_{ij} r_j - A_m J_i
+$$
+
 Sweep zone:
-$$\frac{dF_i^S}{dz} = + A_m J_i$$
+
+$$
+\frac{dF_i^S}{dz} = + A_m J_i
+$$
 
 ### 4.5 Performance Metric Definitions
-- **$CO_2$ Conversion ($X_{\text{CO}_2}$)**:
-  $$X_{\text{CO}_2} = \frac{F_{\text{CO}_2,\text{in}} - F_{\text{CO}_2,\text{out}}}{F_{\text{CO}_2,\text{in}}} \times 100\%$$
+- **$\text{CO}_2$ Conversion ($X_{\text{CO}_2}$)**:
+  $X_{\text{CO}_2} = \frac{F_{\text{CO}_2,\text{in}} - F_{\text{CO}_2,\text{out}}}{F_{\text{CO}_2,\text{in}}} \times 100\%$
+
 - **Methanol Selectivity ($S_{\text{CH}_3\text{OH}}$)**:
-  $$S_{\text{CH}_3\text{OH}} = \frac{F_{\text{CH}_3\text{OH},\text{out}}}{F_{\text{CO}_2,\text{in}} - F_{\text{CO}_2,\text{out}}} \times 100\%$$
+  $S_{\text{CH}_3\text{OH}} = \frac{F_{\text{CH}_3\text{OH},\text{out}}}{F_{\text{CO}_2,\text{in}} - F_{\text{CO}_2,\text{out}}} \times 100\%$
+
 - **Methanol Yield ($Y_{\text{CH}_3\text{OH}}$)**:
-  $$Y_{\text{CH}_3\text{OH}} = \frac{X_{\text{CO}_2} \times S_{\text{CH}_3\text{OH}}}{100\%}$$
+  $Y_{\text{CH}_3\text{OH}} = \frac{X_{\text{CO}_2} \times S_{\text{CH}_3\text{OH}}}{100\%}$
+
 - **Water Removal Fraction ($R_{\text{H}_2\text{O}}$)**:
-  $$R_{\text{H}_2\text{O}} = \frac{F_{\text{H}_2\text{O},\text{sweep,out}}}{F_{\text{H}_2\text{O},\text{sweep,out}} + F_{\text{H}_2\text{O},\text{ret,out}}} \times 100\%$$
+  $R_{\text{H}_2\text{O}} = \frac{F_{\text{H}_2\text{O},\text{sweep,out}}}{F_{\text{H}_2\text{O},\text{sweep,out}} + F_{\text{H}_2\text{O},\text{ret,out}}} \times 100\%$
+
 - **Gas Hourly Space Velocity (GHSV)**:
-  $$\text{GHSV} = \frac{\dot{V}_{\text{feed,STP}}}{V_r} \quad (\text{h}^{-1})$$
+  $\text{GHSV} = \frac{\dot{V}_{\text{feed,STP}}}{V_r} \quad (\text{h}^{-1})$
+
 - **Sweep-to-Feed Ratio ($S/F$)**:
-  $$S/F = \frac{F_{\text{sweep,in}}}{F_{\text{feed,in}}}$$
+  $S/F = \frac{F_{\text{sweep,in}}}{F_{\text{feed,in}}}$
+
 - **Membrane Area to Reactor Volume Ratio ($O_M/V_r$)**:
-  $$\frac{O_M}{V_r} = \frac{\pi d_m L}{\frac{\pi}{4}(d_w^2 - d_m^2)L} = \frac{4 d_m}{d_w^2 - d_m^2} \quad (\text{m}^{-1})$$
+  $\frac{O_M}{V_r} = \frac{\pi d_m L}{\frac{\pi}{4}(d_w^2 - d_m^2)L} = \frac{4 d_m}{d_w^2 - d_m^2} \quad (\text{m}^{-1})$
+
 - **Absolute Gain & Relative Improvement**:
-  $$\text{Absolute Gain} = X_{\text{MR}} - X_{\text{TR}} \quad (\text{pp})$$
-  $$\text{Relative Improvement} = \frac{X_{\text{MR}} - X_{\text{TR}}}{X_{\text{MR}}} \times 100\%$$
+  $\text{Absolute Gain} = X_{\text{MR}} - X_{\text{TR}} \quad (\text{pp})$  
+  $\text{Relative Improvement} = \frac{X_{\text{MR}} - X_{\text{TR}}}{X_{\text{MR}}} \times 100\%$
 
 ---
 
