@@ -274,18 +274,18 @@ A 5-dimensional Latin Hypercube Sampling (LHS) grid generated 500 validated simu
 
 | Model | Target Output | Test $R^2$ | MAE | RMSE | MAPE (%) |
 |:---|:---|:---:|:---:|:---:|:---:|
-| RandomForest | $\text{CO}_2$ Conversion | $0.959$ | $0.0088$ | $0.0181$ | $10.70\%$ |
-| RandomForest | $\text{CH}_3\text{OH}$ Yield | $0.962$ | $0.0076$ | $0.0157$ | $10.82\%$ |
-| RandomForest | $\text{CH}_3\text{OH}$ Selectivity | $0.911$ | $0.0060$ | $0.0087$ | $0.67\%$ |
-| RandomForest | $\text{H}_2\text{O}$ Removal Fraction | $0.926$ | $0.0247$ | $0.0333$ | $3.72\%$ |
+| RandomForest | $\text{CO}_2$ Conversion | $0.959$ | $0.0088$ | $0.0181$ | 10.70% |
+| RandomForest | $\text{CH}_3\text{OH}$ Yield | $0.962$ | $0.0076$ | $0.0157$ | 10.82% |
+| RandomForest | $\text{CH}_3\text{OH}$ Selectivity | $0.911$ | $0.0060$ | $0.0087$ | 0.67% |
+| RandomForest | $\text{H}_2\text{O}$ Removal Fraction | $0.926$ | $0.0247$ | $0.0333$ | 3.72% |
 | **ExtraTrees (Selected Best)** | **$\text{CO}_2$ Conversion** | **0.972** | **0.0070** | **0.0152** | **8.68%** |
 | **ExtraTrees (Selected Best)** | **$\text{CH}_3\text{OH}$ Yield** | **0.974** | **0.0061** | **0.0132** | **8.70%** |
 | **ExtraTrees (Selected Best)** | **$\text{CH}_3\text{OH}$ Selectivity** | **0.947** | **0.0047** | **0.0067** | **0.52%** |
 | **ExtraTrees (Selected Best)** | **$\text{H}_2\text{O}$ Removal Fraction** | **0.956** | **0.0175** | **0.0257** | **2.68%** |
-| GradientBoosting | $\text{CO}_2$ Conversion | $0.970$ | $0.0074$ | $0.0157$ | $8.94\%$ |
-| GradientBoosting | $\text{CH}_3\text{OH}$ Yield | $0.973$ | $0.0068$ | $0.0133$ | $9.13\%$ |
-| GradientBoosting | $\text{CH}_3\text{OH}$ Selectivity | $0.958$ | $0.0043$ | $0.0060$ | $0.49\%$ |
-| GradientBoosting | $\text{H}_2\text{O}$ Removal Fraction | $0.960$ | $0.0194$ | $0.0246$ | $2.97\%$ |
+| GradientBoosting | $\text{CO}_2$ Conversion | $0.970$ | $0.0074$ | $0.0157$ | 8.94% |
+| GradientBoosting | $\text{CH}_3\text{OH}$ Yield | $0.973$ | $0.0068$ | $0.0133$ | 9.13% |
+| GradientBoosting | $\text{CH}_3\text{OH}$ Selectivity | $0.958$ | $0.0043$ | $0.0060$ | 0.49% |
+| GradientBoosting | $\text{H}_2\text{O}$ Removal Fraction | $0.960$ | $0.0194$ | $0.0246$ | 2.97% |
 
 *ExtraTrees delivers the highest overall fidelity with mean $R^2 = 0.9621$.*
 
@@ -435,7 +435,7 @@ A central question in reactor design is: **If an engineer alters an operational 
 To quantify this, we define the **Intensification Elasticity** ($\varepsilon_{\text{gain}}$):
 
 $$
-\varepsilon_{\text{gain}} = \frac{\% \Delta (\text{Conversion Gain})}{\% \Delta (\text{Input Factor})} = \frac{\Delta (\Delta X) / \Delta X_{\text{base}}}{\Delta (\text{Factor}) / \text{Factor}_{\text{base}}}
+\varepsilon_{\text{gain}} = \frac{\Delta (\Delta X) / \Delta X_{\text{base}}}{\Delta (\text{Factor}) / \text{Factor}_{\text{base}}}
 $$
 
 Where $\Delta X = X_{\text{MR}} - X_{\text{TR}}$ is the absolute conversion advantage over a traditional plug-flow reactor.

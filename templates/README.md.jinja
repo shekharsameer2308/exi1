@@ -156,17 +156,18 @@ $$
 $$
 
 ### 4.5 Performance Metric Definitions
-- **$\text{CO}_2$ Conversion ($X_{\text{CO}_2}$)**:
-  $X_{\text{CO}_2} = \frac{F_{\text{CO}_2,\text{in}} - F_{\text{CO}_2,\text{out}}}{F_{\text{CO}_2,\text{in}}} \times 100\%$
+
+- **CO₂ Conversion ($X_{\text{CO}_2}$)**:
+  $X_{\text{CO}_2} = \left(\frac{F_{\text{CO}_2,\text{in}} - F_{\text{CO}_2,\text{out}}}{F_{\text{CO}_2,\text{in}}}\right) \times 100$
 
 - **Methanol Selectivity ($S_{\text{CH}_3\text{OH}}$)**:
-  $S_{\text{CH}_3\text{OH}} = \frac{F_{\text{CH}_3\text{OH},\text{out}}}{F_{\text{CO}_2,\text{in}} - F_{\text{CO}_2,\text{out}}} \times 100\%$
+  $S_{\text{CH}_3\text{OH}} = \left(\frac{F_{\text{CH}_3\text{OH},\text{out}}}{F_{\text{CO}_2,\text{in}} - F_{\text{CO}_2,\text{out}}}\right) \times 100$
 
 - **Methanol Yield ($Y_{\text{CH}_3\text{OH}}$)**:
-  $Y_{\text{CH}_3\text{OH}} = \frac{X_{\text{CO}_2} \times S_{\text{CH}_3\text{OH}}}{100\%}$
+  $Y_{\text{CH}_3\text{OH}} = \frac{X_{\text{CO}_2} \cdot S_{\text{CH}_3\text{OH}}}{100}$
 
 - **Water Removal Fraction ($R_{\text{H}_2\text{O}}$)**:
-  $R_{\text{H}_2\text{O}} = \frac{F_{\text{H}_2\text{O},\text{sweep,out}}}{F_{\text{H}_2\text{O},\text{sweep,out}} + F_{\text{H}_2\text{O},\text{ret,out}}} \times 100\%$
+  $R_{\text{H}_2\text{O}} = \left(\frac{F_{\text{H}_2\text{O},\text{sweep,out}}}{F_{\text{H}_2\text{O},\text{sweep,out}} + F_{\text{H}_2\text{O},\text{ret,out}}}\right) \times 100$
 
 - **Gas Hourly Space Velocity (GHSV)**:
   $\text{GHSV} = \frac{\dot{V}_{\text{feed,STP}}}{V_r} \quad (\text{h}^{-1})$
@@ -179,7 +180,7 @@ $$
 
 - **Absolute Gain & Relative Improvement**:
   $\text{Absolute Gain} = X_{\text{MR}} - X_{\text{TR}} \quad (\text{pp})$  
-  $\text{Relative Improvement} = \frac{X_{\text{MR}} - X_{\text{TR}}}{X_{\text{MR}}} \times 100\%$
+  $\text{Relative Improvement} = \left(\frac{X_{\text{MR}} - X_{\text{TR}}}{X_{\text{MR}}}\right) \times 100$
 
 ---
 
