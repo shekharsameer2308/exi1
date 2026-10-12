@@ -6,10 +6,11 @@ Membrane reactors integrate catalytic reaction and separation into a single unit
 
 ## 2. Reactor Description
 The system consists of a tube-in-tube packed bed. 
-- **Module A**: CO₂ and H₂ are fed to the catalytic annulus containing Cu/ZnO/Al₂O₃. The inner tube is a water-selective NaA Zeolite membrane. Sweep gas flows to extract water.
-- **Module B**: NH₃ is fed to the annulus containing Ru/YSZ. The inner tube is a hydrogen-selective Pd membrane.
+- **Module A**: CO₂ and H₂ are fed to the catalytic annulus containing Cu/ZnO/Al₂O₃. The inner tube is a water-selective NaA Zeolite membrane. Counter-current sweep gas (N₂) flows to extract water.
+- **Module B**: NH₃ is fed to the **lumen** (inner tube) containing a closely packed Ru/YSZ catalyst bed. The Pd membrane wraps around the lumen, allowing H₂ to permeate outward into the shell side (Sitar et al. 2022).
 
-![3D Cutaway](figures/3d_cutaway.png)
+![3D Cutaway Module A](figures/3d_cutaway_module_a.png)
+![3D Cutaway Module B](figures/3d_cutaway_module_b.png)
 
 ## 3. Reaction Network & Thermodynamics
 ### Module A: CO₂ Hydrogenation
@@ -21,10 +22,22 @@ The system consists of a tube-in-tube packed bed.
 
 ## 4. Mathematical Model
 A 1D steady-state plug-flow framework is used.
-**Kinetics (Mignard & Pritchard):**
-$r_{\text{CO}_2} = \frac{k_1 p_{\text{CO}_2} p_{\text{H}_2} [1 - \text{term}_1]}{D^3}$
-**Permeation (Maxwell-Stefan):**
+
+**Kinetics (Mignard & Pritchard, P3 eq. 4-5):**
+
+$r_{\text{CO}_2} = \frac{k_1 p_{\text{CO}_2} p_{\text{H}_2} \left[1 - \frac{p_{\text{H}_2\text{O}} \cdot p_{\text{CH}_3\text{OH}}}{K_{eq1} \cdot p_{\text{H}_2}^3 \cdot p_{\text{CO}_2}}\right]}{D^3}$
+
+$D = 1 + K_{\text{H}_2\text{O},\text{H}_2}\frac{p_{\text{H}_2\text{O}}}{p_{\text{H}_2}} + \sqrt{K_{\text{H}_2}}\sqrt{p_{\text{H}_2}} + K_{\text{H}_2\text{O}} p_{\text{H}_2\text{O}}$
+
+**Permeation (Maxwell-Stefan, P3 eq. 6-16):**
+
 $(J) = \rho_m [q_{\text{sat}}] [B]^{-1} [\Gamma] \frac{d\theta}{dz}$
+
+where $\theta_i = b_i p_i / (1 + \sum_j b_j p_j)$ is the Langmuir loading.
+
+**Sieverts' Law (Module B, Pd membrane):**
+
+$J_{\text{H}_2} = \frac{P_{e,\text{H}_2}}{t_m}\left(\sqrt{p_{\text{H}_2,ret}} - \sqrt{p_{\text{H}_2,perm}}\right)$
 
 ## 5. Parameters and Assumptions
 The model runs purely from `config/parameters.yaml`. 
