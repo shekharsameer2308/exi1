@@ -137,11 +137,11 @@ $$
 | Saturation Loading $q_{\text{sat}}$ | $15.0$ | $6.2$ | $1.0$ | $\text{mol/kg}$ |
 | Pre-exponential Adsorption $b_0$ | $1.64 \times 10^{-12}$ | $5.64 \times 10^{-15}$ | $3.22 \times 10^{-9}$ | $\text{Pa}^{-1}$ |
 | Heat of Adsorption $\Delta H_{ads}$ | $40{,}000$ | $65{,}000$ | $5{,}900$ | $\text{J/mol}$ |
-| Bare Diffusivity $D_0$ | $8.1 \times 10^{-7} \times 300^*$ | $2.5 \times 10^{-8}$ | $1.0 \times 10^{-9}$ | $\text{m}^2/\text{s}$ |
+| Bare Diffusivity $D_0$ | $2.43 \times 10^{-4}\text{ (calibrated)}$ | $2.5 \times 10^{-8}$ | $1.0 \times 10^{-9}$ | $\text{m}^2/\text{s}$ |
 | Diffusion Activation $E_a$ | $36{,}000$ | $17{,}000$ | $1{,}900$ | $\text{J/mol}$ |
 | Membrane Density $\rho_m$ | $1900$ | $1900$ | $1900$ | $\text{kg/m}^3$ |
 
-*\*Note on Calibration: A constant binary exchange diffusivity $D_{\text{H}_2\text{O},\text{CH}_3\text{OH}} = 3 \times 10^{-9}\text{ m}^2/\text{s}$ is employed rather than Vignes interpolation due to hydrogen-bonding correlation effects within zeolite cages (P3 Section 2.3). The bare water diffusivity multiplier $D_{0,\text{mult}} = 300$ matches experimental permeance measurements from Li et al. (2020) ($1.4\text{--}2.1 \times 10^{-7}\text{ mol/(m}^2\cdot\text{s}\cdot\text{Pa)}$).*
+> **Calibration Note:** A constant binary exchange diffusivity $D_{\text{H}_2\text{O},\text{CH}_3\text{OH}} = 3 \times 10^{-9}\text{ m}^2/\text{s}$ is employed rather than Vignes interpolation due to hydrogen-bonding correlation effects within zeolite cages (P3 Section 2.3). The bare water diffusivity multiplier $D_{0,\text{mult}} = 300$ matches experimental permeance measurements from Li et al. (2020) ($1.4\text{--}2.1 \times 10^{-7}\text{ mol/(m}^2\cdot\text{s}\cdot\text{Pa)}$).
 
 ### Module B: Sieverts' Law for Metallic Palladium
 
@@ -359,18 +359,11 @@ The 2D response maps plot the performance topography of the membrane reactor acr
 
 This section synthesizes the engineering factors that chemical engineers can manipulate to maximize process intensification in catalytic membrane reactors for e-fuel synthesis and processing.
 
-```
-+------------------------------------------------------------------------------------------------+
-|                        PROCESS INTENSIFICATION MULTI-FACTOR ROADMAP                           |
-+--------------------------------+-------------------------------+-------------------------------+
-|     STRUCTURAL / GEOMETRY      |   HYDRODYNAMIC / OPERATING    |    THERMODYNAMIC / MATERIAL   |
-+--------------------------------+-------------------------------+-------------------------------+
-| * Area-to-Volume (O_M/V_r)     | * Space Velocity (GHSV)       | * Trans-Membrane dP (Vacuum)  |
-| * Tube Bundles / Hollow Fibers | * Damkohler & Peclet Matching | * Sweep-to-Feed (S/F) Ratio   |
-| * Ultrathin Selective Layer    | * Boundary Layer / Polarization| * Hydrophobic Catalyst Support|
-| * Lumen vs. Annulus Allocation | * H2/CO2 Feed Ratio Tuning    | * Thermal Coupling & Cooling  |
-+--------------------------------+-------------------------------+-------------------------------+
-```
+| Engineering Category | Key Intensification Levers | Core Physical Mechanism |
+|:---|:---|:---|
+| **Structural / Geometry** | Area-to-Volume ($O_M/V_r$), Tube Bundles, Ultrathin Zeolite Layer, Lumen vs. Annulus | Maximizes interfacial transport area and minimizes diffusion distance |
+| **Hydrodynamic / Operating** | Space Velocity (GHSV), Damköhler Synchronization, Sweep-to-Feed ($S/F$), Polarization Control | Balances fluid residence time with mass-transfer extraction timescale |
+| **Thermodynamic / Material** | Trans-Membrane $\Delta P$ (Vacuum), Feed Stoichiometry, Hydrophobic Catalysts, Thermal Staging | Maximizes chemical potential gradient and protects active sites |
 
 ### 11.1 Structural and Geometrical Factors
 
@@ -435,7 +428,49 @@ In traditional methanol plants, low single-pass conversion ($25\text{--}30\%$) f
 By intensifying the reactor with an in-situ selective membrane to achieve **$45.1\%$ single-pass conversion**:
 1. **Recycle Loop Reduction**: The required syngas recycle ratio drops from $5.0$ down to $<1.8$, shrinking recycle compressor capital cost and power demand by **$>60\%$**.
 2. **Reactor Volume Compaction**: Higher average reaction rates (due to suppressed product inhibition) reduce the required catalyst inventory by **$35\%$** for equivalent annual methanol output.
-3. **Purity of Downstream E-Fuel**: Continuous extraction of water from the reaction zone reduces crude methanol moisture content, decreasing distillation energy duty in the final purification train.
+### 11.5 Factor Scaling & Intensification Elasticity Matrix ("Change by X Times" Analysis)
+
+A central question in reactor design is: **If an engineer alters an operational or geometric parameter by a factor of $x$, what proportional change in process intensification is witnessed?**
+
+To quantify this, we define the **Intensification Elasticity** ($\varepsilon_{\text{gain}}$):
+
+$$
+\varepsilon_{\text{gain}} = \frac{\% \Delta (\text{Conversion Gain})}{\% \Delta (\text{Input Factor})} = \frac{\Delta (\Delta X) / \Delta X_{\text{base}}}{\Delta (\text{Factor}) / \text{Factor}_{\text{base}}}
+$$
+
+Where $\Delta X = X_{\text{MR}} - X_{\text{TR}}$ is the absolute conversion advantage over a traditional plug-flow reactor.
+
+The table below compiles the quantitative sensitivity and scaling factors extracted from our physical model runs:
+
+| Parameter Manipulated | Baseline Value | Perturbed Value | Multiplier ($x\times$) | Impact on Product Removal | Impact on Absolute Conversion Gain ($\Delta X$) | Elasticity ($\varepsilon_{\text{gain}}$) | Physical Regime & Engineering Takeaway |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---|
+| **Specific Membrane Area ($O_M/V_r$)** [at high GHSV] | $26.67\text{ m}^{-1}$ | $133.33\text{ m}^{-1}$ | **$5\times$** | $2.06\% \to 9.41\%$ ($4.6\times$) | $+0.21\text{ pp} \to +1.03\text{ pp}$ ($4.9\times$) | **$\approx 0.98$** | Near-linear scaling; area helps, but short residence time caps overall benefit. |
+| **Specific Membrane Area ($O_M/V_r$)** [at low GHSV] | $26.67\text{ m}^{-1}$ | $133.33\text{ m}^{-1}$ | **$5\times$** | $18.54\% \to 60.70\%$ ($3.3\times$) | $+2.28\text{ pp} \to +11.02\text{ pp}$ ($4.8\times$) | **$\approx 0.96$** | Transformative; high area unlocks full equilibrium bypass once residence time is sufficient. |
+| **Gas Residence Time ($1/\text{GHSV}$)** [at base area] | $5000\text{ h}^{-1}$ ($\tau \approx 0.7\text{ s}$) | $500\text{ h}^{-1}$ ($\tau \approx 7.2\text{ s}$) | **$10\times$** | $2.06\% \to 18.54\%$ ($9.0\times$) | $+0.21\text{ pp} \to +2.28\text{ pp}$ ($10.9\times$) | **$\approx 1.09$** | Super-linear; longer contact time allows slow zeolite diffusion to catch up with kinetics. |
+| **Gas Residence Time ($1/\text{GHSV}$)** [at high area] | $5000\text{ h}^{-1}$ ($\tau \approx 0.7\text{ s}$) | $500\text{ h}^{-1}$ ($\tau \approx 7.2\text{ s}$) | **$10\times$** | $9.41\% \to 60.70\%$ ($6.5\times$) | $+1.03\text{ pp} \to +11.02\text{ pp}$ ($10.7\times$) | **$\approx 1.07$** | Super-linear; provides necessary contact time to utilize the expanded membrane area. |
+| **Area $\times$ Residence Time Synergy** [Combined] | Base Case ($26.67, 5000$) | Best Case ($133.33, 500$) | **$50\times$ capacity** | $2.06\% \to 60.70\%$ ($29.5\times$) | $+0.21\text{ pp} \to +11.02\text{ pp}$ (**$52.5\times$**) | **$> 1.0$** | **Cooperative Synergy**: Simultaneous scaling multiplies gains beyond individual additions. |
+| **Sweep-to-Feed Ratio ($S/F$)** | $1.0$ | $10.0$ | **$10\times$** | $18.54\% \to 20.06\%$ ($1.08\times$) | $+2.28\text{ pp} \to +2.48\text{ pp}$ ($1.09\times$) | **$\approx 0.01$** | **Severely Diminishing Returns**: Transport is zeolite-diffusion limited, not sweep-dilution limited. |
+| **Trans-Membrane Driving Force ($\Delta P$)** | $0\text{ bar}$ | $99\text{ bar}$ (Vacuum) | **$\Delta P \uparrow 99\text{ bar}$** | $60.70\% \to 62.48\%$ ($+1.78\text{ pp}$) | $44.54\% \to 45.10\%$ ($+0.56\text{ pp}$) | — | Marginal thermodynamic boost, but eliminates sweep gas separation entirely. |
+| **Module B: Pd Membrane Area (SMA)** | $0.33\text{ cm}^2/\text{g}$ | $4.50\text{ cm}^2/\text{g}$ | **$13.6\times$** | $\text{HRF}: 2.04\% \to 26.16\%$ ($12.8\times$) | $+0.23\text{ pp} \to +3.36\text{ pp}$ (**$14.6\times$**) | **$\approx 1.07$** | Super-linear; relieving hydrogen poisoning on Ru active sites shifts endothermic equilibrium. |
+
+#### Detailed Engineering Interpretations of the Scaling Laws
+
+1. **Membrane Area Elasticity ($\varepsilon \approx 1.0$)**:
+   - *If you increase membrane area by $x$ times*, conversion gain ($\Delta X$) increases by approximately **$x$ times**.
+   - *Caveat*: This linear proportionality holds **only** if residence time is long enough. At very high space velocities, adding membrane area yields diminishing returns because gas exits before reaching the wall.
+
+2. **Residence Time Elasticity ($\varepsilon \approx 1.07\text{--}1.09$)**:
+   - *If you increase residence time by $x$ times* (reducing GHSV by $x$ times), conversion gain increases by **$\sim x^{1.08}$ times**.
+   - Residence time is slightly super-linear because slower flow simultaneously provides more reaction time AND more diffusion time, compounding the Le Chatelier product removal effect.
+
+3. **Cooperative Multiplying Effect ($52.5\times$ Gain)**:
+   - When membrane area ($5\times$) and residence time ($10\times$) are scaled together, the total capacity factor increases by $50\times$.
+   - The observed conversion gain increases by **$52.5\times$** (from $+0.21\text{ pp}$ to $+11.02\text{ pp}$).
+   - *Takeaway*: Membrane reactor intensification is fundamentally a **two-knob optimization**. You cannot intensify a reactor by turning only one knob; both mass-transfer area and hydrodynamic contact time must be scaled in unison.
+
+4. **Sweep Gas Inefficiency ($\varepsilon \approx 0.01$)**:
+   - *Increasing sweep flow by $10\times$* only yields a **$1.08\times$** increase in water extraction.
+   - *Design Implication*: Do **not** expend capital or compressor power on high sweep ratios ($S/F > 2$). Operating at $S/F = 1\text{--}2$ or using vacuum permeate extraction is far more energy-efficient and avoids dilute downstream product streams.
 
 ---
 
