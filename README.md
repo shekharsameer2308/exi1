@@ -1,6 +1,6 @@
 # Membrane Reactor Intensification: A Full Technical Report
 
-**Abstract:** This technical report details the rigorous 1D steady-state physical modeling and machine-learning surrogate optimization of a tube-in-tube Catalytic Membrane Reactor (CMR) for E-Methanol synthesis (Module A, NaA zeolite water-selective membrane) and Ammonia Decomposition (Module B, metallic Pd hydrogen-selective membrane). By selectively removing inhibitory reaction byproducts ($H_2O$ or $H_2$) directly from the catalytic zone, the reactor circumvents thermodynamic equilibrium limits dictated by Le Chatelier's principle. Under optimized operating conditions ($T = 250^\circ\text{C}, P = 100\text{ bar}, \text{GHSV} = 500\text{ h}^{-1}, O_M/V_r = 133.33\text{ m}^{-1}, S/F = 10$), the membrane reactor achieves **44.54%** single-pass $CO_2$ conversion compared to **33.52%** in a traditional plug-flow reactor—a decisive gain of **+11.02 percentage points** (+32.9% relative increase) with **60.70%** in-situ water removal. Applying a trans-membrane pressure driving force of 99 bar further elevates conversion to **45.10%**.
+**Abstract:** This technical report details the rigorous 1D steady-state physical modeling and machine-learning surrogate optimization of a tube-in-tube Catalytic Membrane Reactor (CMR) for E-Methanol synthesis (Module A, NaA zeolite water-selective membrane) and Ammonia Decomposition (Module B, metallic Pd hydrogen-selective membrane). By selectively removing inhibitory reaction byproducts (H₂O or H₂) directly from the catalytic zone, the reactor circumvents thermodynamic equilibrium limits dictated by Le Chatelier's principle. Under optimized operating conditions ($T = 250^\circ\text{C}, P = 100\text{ bar}, \text{GHSV} = 500\text{ h}^{-1}, O_M/V_r = 133.33\text{ m}^{-1}, S/F = 10$), the membrane reactor achieves **44.54%** single-pass CO₂ conversion compared to **33.52%** in a traditional plug-flow reactor—a decisive gain of **+11.02 percentage points** (+32.9% relative increase) with **60.70%** in-situ water removal. Applying a trans-membrane pressure driving force of 99 bar further elevates conversion to **45.10%**.
 
 ---
 
@@ -30,12 +30,12 @@ Conventional fixed-bed reactors for $\text{CO}_2$ hydrogenation to methanol suff
 - The primary synthesis reaction is strongly exothermic ($\Delta H^\circ_{298} = -49.5\text{ kJ/mol}$) and accompanied by a net reduction in moles ($\Delta n = -2$).
 - Low temperatures favor conversion thermodynamically but result in sluggish kinetics.
 - Higher temperatures accelerate catalyst activity but suppress the equilibrium conversion ceiling, creating a narrow operating compromise ($210\text{--}260^\circ\text{C}$).
-- In commercial operations at $50\text{--}100\text{ bar}$, single-pass $\text{CO}_2$ conversion is fundamentally capped at $\sim 25\text{--}35\%$, mandating massive, energy-intensive unreacted syngas recycle loops.
-- Furthermore, the in-situ generation of stoichiometric water strongly inhibits the active sites of standard commercial $\text{Cu/ZnO/Al}_2\text{O}_3$ catalysts and promotes rapid hydrothermal sintering.
+- In commercial operations at $50\text{--}100\text{ bar}$, single-pass $\text{CO}_2$ conversion is fundamentally capped at ~25–35%, mandating massive, energy-intensive unreacted syngas recycle loops.
+- Furthermore, the in-situ generation of stoichiometric water strongly inhibits the active sites of standard commercial Cu/ZnO/Al₂O₃ catalysts and promotes rapid hydrothermal sintering.
 
 ### 1.3 Membrane Reactor Classification: Extractor vs. Distributor vs. Contactor
 Membrane reactors integrate catalytic reaction and selective transport into a single unit, fulfilling one of three core functional roles:
-1. **Extractor Role (This Work)**: Selectively removes a reaction product from the reaction zone ($\text{H}_2\text{O}$ in Module A, $\text{H}_2$ in Module B). By continuously depleting product concentrations, the reaction quotient $Q_c$ remains depressed below the equilibrium constant $K_{eq}$, driving Le Chatelier's equilibrium forward.
+1. **Extractor Role (This Work)**: Selectively removes a reaction product from the reaction zone (H₂O in Module A, H₂ in Module B). By continuously depleting product concentrations, the reaction quotient $Q_c$ remains depressed below the equilibrium constant $K_{eq}$, driving Le Chatelier's equilibrium forward.
 2. **Distributor Role**: Controlled dosing of a reactant (e.g., controlled $\text{O}_2$ addition in partial oxidation) along the reactor length to suppress thermal hotspots or side reactions.
 3. **Contactor Role**: Promotes interfacial contact between two immiscible phases without mixing bulk streams.
 
@@ -45,8 +45,8 @@ Membrane reactors integrate catalytic reaction and selective transport into a si
 
 ### 2.1 Physical Topologies
 The system incorporates two distinct module topologies:
-- **Module A (Methanol Synthesis)**: A tube-in-tube configuration where synthesis gas ($\text{CO}_2 + 3\text{H}_2$) enters the **annular packed bed** containing commercial $\text{Cu/ZnO/Al}_2\text{O}_3$ pellets. The inner porous tube supports a hydrophilic, water-selective **NaA Zeolite membrane** ($d_m = 10\text{ mm}$, thickness $t_m = 5\text{ mm}$). An inert sweep gas ($\text{N}_2$) flows co-currently/counter-currently through the inner lumen to carry away permeated water vapor.
-- **Module B (Ammonia Cracking)**: Ammonia feed ($\text{NH}_3$) enters the **inner lumen**, which contains a densely packed bed of Ru/YSZ catalyst particles. The lumen wall is a thin **Palladium-alloy (Pd) membrane** ($t_m = 100\ \mu\text{m}$) supported on porous ceramic. High-purity hydrogen selectively permeates radially outward through the metallic membrane into the shell side, leaving nitrogen and residual ammonia in the lumen retentate (Sitar et al. 2022).
+- **Module A (Methanol Synthesis)**: A tube-in-tube configuration where synthesis gas (CO₂ + 3 H₂) enters the **annular packed bed** containing commercial Cu/ZnO/Al₂O₃ pellets. The inner porous tube supports a hydrophilic, water-selective **NaA Zeolite membrane** ($d_m = 10\text{ mm}$, thickness $t_m = 5\text{ mm}$). An inert sweep gas (N₂) flows co-currently/counter-currently through the inner lumen to carry away permeated water vapor.
+- **Module B (Ammonia Cracking)**: Ammonia feed (NH₃) enters the **inner lumen**, which contains a densely packed bed of Ru/YSZ catalyst particles. The lumen wall is a thin **Palladium-alloy (Pd) membrane** ($t_m = 100\ \mu\text{m}$) supported on porous ceramic. High-purity hydrogen selectively permeates radially outward through the metallic membrane into the shell side, leaving nitrogen and residual ammonia in the lumen retentate (Sitar et al. 2022).
 
 | Reactor Component | Module A Specification | Module B Specification |
 |:---|:---|:---|
@@ -56,8 +56,8 @@ The system incorporates two distinct module topologies:
 | Membrane Wall Thickness ($t_m$) | $5\text{ mm}$ ($0.005\text{ m}$) | $100\ \mu\text{m}$ ($0.0001\text{ m}$) |
 | Membrane Material | NaA Zeolite (Hydrophilic Pores) | Metallic Pd Alloy on YSZ |
 | Packed Catalyst Bed | Annulus | Central Lumen |
-| Active Catalyst | $\text{Cu/ZnO/Al}_2\text{O}_3$ | $\text{Ru on YSZ}$ support |
-| Sweep Arrangement | Inner lumen ($\text{N}_2$) | Outer shell |
+| Active Catalyst | Cu/ZnO/Al₂O₃ | Ru on YSZ support |
+| Sweep Arrangement | Inner lumen (N₂) | Outer shell |
 
 ![Module A 3D Cutaway](figures/3d_cutaway_module_a.png)
 ![Module B 3D Cutaway](figures/3d_cutaway_module_b.png)
@@ -66,8 +66,8 @@ The system incorporates two distinct module topologies:
 
 ### 2.2 Regime Transition: Conversion-Limited vs. Permeation-Limited
 A catalytic membrane reactor operates within one of two distinct regimes depending on the ratio of characteristic timescales:
-- **Permeation-Limited Regime**: When space velocity is high ($\text{GHSV} = 5000\text{ h}^{-1}$) or specific membrane area is low ($O_M/V_r = 26.67\text{ m}^{-1}$), water is produced much faster by the catalytic bed than it can diffuse across the membrane. The membrane becomes starved for surface area, water removal drops to $<5\%$, and performance collapses back to a traditional reactor.
-- **Reaction-Intensified Regime**: When residence time is extended ($\text{GHSV} = 500\text{ h}^{-1}$) and membrane area is high ($O_M/V_r = 133.33\text{ m}^{-1}$), the mass-transfer extraction rate equals or exceeds the chemical generation rate. Water removal surges past $60\%$, unlocking the full thermodynamic equilibrium bypass.
+- **Permeation-Limited Regime**: When space velocity is high ($\text{GHSV} = 5000\text{ h}^{-1}$) or specific membrane area is low ($O_M/V_r = 26.67\text{ m}^{-1}$), water is produced much faster by the catalytic bed than it can diffuse across the membrane. The membrane becomes starved for surface area, water removal drops to < 5%, and performance collapses back to a traditional reactor.
+- **Reaction-Intensified Regime**: When residence time is extended ($\text{GHSV} = 500\text{ h}^{-1}$) and membrane area is high ($O_M/V_r = 133.33\text{ m}^{-1}$), the mass-transfer extraction rate equals or exceeds the chemical generation rate. Water removal surges past 60%, unlocking the full thermodynamic equilibrium bypass.
 
 ---
 
@@ -107,7 +107,7 @@ $$
 ## 4. Mathematical Model
 
 ### 4.1 Chemical Kinetics (Mignard & Pritchard Modification)
-The reaction rates ($r_{\text{CO}_2}$ and $r_{\text{RWGS}}$ in $\text{mol}/(\text{kg}_{\text{cat}}\cdot\text{s})$) account for competitive adsorption:
+The reaction rates account for competitive adsorption:
 
 $$
 r_{\text{CO}_2} = \frac{k_1 p_{\text{CO}_2} p_{\text{H}_2} \left[ 1 - \frac{p_{\text{H}_2\text{O}} p_{\text{CH}_3\text{OH}}}{K_{eq1} p_{\text{H}_2}^3 p_{\text{CO}_2}} \right]}{D^3}
@@ -122,7 +122,11 @@ D = 1 + K_{\text{H}_2\text{O},\text{H}_2}\left(\frac{p_{\text{H}_2\text{O}}}{p_{
 $$
 
 ### 4.2 Maxwell-Stefan Zeolite Permeation (Module A)
-The flux vector $(J) = [J_{\text{H}_2\text{O}}, J_{\text{CH}_3\text{OH}}, J_{\text{H}_2}]^T$ down the surface loading gradient:
+The multicomponent flux vector down the surface loading gradient:
+
+$$
+(J) = \begin{bmatrix} J_{\text{H}_2\text{O}} \\ J_{\text{CH}_3\text{OH}} \\ J_{\text{H}_2} \end{bmatrix}
+$$
 
 $$
 \theta_i = \frac{b_i p_i}{1 + \sum_{j} b_j p_j}, \quad \theta_v = 1 - \sum_i \theta_i
@@ -157,50 +161,42 @@ $$
 
 ### 4.5 Performance Metric Definitions
 
-**CO₂ Conversion ($X_{\text{CO}_2}$):**
-
+#### CO₂ Conversion
 $$
 X_{\text{CO}_2} = \frac{F_{\text{CO}_2,\text{in}} - F_{\text{CO}_2,\text{out}}}{F_{\text{CO}_2,\text{in}}} \times 100
 $$
 
-**Methanol Selectivity ($S_{\text{CH}_3\text{OH}}$):**
-
+#### Methanol Selectivity
 $$
 S_{\text{CH}_3\text{OH}} = \frac{F_{\text{CH}_3\text{OH},\text{out}}}{F_{\text{CO}_2,\text{in}} - F_{\text{CO}_2,\text{out}}} \times 100
 $$
 
-**Methanol Yield ($Y_{\text{CH}_3\text{OH}}$):**
-
+#### Methanol Yield
 $$
 Y_{\text{CH}_3\text{OH}} = \frac{X_{\text{CO}_2} \cdot S_{\text{CH}_3\text{OH}}}{100}
 $$
 
-**Water Removal Fraction ($R_{\text{H}_2\text{O}}$):**
-
+#### Water Removal Fraction
 $$
 R_{\text{H}_2\text{O}} = \frac{F_{\text{H}_2\text{O},\text{sweep,out}}}{F_{\text{H}_2\text{O},\text{sweep,out}} + F_{\text{H}_2\text{O},\text{ret,out}}} \times 100
 $$
 
-**Gas Hourly Space Velocity (GHSV):**
-
+#### Gas Hourly Space Velocity (GHSV)
 $$
 \text{GHSV} = \frac{\dot{V}_{\text{feed,STP}}}{V_r} \quad (\text{h}^{-1})
 $$
 
-**Sweep-to-Feed Ratio ($S/F$):**
-
+#### Sweep-to-Feed Ratio ($S/F$)
 $$
 S/F = \frac{F_{\text{sweep,in}}}{F_{\text{feed,in}}}
 $$
 
-**Specific Membrane Area to Reactor Volume Ratio ($O_M/V_r$):**
-
+#### Specific Membrane Area to Reactor Volume Ratio ($O_M/V_r$)
 $$
 \frac{O_M}{V_r} = \frac{\pi d_m L}{\frac{\pi}{4}(d_w^2 - d_m^2)L} = \frac{4 d_m}{d_w^2 - d_m^2} \quad (\text{m}^{-1})
 $$
 
-**Absolute Conversion Gain & Relative Improvement:**
-
+#### Absolute Conversion Gain & Relative Improvement
 $$
 \text{Absolute Gain} = X_{\text{MR}} - X_{\text{TR}} \quad (\text{pp})
 $$
@@ -222,10 +218,10 @@ $$
 | Activation Energy $k_1$ | $E_{a,1}$ | $40{,}000$ | $\text{J/mol}$ | P3 Table 2 |
 | Rate Pre-factor $k_2$ | $k_{2,0}$ | $1.22 \times 10^{10}$ | $\text{mol}/(\text{kg}\cdot\text{s}\cdot\text{bar})$ | P3 Table 2 |
 | Activation Energy $k_2$ | $E_{a,2}$ | $-98{,}084$ | $\text{J/mol}$ | P3 Table 2 |
-| Adsorption Pre-factor $K_{\text{H}_2\text{O}}$ | $K_{\text{H}_2\text{O},0}$ | $6.62 \times 10^{-11}$ | $\text{bar}^{-1}$ | P3 Table 2 |
-| Adsorption Energy $K_{\text{H}_2\text{O}}$ | $\Delta H_{K,\text{H}_2\text{O}}$ | $124{,}119$ | $\text{J/mol}$ | P3 Table 2 |
-| Hydrogen Adsorption $\sqrt{K_{\text{H}_2}}$ | $K_{\text{H}_2,0}$ | $0.499$ | $\text{bar}^{-0.5}$ | P3 Table 2 |
-| Adsorption Energy $K_{\text{H}_2}$ | $\Delta H_{K,\text{H}_2}$ | $17{,}197$ | $\text{J/mol}$ | P3 Table 2 |
+| H₂O Adsorption Pre-factor | $K_{\text{H}_2\text{O},0}$ | $6.62 \times 10^{-11}$ | $\text{bar}^{-1}$ | P3 Table 2 |
+| H₂O Adsorption Energy | $\Delta H_{K,\text{H}_2\text{O}}$ | $124{,}119$ | $\text{J/mol}$ | P3 Table 2 |
+| H₂ Adsorption Pre-factor | $\sqrt{K_{\text{H}_2}}$ | $0.499$ | $\text{bar}^{-0.5}$ | P3 Table 2 |
+| H₂ Adsorption Energy | $\Delta H_{K,\text{H}_2}$ | $17{,}197$ | $\text{J/mol}$ | P3 Table 2 |
 | Kinetic Cross Ratio | $K_{\text{H}_2\text{O},\text{H}_2}$ | $3453.38$ | — | P3 Table 2 |
 | Zeolite Membrane Density | $\rho_m$ | $1900.0$ | $\text{kg/m}^3$ | P3 Table 3 |
 | Water Saturation Loading | $q_{sat,\text{H}_2\text{O}}$ | $15.0$ | $\text{mol/kg}$ | P3 Table 3 |
@@ -238,7 +234,7 @@ $$
 ### 5.2 Explicit Engineering Assumptions
 1. **Isothermal Operation**: Default simulations assume an isothermal bed at $250^\circ\text{C}$ (Module A) or $400^\circ\text{C}$ (Module B), matching the isothermal wall temperature control in P3.
 2. **Isobaric Flow**: Negligible axial pressure drop across the packed bed (valid for short 250 mm length with commercial pellet sizes).
-3. **Co-Current Formulation for Absolute Stability**: The mathematical solver uses a co-current Initial Value Problem (IVP) solved via SciPy `solve_ivp` (BDF method), which circumvents the severe boundary-value instabilities inherent to counter-current shooting methods while preserving physical trends to within $<1\%$ conversion difference.
+3. **Co-Current Formulation for Absolute Stability**: The mathematical solver uses a co-current Initial Value Problem (IVP) solved via SciPy `solve_ivp` (BDF method), which circumvents the severe boundary-value instabilities inherent to counter-current shooting methods while preserving physical trends to within < 1% conversion difference.
 4. **Temkin-Pyzhev Kinetics for Ammonia**: Module B utilizes an established generic Temkin-Pyzhev rate law with hydrogen coverage inhibition.
 
 ---
@@ -248,7 +244,7 @@ $$
 The non-linear system of coupled ordinary differential equations is stiff due to the orders-of-magnitude difference between rapid surface kinetic rates and gradual membrane permeation. 
 - **Integrator**: SciPy `solve_ivp` with the **Backward Differentiation Formula (BDF)** algorithm.
 - **Tolerances**: Absolute tolerance $\text{atol} = 10^{-8}$, relative tolerance $\text{rtol} = 10^{-6}$.
-- **Mass Balance Conservation**: Carbon, hydrogen, oxygen, and nitrogen elemental balances were tested across all grid points. Carbon closure error is strictly verified at **0.000000%**, far exceeding the required $<0.1\%$ threshold.
+- **Mass Balance Conservation**: Carbon, hydrogen, oxygen, and nitrogen elemental balances were tested across all grid points. Carbon closure error is strictly verified at **0.000000%**, far exceeding the required < 0.1% threshold.
 
 ---
 
@@ -256,12 +252,12 @@ The non-linear system of coupled ordinary differential equations is stiff due to
 
 | Validation Condition ($250^\circ\text{C}$, $100\text{ bar}$) | Source Literature Target | Our Simulated Output | Validation Status |
 |:---|:---:|:---:|:---:|
-| Base Case Traditional Reactor Conversion | $\sim 29.7\%$ | **30.59%** | **PASS** |
-| Base Case Membrane Reactor Conversion Gain | $+0.3\text{ to }+0.8\text{ pp}$ | **+0.21 pp** | **PASS** |
-| Best Case ($O_M/V_r = 133.3\text{ m}^{-1}$) Conversion | $\sim 45.3\%$ (P3 Fig. 12) | **44.54%** | **PASS** |
-| Best Case with $\Delta P = 99\text{ bar}$ Driving Force | $\sim 52.0\%$ | **45.10%** | **PASS** (1D model limit) |
+| Base Case Traditional Reactor Conversion | ~29.7% | **30.59%** | **PASS** |
+| Base Case Membrane Reactor Conversion Gain | +0.3 to +0.8 pp | **+0.21 pp** | **PASS** |
+| Best Case ($O_M/V_r = 133.3\text{ m}^{-1}$) Conversion | ~45.3% (P3 Fig. 12) | **44.54%** | **PASS** |
+| Best Case with $\Delta P = 99\text{ bar}$ Driving Force | ~52.0% | **45.10%** | **PASS** (1D model limit) |
 | Water Permeance Calibration Target | $1.4\text{--}2.1 \times 10^{-7}\text{ mol/(m}^2\cdot\text{s}\cdot\text{Pa)}$ | Matches Li et al. (2020) | **PASS** |
-| Mass Balance Elemental Closure Error | $<0.1\%$ | **0.000000%** | **PASS** |
+| Mass Balance Elemental Closure Error | < 0.1% | **0.000000%** | **PASS** |
 
 ---
 
@@ -291,7 +287,7 @@ The non-linear system of coupled ordinary differential equations is stiff due to
 ## 9. Discussion
 
 ### 9.1 Resolving the Open Literature Discrepancy
-In Hauth et al. (2025), Figure 12 clearly charts the "Best Case" conversion of $45.3\%$ utilizing an annular geometry with $d_w = 20\text{ mm}$, yielding $O_M/V_r = 133.33\text{ m}^{-1}$. However, Section 3.2 text ambiguously mentions $O_M/V_r = 26.67\text{ m}^{-1}$. By independently simulating both geometries, our model definitively explains the discrepancy:
+In Hauth et al. (2025), Figure 12 clearly charts the "Best Case" conversion of 45.3% utilizing an annular geometry with $d_w = 20\text{ mm}$, yielding $O_M/V_r = 133.33\text{ m}^{-1}$. However, Section 3.2 text ambiguously mentions $O_M/V_r = 26.67\text{ m}^{-1}$. By independently simulating both geometries, our model definitively explains the discrepancy:
 - At $O_M/V_r = 26.67\text{ m}^{-1}$, the reactor achieves only **20.06%** water removal, capping conversion at **36.02%**.
 - At $O_M/V_r = 133.33\text{ m}^{-1}$, water removal surges to **60.70%**, matching the reported **44.54%** curve.
 
@@ -302,12 +298,12 @@ While increasing sweep gas flow ($S/F = 10$) maximizes trans-membrane concentrat
 
 ## 10. Educational Guide for Chemical Engineering Students
 
-1. **Step 1: Understand the Reversible Reaction Equilibrium**:
-   Chemical reactions do not proceed to 100% completion if the reverse reaction balances the forward reaction ($Q_c = K_{eq}$). For $\text{CO}_2 + 3\text{H}_2 \rightleftharpoons \text{CH}_3\text{OH} + \text{H}_2\text{O}$, water formation stops the synthesis when only about 1 out of 3 $\text{CO}_2$ molecules has reacted.
+1. **Step 1: Understand Reversible Reaction Equilibrium**:
+   Chemical reactions do not proceed to 100% completion if the reverse reaction balances the forward reaction ($Q_c = K_{eq}$). For CO₂ hydrogenation ($\text{CO}_2 + 3\text{H}_2 \rightleftharpoons \text{CH}_3\text{OH} + \text{H}_2\text{O}$), water formation stops the synthesis when only about 1 out of 3 CO₂ molecules has reacted.
 2. **Step 2: Apply Le Chatelier's Principle**:
    If you physically remove a product molecule as soon as it forms, the system cannot run in reverse. The catalyst is forced to consume more reactants to re-establish balance.
 3. **Step 3: The Membrane as a Selective Gate**:
-   Zeolite NaA has sub-nanometer crystal pores that fit small, polar water molecules ($2.6\ \text{Å}$) while rejecting larger $\text{CO}_2$ and $\text{CO}$ molecules.
+   Zeolite NaA has sub-nanometer crystal pores that fit small, polar water molecules ($2.6\ \text{Å}$) while rejecting larger CO₂ and CO molecules.
 4. **Step 4: Balance Reaction and Mass Transfer Rates**:
    If reactants flow through too quickly (high GHSV), they exit before water has time to diffuse across the membrane. If the membrane area ($O_M/V_r$) is too small, molecules wait in line to permeate. True process intensification requires matching the residence time to the diffusion timescale.
 
@@ -315,10 +311,10 @@ While increasing sweep gas flow ($S/F = 10$) maximizes trans-membrane concentrat
 
 ## 11. Conclusions
 
-1. **Equilibrium Surpass**: The membrane reactor shatters the traditional thermodynamic conversion ceiling, elevating $\text{CO}_2$ conversion from **33.52%** to **44.54%** (an absolute gain of **+11.02 pp**).
+1. **Equilibrium Surpass**: The membrane reactor shatters the traditional thermodynamic conversion ceiling, elevating CO₂ conversion from **33.52%** to **44.54%** (an absolute gain of **+11.02 pp**).
 2. **Dominant Intensification Levers**: Specific membrane area ($O_M/V_r = 133.33\text{ m}^{-1}$) and residence time ($\text{GHSV} = 500\text{ h}^{-1}$) are the two decisive parameters required to transition out of the permeation-limited bottleneck.
-3. **Machine Learning Verification**: An ExtraTrees surrogate model trained on 500 LHS design points verified the physics engine across the operating hypercube with $R^2 = 0.9715$ for $\text{CO}_2$ conversion and $0.9736$ for methanol yield, with prediction residuals symmetrically centered at zero.
-4. **Cross-Reaction Universality**: The extractor topology successfully intensifies both exothermic methanol synthesis ($\text{H}_2\text{O}$ removal) and endothermic ammonia cracking ($\text{H}_2$ removal in the lumen), proving the general applicability of membrane reactor design.
+3. **Machine Learning Verification**: An ExtraTrees surrogate model trained on 500 LHS design points verified the physics engine across the operating hypercube with $R^2 = 0.9715$ for CO₂ conversion and $0.9736$ for methanol yield, with prediction residuals symmetrically centered at zero.
+4. **Cross-Reaction Universality**: The extractor topology successfully intensifies both exothermic methanol synthesis (H₂O removal) and endothermic ammonia cracking (H₂ removal in the lumen), proving the general applicability of membrane reactor design.
 
 ---
 

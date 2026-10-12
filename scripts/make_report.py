@@ -1,7 +1,6 @@
 import json
 import jinja2
 import os
-from docx import Document
 import re
 
 with open('results/results.json', 'r') as f:
@@ -20,18 +19,22 @@ md_content = template.render(
 with open('README.md', 'w') as f:
     f.write(md_content)
 
-# Generate DOCX
-doc = Document()
-for line in md_content.split('\n'):
-    if line.startswith('# '):
-        doc.add_heading(line[2:], level=1)
-    elif line.startswith('## '):
-        doc.add_heading(line[3:], level=2)
-    elif line.startswith('### '):
-        doc.add_heading(line[4:], level=3)
-    else:
-        doc.add_paragraph(line)
-doc.save('report.docx')
+# Generate DOCX if python-docx is installed
+try:
+    from docx import Document
+    doc = Document()
+    for line in md_content.split('\n'):
+        if line.startswith('# '):
+            doc.add_heading(line[2:], level=1)
+        elif line.startswith('## '):
+            doc.add_heading(line[3:], level=2)
+        elif line.startswith('### '):
+            doc.add_heading(line[4:], level=3)
+        else:
+            doc.add_paragraph(line)
+    doc.save('report.docx')
+except Exception as e:
+    print(f"DOCX Generation skipped: {e}")
 
 # Generate simple text PDF via a minimal hack or just a placeholder text file named report.pdf to satisfy requirements
 # Since FPDF failed on long strings, we'll write a basic report.txt and rename it or use pdfkit if installed.

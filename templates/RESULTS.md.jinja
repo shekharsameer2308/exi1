@@ -28,8 +28,8 @@ This document presents the complete simulation and machine-learning results of t
 | Pd Membrane Thickness | $t_m$ | $100$ | $\mu\text{m}$ | P1, Sitar 2022 |
 | Active Catalyst | — | Ru on YSZ | — | Sitar 2022 |
 | Catalyst Bed Location | — | Lumen (packed bed) | — | Sitar 2022 |
-| $\text{H}_2$ Permeance | $P_{e,\text{H}_2}$ | $1.0 \times 10^{-5}$ | $\text{mol}/(\text{m}^2\cdot\text{s}\cdot\text{Pa}^{0.5})$ | P1 eq. 1-3 |
-| Ideal Selectivity ($\text{H}_2/\text{N}_2$) | $\alpha$ | $10{,}000$ | — | P1 |
+| H₂ Permeance | $P_{e,\text{H}_2}$ | $1.0 \times 10^{-5}$ | $\text{mol}/(\text{m}^2\cdot\text{s}\cdot\text{Pa}^{0.5})$ | P1 eq. 1-3 |
+| Ideal Selectivity (H₂/N₂) | $\alpha$ | $10{,}000$ | — | P1 |
 
 ---
 
@@ -63,12 +63,12 @@ $$
 
 **Kinetic Parameters (P3 Table 2):**
 
-| Parameter | Pre-exponential ($A$) | Activation Energy ($E$ / $\text{J/mol}$) | Temperature Function | Source |
+| Parameter | Pre-exponential ($A$) | Activation Energy ($E$ / $\text{J/mol}$) | Temperature Form | Source |
 |:---|:---:|:---:|:---|:---|
-| $k_1$ | $1.07$ | $+40{,}000$ | $k_1 = 1.07 \exp\left(\frac{40000}{RT}\right)$ | P3 Table 2 |
-| $k_2$ | $1.22 \times 10^{10}$ | $-98{,}084$ | $k_2 = 1.22 \times 10^{10} \exp\left(\frac{-98084}{RT}\right)$ | P3 Table 2 |
-| $K_{\text{H}_2\text{O}}$ | $6.62 \times 10^{-11}$ | $+124{,}119$ | $K_{\text{H}_2\text{O}} = 6.62 \times 10^{-11} \exp\left(\frac{124119}{RT}\right)$ | P3 Table 2 |
-| $\sqrt{K_{\text{H}_2}}$ | $0.499$ | $+17{,}197$ | $\sqrt{K_{\text{H}_2}} = 0.499 \exp\left(\frac{17197}{RT}\right)$ | P3 Table 2 |
+| $k_1$ | $1.07$ | $+40{,}000$ | $A \exp(E/RT)$ | P3 Table 2 |
+| $k_2$ | $1.22 \times 10^{10}$ | $-98{,}084$ | $A \exp(E/RT)$ | P3 Table 2 |
+| $K_{\text{H}_2\text{O}}$ | $6.62 \times 10^{-11}$ | $+124{,}119$ | $A \exp(E/RT)$ | P3 Table 2 |
+| $\sqrt{K_{\text{H}_2}}$ | $0.499$ | $+17{,}197$ | $A \exp(E/RT)$ | P3 Table 2 |
 | $K_{\text{H}_2\text{O},\text{H}_2}$ | $3453.38$ | — | Constant ratio | P3 Table 2 |
 
 **Equilibrium Constants:**
@@ -141,7 +141,11 @@ $$
 | Diffusion Activation $E_a$ | $36{,}000$ | $17{,}000$ | $1{,}900$ | $\text{J/mol}$ |
 | Membrane Density $\rho_m$ | $1900$ | $1900$ | $1900$ | $\text{kg/m}^3$ |
 
-> **Calibration Note:** A constant binary exchange diffusivity $D_{\text{H}_2\text{O},\text{CH}_3\text{OH}} = 3 \times 10^{-9}\text{ m}^2/\text{s}$ is employed rather than Vignes interpolation due to hydrogen-bonding correlation effects within zeolite cages (P3 Section 2.3). The bare water diffusivity multiplier $D_{0,\text{mult}} = 300$ matches experimental permeance measurements from Li et al. (2020) ($1.4\text{--}2.1 \times 10^{-7}\text{ mol/(m}^2\cdot\text{s}\cdot\text{Pa)}$).
+> **Calibration Note:** A constant binary exchange diffusivity is employed rather than Vignes interpolation due to hydrogen-bonding correlation effects within zeolite cages (P3 Section 2.3):
+> 
+> $$D_{\text{H}_2\text{O},\text{CH}_3\text{OH}} = 3 \times 10^{-9}\text{ m}^2/\text{s}$$
+> 
+> The bare water diffusivity multiplier ($D_{0,\text{mult}} = 300$) matches experimental permeance measurements from Li et al. (2020) ($1.4\text{--}2.1 \times 10^{-7}\text{ mol/(m}^2\cdot\text{s}\cdot\text{Pa)}$).
 
 ### Module B: Sieverts' Law for Metallic Palladium
 
@@ -167,7 +171,7 @@ $$
 \frac{dF_i^S}{dz} = + A_m J_i
 $$
 
-*The system is solved as a stiff initial value problem using SciPy `solve_ivp` with the Backward Differentiation Formula (BDF). Mass balance closure across carbon, hydrogen, oxygen, and nitrogen closes within $<0.1\%$ error across all cases.*
+*The system is solved as a stiff initial value problem using SciPy `solve_ivp` with the Backward Differentiation Formula (BDF). Mass balance closure across carbon, hydrogen, oxygen, and nitrogen closes within < 0.1% error across all cases.*
 
 ---
 
@@ -175,9 +179,9 @@ $$
 
 As highlighted by Sitar et al. (2022) and P1, ammonia cracking is endothermic and bounded by chemical equilibrium. The physical architecture leverages a **Pd membrane on a Ru/YSZ support**, with the **catalyst packed bed inside the lumen region**.
 
-- **Feed Conditions:** Pure $\text{NH}_3$ enters the central lumen at $T = 400^\circ\text{C}$, $P_{\text{ret}} = 7\text{ bar}$.
+- **Feed Conditions:** Pure NH₃ enters the central lumen at $T = 400^\circ\text{C}$ and $P_{\text{ret}} = 7\text{ bar}$.
 - **Permeation (Extractor):** Hydrogen selectively permeates outward through the Pd wall into the shell side ($P_{\text{perm}} = 1\text{ bar}$) via Sieverts' Law.
-- **Retentate:** $\text{N}_2$ and residual unreacted $\text{NH}_3$ exit the lumen.
+- **Retentate:** N₂ and residual unreacted NH₃ exit the lumen.
 
 ### Performance Data Matrix
 
@@ -187,9 +191,9 @@ As highlighted by Sitar et al. (2022) and P1, ammonia cracking is endothermic an
 | **{{ name }}** | {% if 'Jiang' in name %}4.50{% else %}0.33{% endif %} | {{ "%0.2f"|format(res['X_TR']) }} | {{ "%0.2f"|format(res['X_MR']) }} | +{{ "%0.2f"|format(res['Gain_X']) }} | {{ "%0.2f"|format(res['HRF']) }} |
 {% endfor %}
 
-Ammonia decomposition ($2\text{NH}_3 \rightleftharpoons \text{N}_2 + 3\text{H}_2$) produces two moles of nitrogen and three moles of hydrogen from two moles of ammonia ($\Delta n = +2$). In a traditional reactor, as conversion progresses along the bed, hydrogen partial pressure builds up, poisoning the active ruthenium sites via the competitive adsorption denominator $(1 + K_{\text{H}_2} p_{\text{H}_2})$ and accelerating the reverse synthesis rate. 
+Ammonia decomposition ($2\text{NH}_3 \rightleftharpoons \text{N}_2 + 3\text{H}_2$) produces two moles of nitrogen and three moles of hydrogen from two moles of ammonia ($\Delta n = +2$). In a traditional reactor, as conversion progresses along the bed, hydrogen partial pressure builds up, poisoning active ruthenium sites via competitive adsorption and accelerating the reverse synthesis rate. 
 
-By encasing the packed bed within a hydrogen-permeable Pd membrane tube (lumen configuration), atomic hydrogen is extracted continuously down its partial pressure gradient. In the **Jiang 2021 Target** case ($\text{SMA} = 4.50\text{ cm}^2/\text{g}$), the membrane extracts **{{ "%0.2f"|format(results_b['Jiang 2021 Target']['HRF']) }}%** of the generated hydrogen directly through the wall. This selective sink suppresses the reverse rate and relieves site blocking, enabling single-pass conversion to climb from the equilibrium plateau of $81.06\%$ up to **{{ "%0.2f"|format(results_b['Jiang 2021 Target']['X_MR']) }}%** (+{{ "%0.2f"|format(results_b['Jiang 2021 Target']['Gain_X']) }} pp).
+By encasing the packed bed within a hydrogen-permeable Pd membrane tube (lumen configuration), atomic hydrogen is extracted continuously down its partial pressure gradient. In the **Jiang 2021 Target** case ($\text{SMA} = 4.50\text{ cm}^2/\text{g}$), the membrane extracts **{{ "%0.2f"|format(results_b['Jiang 2021 Target']['HRF']) }}%** of the generated hydrogen directly through the wall. This selective sink suppresses the reverse rate and relieves site blocking, enabling single-pass conversion to climb from the equilibrium plateau of 81.06% up to **{{ "%0.2f"|format(results_b['Jiang 2021 Target']['X_MR']) }}%** (+{{ "%0.2f"|format(results_b['Jiang 2021 Target']['Gain_X']) }} pp).
 
 **Visual Architecture:**
 ![Module B Cross Section](figures/2d_cross_section_module_b.png)
@@ -197,9 +201,9 @@ By encasing the packed bed within a hydrogen-permeable Pd membrane tube (lumen c
 
 ---
 
-## 6. Module A Performance ($\text{CO}_2$ Hydrogenation, Annulus Catalyst)
+## 6. Module A Performance (CO₂ Hydrogenation, Annulus Catalyst)
 
-$\text{CO}_2$ hydrogenation to e-methanol operates in a tube-in-tube topology at $T = 250^\circ\text{C}$ and $P = 100\text{ bar}$. The catalyst sits in the **annulus**, while the inner tube is an inorganic **NaA Zeolite membrane** swept by inert $\text{N}_2$.
+CO₂ hydrogenation to e-methanol operates in a tube-in-tube topology at $T = 250^\circ\text{C}$ and $P = 100\text{ bar}$. The catalyst sits in the **annulus**, while the inner tube is an inorganic **NaA Zeolite membrane** swept by inert N₂.
 
 ### Performance Data Matrix
 
@@ -223,11 +227,11 @@ $\text{CO}_2$ hydrogenation to e-methanol operates in a tube-in-tube topology at
 {% endif -%}
 {% endfor %}
 
-1. **Base Case ($O_M/V_r = 26.67\text{ m}^{-1}, \text{GHSV} = 5000\text{ h}^{-1}$)**: Convective flow dominates over radial diffusion. With superficial residence time under $0.8\text{ s}$, water is produced far faster than the modest zeolite area can extract it. Only **{{ "%0.2f"|format(results_a['Base Case']['Water_Removal']) }}%** of water permeates into the sweep, resulting in an unnoticeable $+0.21\text{ pp}$ gain. The reactor is firmly in the **permeation-limited regime**.
-2. **GHSV 500 Case ($O_M/V_r = 26.67\text{ m}^{-1}, \text{GHSV} = 500\text{ h}^{-1}$)**: Increasing residence time tenfold allows more time for Maxwell-Stefan diffusion across the $5\text{ mm}$ membrane wall. Water removal increases to **{{ "%0.2f"|format(results_a['GHSV 500']['Water_Removal']) }}%**, yielding a $+2.28\text{ pp}$ conversion gain over TR ($35.81\%$ vs. $33.54\%$).
-3. **High Area Case ($O_M/V_r = 133.33\text{ m}^{-1}, \text{GHSV} = 5000\text{ h}^{-1}$)**: Narrowing the annular gap ($d_w = 20\text{ mm}$ vs $40\text{ mm}$) increases the extraction surface fivefold. However, because flow remains high ($\text{GHSV} = 5000\text{ h}^{-1}$), water removal only reaches **{{ "%0.2f"|format(results_a['High Area']['Water_Removal']) }}%**, giving a modest $+1.03\text{ pp}$ gain. High surface area alone cannot compensate for insufficient residence time.
-4. **Best Case Synergy ($O_M/V_r = 133.33\text{ m}^{-1}, \text{GHSV} = 500\text{ h}^{-1}, S/F = 10$)**: Kinetics, fluid residence time, and mass transfer flux are balanced. Water extraction reaches **{{ "%0.2f"|format(results_a['Best Case (Fig 12 Discrepancy)']['Water_Removal']) }}%**. The reaction quotient $Q_c$ remains suppressed along the entire length, driving single-pass conversion to **{{ "%0.2f"|format(results_a['Best Case (Fig 12 Discrepancy)']['X_MR']) }}%**—an absolute leap of **+{{ "%0.2f"|format(results_a['Best Case (Fig 12 Discrepancy)']['Gain_X']) }} pp** (+{{ "%0.1f"|format(results_a['Best Case (Fig 12 Discrepancy)']['Gain_X'] / results_a['Best Case (Fig 12 Discrepancy)']['X_TR'] * 100) }}% relative increase).
-5. **Trans-Membrane Driving Force ($\Delta P = 99\text{ bar}$)**: Depressurizing the permeate lumen to atmospheric pressure ($1\text{ bar}$) against $100\text{ bar}$ in the retentate maximizes the chemical potential driving force $\Delta \mu_{\text{H}_2\text{O}}$, driving water extraction to **{{ "%0.2f"|format(results_a['Best Case + dP 99 bar']['Water_Removal']) }}%** and pushing conversion to **{{ "%0.2f"|format(results_a['Best Case + dP 99 bar']['X_MR']) }}%**.
+1. **Base Case** ($O_M/V_r = 26.67\text{ m}^{-1}, \text{GHSV} = 5000\text{ h}^{-1}$): Convective flow dominates over radial diffusion. With superficial residence time under $0.8\text{ s}$, water is produced far faster than the modest zeolite area can extract it. Only **{{ "%0.2f"|format(results_a['Base Case']['Water_Removal']) }}%** of water permeates into the sweep, resulting in an unnoticeable $+0.21\text{ pp}$ gain. The reactor is firmly in the **permeation-limited regime**.
+2. **GHSV 500 Case** ($O_M/V_r = 26.67\text{ m}^{-1}, \text{GHSV} = 500\text{ h}^{-1}$): Increasing residence time tenfold allows more time for Maxwell-Stefan diffusion across the $5\text{ mm}$ membrane wall. Water removal increases to **{{ "%0.2f"|format(results_a['GHSV 500']['Water_Removal']) }}%**, yielding a $+2.28\text{ pp}$ conversion gain over TR (35.81% vs. 33.54%).
+3. **High Area Case** ($O_M/V_r = 133.33\text{ m}^{-1}, \text{GHSV} = 5000\text{ h}^{-1}$): Narrowing the annular gap ($d_w = 20\text{ mm}$ vs $40\text{ mm}$) increases the extraction surface fivefold. However, because flow remains high ($\text{GHSV} = 5000\text{ h}^{-1}$), water removal only reaches **{{ "%0.2f"|format(results_a['High Area']['Water_Removal']) }}%**, giving a modest $+1.03\text{ pp}$ gain. High surface area alone cannot compensate for insufficient residence time.
+4. **Best Case Synergy** ($O_M/V_r = 133.33\text{ m}^{-1}, \text{GHSV} = 500\text{ h}^{-1}, S/F = 10$): Kinetics, fluid residence time, and mass transfer flux are balanced. Water extraction reaches **{{ "%0.2f"|format(results_a['Best Case (Fig 12 Discrepancy)']['Water_Removal']) }}%**. The reaction quotient $Q_c$ remains suppressed along the entire length, driving single-pass conversion to **{{ "%0.2f"|format(results_a['Best Case (Fig 12 Discrepancy)']['X_MR']) }}%**—an absolute leap of **+{{ "%0.2f"|format(results_a['Best Case (Fig 12 Discrepancy)']['Gain_X']) }} pp** (+{{ "%0.1f"|format(results_a['Best Case (Fig 12 Discrepancy)']['Gain_X'] / results_a['Best Case (Fig 12 Discrepancy)']['X_TR'] * 100) }}% relative increase).
+5. **Trans-Membrane Driving Force** ($\Delta P = 99\text{ bar}$): Depressurizing the permeate lumen to atmospheric pressure ($1\text{ bar}$) against $100\text{ bar}$ in the retentate maximizes the chemical potential driving force, driving water extraction to **{{ "%0.2f"|format(results_a['Best Case + dP 99 bar']['Water_Removal']) }}%** and pushing conversion to **{{ "%0.2f"|format(results_a['Best Case + dP 99 bar']['X_MR']) }}%**.
 
 **Visual Architecture:**
 ![Module A Cross Section](figures/2d_cross_section_module_a.png)
@@ -247,22 +251,28 @@ In an exothermic synthesis bed ($\Delta H^\circ_{298} = -49.5\text{ kJ/mol}$), r
 ### 7.2 Axial Reaction Rates (Figure 03)
 ![Reaction Rates](results/figures/03_reaction_rates.png)
 
-In the Traditional Reactor (TR, dashed line), $r_{\text{CO}_2}$ starts high at the fresh feed inlet but drops rapidly to near zero by $z = 0.10\text{ m}$ as product water accumulates and drives the reverse rate term $(p_{\text{H}_2\text{O}} p_{\text{CH}_3\text{OH}})/(K_{eq1} p_{\text{H}_2}^3 p_{\text{CO}_2}) \to 1$. In the Membrane Reactor (MR, solid line), $r_{\text{CO}_2}$ remains positive along the entire reactor length because in-situ water removal suppresses the reverse reaction, sustaining forward catalytic productivity across all 250 mm.
+In the Traditional Reactor (TR, dashed line), the forward CO₂ reaction rate starts high at the fresh feed inlet but drops rapidly to near zero by $z = 0.10\text{ m}$ as product water accumulates and drives the reverse rate term toward equilibrium:
+
+$$
+\frac{p_{\text{H}_2\text{O}} p_{\text{CH}_3\text{OH}}}{K_{eq1} p_{\text{H}_2}^3 p_{\text{CO}_2}} \to 1
+$$
+
+In the Membrane Reactor (MR, solid line), forward reaction rates remain positive along the entire reactor length because in-situ water removal suppresses the reverse reaction, sustaining forward catalytic productivity across all 250 mm.
 
 ### 7.3 Axial Species Molar Flows (Figure 02)
 ![Species Profiles](results/figures/02_species_profiles.png)
 
-As syngas flows from $z = 0$ to $z = L$, $\text{CO}_2$ and $\text{H}_2$ flows decline continuously. In TR, water and methanol molar flows level off at the equilibrium barrier. In MR, $\text{H}_2\text{O}$ molar flow in the retentate peaks early and then declines as radial extraction surpasses production, while cumulative $\text{CH}_3\text{OH}$ yield continues climbing well above the traditional limit.
+As syngas flows from $z = 0$ to $z = L$, CO₂ and H₂ flows decline continuously. In TR, water and methanol molar flows level off at the equilibrium barrier. In MR, H₂O molar flow in the retentate peaks early and then declines as radial extraction surpasses production, while cumulative methanol yield continues climbing well above the traditional limit.
 
 ### 7.4 Membrane Permeation Flux (Figure 04)
 ![Membrane Flux](results/figures/04_membrane_flux.png)
 
-Local water permeation flux $J_{\text{H}_2\text{O}}$ starts at zero at the inlet, rises sharply in the first 50 mm as reaction (1a) produces moisture, and reaches a plateau dictated by maximum Langmuir zeolite surface loading $\theta_{\text{H}_2\text{O}}$. Downstream, as retentate water partial pressure $p_{\text{H}_2\text{O}}$ stabilizes, the permeation flux levels off, providing a continuous extraction sink.
+Local water permeation flux starts at zero at the inlet, rises sharply in the first 50 mm as reaction (1a) produces moisture, and reaches a plateau dictated by maximum Langmuir zeolite surface loading. Downstream, as retentate water partial pressure stabilizes, the permeation flux levels off, providing a continuous extraction sink.
 
 ### 7.5 Cumulative Water Removal Fraction (Figure 05)
 ![H2O Removal](results/figures/05_h2o_removal.png)
 
-This curve tracks the percentage of total generated water extracted into the permeate stream. In optimized membrane cases, water removal climbs steadily to $60\text{--}62\%$, illustrating how selective mass transfer uncouples local kinetics from thermodynamic equilibrium.
+This curve tracks the percentage of total generated water extracted into the permeate stream. In optimized membrane cases, water removal climbs steadily to 60–62%, illustrating how selective mass transfer uncouples local kinetics from thermodynamic equilibrium.
 
 ---
 
@@ -276,7 +286,7 @@ A 5-dimensional Latin Hypercube Sampling (LHS) grid generated 500 validated simu
 | Inlet Temperature | $T_{\text{in}}$ | $463$ | $533$ | $\text{K}$ | Governs kinetic rate constants & sorption isotherms |
 | Operating Pressure | $P_{\text{in}}$ | $20$ | $80$ | $\text{bar}$ | Controls reactant chemical potentials & Le Chatelier shift |
 | Total Feed Molar Flow | $F_{\text{tot}}$ | $0.005$ | $0.030$ | $\text{mol/s}$ | Directly scales hydrodynamic space velocity & residence time |
-| $\text{H}_2/\text{CO}_2$ Feed Ratio | $r_{\text{H}_2}$ | $2.5$ | $4.0$ | — | Shifts stoichiometric balance & selectivity over RWGS |
+| H₂/CO₂ Feed Ratio | $r_{\text{H}_2}$ | $2.5$ | $4.0$ | — | Shifts stoichiometric balance & selectivity over RWGS |
 | Water Permeance | $\Pi_{\text{H}_2\text{O}}$ | $5 \times 10^{-8}$ | $3 \times 10^{-7}$ | $\text{mol}/(\text{m}^2\cdot\text{s}\cdot\text{Pa})$ | Defines membrane mass transfer conductance |
 
 ### 8.2 Multi-Model Benchmark on 15% Held-Out Test Set
@@ -302,17 +312,17 @@ A 5-dimensional Latin Hypercube Sampling (LHS) grid generated 500 validated simu
 ![Feature Importance](results/figures/14_feature_importance.png)
 
 Gini impurity decomposition across the ensemble trees isolates the controlling design parameters:
-1. **Total Flow Rate ($F_{\text{tot}}$, proxy for GHSV)**: Dominates conversion and yield ($>45\%$ relative importance) by setting contact time. High velocities bypass the bed before mass transfer can occur.
-2. **Inlet Temperature ($T_{\text{in}}$)**: Acts as the secondary controlling lever. Higher temperatures accelerate forward kinetics exponentially via Arrhenius activation, but depress the exothermic equilibrium constant $K_{eq1}$.
-3. **Water Permeance ($\Pi_{\text{H}_2\text{O}}$)**: Dominates the water removal target, confirming that membrane mass-transfer capacity dictates the extent of equilibrium surpass.
-4. **Operating Pressure ($P_{\text{in}}$)**: Increases reactant partial pressures, accelerating reaction kinetics and expanding the permeation driving force.
+1. **Total Flow Rate** ($F_{\text{tot}}$, proxy for GHSV): Dominates conversion and yield (> 45% relative importance) by setting contact time. High velocities bypass the bed before mass transfer can occur.
+2. **Inlet Temperature** ($T_{\text{in}}$): Acts as the secondary controlling lever. Higher temperatures accelerate forward kinetics exponentially via Arrhenius activation, but depress the exothermic equilibrium constant $K_{eq1}$.
+3. **Water Permeance** ($\Pi_{\text{H}_2\text{O}}$): Dominates the water removal target, confirming that membrane mass-transfer capacity dictates the extent of equilibrium surpass.
+4. **Operating Pressure** ($P_{\text{in}}$): Increases reactant partial pressures, accelerating reaction kinetics and expanding the permeation driving force.
 
 ### 8.4 Surrogate Diagnostics: Parity and Residuals (Figures 12 & 13)
 ![Surrogate Parity](results/figures/12_surrogate_parity.png)
 ![Surrogate Residuals](results/figures/13_surrogate_residuals.png)
 
-- **Parity Plot (Figure 12)**: Predicted values track simulated physics values closely along the 1:1 diagonal across all operating ranges ($0\text{--}40\%$ conversion, $0\text{--}90\%$ water removal), verifying that the surrogate captures non-linear transport without saturation artifacts.
-- **Residual Error Histograms (Figure 13)**: Prediction residuals ($\text{Actual} - \text{Predicted}$) across all four targets are unimodal, symmetric, and tightly centered at $0.0\%$, with standard deviations under $2\%$, indicating no systematic model bias.
+- **Parity Plot (Figure 12)**: Predicted values track simulated physics values closely along the 1:1 diagonal across all operating ranges (0–40% conversion, 0–90% water removal), verifying that the surrogate captures non-linear transport without saturation artifacts.
+- **Residual Error Histograms (Figure 13)**: Prediction residuals ($\text{Actual} - \text{Predicted}$) across all four targets are unimodal, symmetric, and tightly centered at 0.0%, with standard deviations under 2%, indicating no systematic model bias.
 
 ### 8.5 2D Response Surfaces & Contour Landscapes (Figures 06–11, 15)
 
@@ -347,20 +357,20 @@ The global optimum is identified at **$250^\circ\text{C}$ and $75\text{--}80\tex
 
 | Validation Condition ($250^\circ\text{C}$, $100\text{ bar}$) | Target from Paper | Our Model Output | Status |
 |:---|:---:|:---:|:---:|
-| Base Case Traditional Reactor Conversion | $\sim 29.7\%$ | **{{ "%0.2f"|format(results_a['Base Case']['X_TR']) }}%** | **PASS** |
-| Base Case Membrane Reactor Conversion Gain | $+0.3\text{ to }+0.8\text{ pp}$ | **+{{ "%0.2f"|format(results_a['Base Case']['Gain_X']) }} pp** | **PASS** |
-| Best Case ($O_M/V_r = 133.3\text{ m}^{-1}$) Conversion | $\sim 45.3\%$ (P3 Fig. 12) | **{{ "%0.2f"|format(results_a['Best Case (Fig 12 Discrepancy)']['X_MR']) }}%** | **PASS** |
-| Best Case with $\Delta P = 99\text{ bar}$ Driving Force | $\sim 52.0\%$ | **{{ "%0.2f"|format(results_a['Best Case + dP 99 bar']['X_MR']) }}%** | **PASS** (1D model limit) |
-| Carbon Mass Balance Conservation Closure Error | $<0.1\%$ | **{{ "%0.6f"|format(results_a['Base Case']['C_error']) }}%** | **PASS** |
+| Base Case Traditional Reactor Conversion | ~29.7% | **{{ "%0.2f"|format(results_a['Base Case']['X_TR']) }}%** | **PASS** |
+| Base Case Membrane Reactor Conversion Gain | +0.3 to +0.8 pp | **+{{ "%0.2f"|format(results_a['Base Case']['Gain_X']) }} pp** | **PASS** |
+| Best Case ($O_M/V_r = 133.3\text{ m}^{-1}$) Conversion | ~45.3% (P3 Fig. 12) | **{{ "%0.2f"|format(results_a['Best Case (Fig 12 Discrepancy)']['X_MR']) }}%** | **PASS** |
+| Best Case with $\Delta P = 99\text{ bar}$ Driving Force | ~52.0% | **{{ "%0.2f"|format(results_a['Best Case + dP 99 bar']['X_MR']) }}%** | **PASS** (1D model limit) |
+| Carbon Mass Balance Conservation Closure Error | < 0.1% | **{{ "%0.6f"|format(results_a['Base Case']['C_error']) }}%** | **PASS** |
 
 ---
 
 ## 10. Conclusions
 
-1. **Equilibrium Overcome**: Membrane reactors selectively extract inhibitory products ($\text{H}_2\text{O}$ or $\text{H}_2$), shifting the reaction quotient and boosting single-pass $\text{CO}_2$ conversion from **{{ "%0.2f"|format(results_a['Best Case (Fig 12 Discrepancy)']['X_TR']) }}%** to **{{ "%0.2f"|format(results_a['Best Case (Fig 12 Discrepancy)']['X_MR']) }}%** (+{{ "%0.2f"|format(results_a['Best Case (Fig 12 Discrepancy)']['Gain_X']) }} pp).
+1. **Equilibrium Overcome**: Membrane reactors selectively extract inhibitory products (H₂O or H₂), shifting the reaction quotient and boosting single-pass CO₂ conversion from **{{ "%0.2f"|format(results_a['Best Case (Fig 12 Discrepancy)']['X_TR']) }}%** to **{{ "%0.2f"|format(results_a['Best Case (Fig 12 Discrepancy)']['X_MR']) }}%** (+{{ "%0.2f"|format(results_a['Best Case (Fig 12 Discrepancy)']['Gain_X']) }} pp).
 2. **Critical Geometry Parameter**: High specific membrane area ($O_M/V_r = 133.33\text{ m}^{-1}$) is essential; low area ($26.67\text{ m}^{-1}$) starves the extraction and fails to intensify the process.
 3. **Surrogate Fidelity**: ExtraTrees regression models map the multi-dimensional parameter space with $R^2 > 0.94$ across all variables, providing fast optimization tools for plant design.
-4. **General Extractor Design**: The approach is robust across both exothermic e-fuel synthesis ($\text{H}_2\text{O}$ extraction in Module A) and endothermic hydrogen recovery ($\text{H}_2$ extraction in Module B).
+4. **General Extractor Design**: The approach is robust across both exothermic e-fuel synthesis (H₂O extraction in Module A) and endothermic hydrogen recovery (H₂ extraction in Module B).
 
 ---
 
@@ -432,11 +442,12 @@ This section synthesizes the engineering factors that chemical engineers can man
 
 ### 11.4 Plant-Wide Techno-Economic Impact
 
-In traditional methanol plants, low single-pass conversion ($25\text{--}30\%$) forces operators to install recycle compressors that circulate $4\text{--}6\times$ the fresh feed volume, accounting for up to **$40\%$ of the plant's total electrical power consumption**.
+In traditional methanol plants, low single-pass conversion (25–30%) forces operators to install recycle compressors that circulate 4–6× the fresh feed volume, accounting for up to **40% of the plant's total electrical power consumption**.
 
-By intensifying the reactor with an in-situ selective membrane to achieve **$45.1\%$ single-pass conversion**:
-1. **Recycle Loop Reduction**: The required syngas recycle ratio drops from $5.0$ down to $<1.8$, shrinking recycle compressor capital cost and power demand by **$>60\%$**.
-2. **Reactor Volume Compaction**: Higher average reaction rates (due to suppressed product inhibition) reduce the required catalyst inventory by **$35\%$** for equivalent annual methanol output.
+By intensifying the reactor with an in-situ selective membrane to achieve **45.1% single-pass conversion**:
+1. **Recycle Loop Reduction**: The required syngas recycle ratio drops from 5.0 down to < 1.8, shrinking recycle compressor capital cost and power demand by **> 60%**.
+2. **Reactor Volume Compaction**: Higher average reaction rates (due to suppressed product inhibition) reduce the required catalyst inventory by **35%** for equivalent annual methanol output.
+
 ### 11.5 Factor Scaling & Intensification Elasticity Matrix ("Change by X Times" Analysis)
 
 A central question in reactor design is: **If an engineer alters an operational or geometric parameter by a factor of $x$, what proportional change in process intensification is witnessed?**
@@ -453,31 +464,31 @@ The table below compiles the quantitative sensitivity and scaling factors extrac
 
 | Parameter Manipulated | Baseline Value | Perturbed Value | Multiplier ($x\times$) | Impact on Product Removal | Impact on Absolute Conversion Gain ($\Delta X$) | Elasticity ($\varepsilon_{\text{gain}}$) | Physical Regime & Engineering Takeaway |
 |:---|:---:|:---:|:---:|:---:|:---:|:---:|:---|
-| **Specific Membrane Area ($O_M/V_r$)** [at high GHSV] | $26.67\text{ m}^{-1}$ | $133.33\text{ m}^{-1}$ | **$5\times$** | $2.06\% \to 9.41\%$ ($4.6\times$) | $+0.21\text{ pp} \to +1.03\text{ pp}$ ($4.9\times$) | **$\approx 0.98$** | Near-linear scaling; area helps, but short residence time caps overall benefit. |
-| **Specific Membrane Area ($O_M/V_r$)** [at low GHSV] | $26.67\text{ m}^{-1}$ | $133.33\text{ m}^{-1}$ | **$5\times$** | $18.54\% \to 60.70\%$ ($3.3\times$) | $+2.28\text{ pp} \to +11.02\text{ pp}$ ($4.8\times$) | **$\approx 0.96$** | Transformative; high area unlocks full equilibrium bypass once residence time is sufficient. |
-| **Gas Residence Time ($1/\text{GHSV}$)** [at base area] | $5000\text{ h}^{-1}$ ($\tau \approx 0.7\text{ s}$) | $500\text{ h}^{-1}$ ($\tau \approx 7.2\text{ s}$) | **$10\times$** | $2.06\% \to 18.54\%$ ($9.0\times$) | $+0.21\text{ pp} \to +2.28\text{ pp}$ ($10.9\times$) | **$\approx 1.09$** | Super-linear; longer contact time allows slow zeolite diffusion to catch up with kinetics. |
-| **Gas Residence Time ($1/\text{GHSV}$)** [at high area] | $5000\text{ h}^{-1}$ ($\tau \approx 0.7\text{ s}$) | $500\text{ h}^{-1}$ ($\tau \approx 7.2\text{ s}$) | **$10\times$** | $9.41\% \to 60.70\%$ ($6.5\times$) | $+1.03\text{ pp} \to +11.02\text{ pp}$ ($10.7\times$) | **$\approx 1.07$** | Super-linear; provides necessary contact time to utilize the expanded membrane area. |
-| **Area $\times$ Residence Time Synergy** [Combined] | Base Case ($26.67, 5000$) | Best Case ($133.33, 500$) | **$50\times$ capacity** | $2.06\% \to 60.70\%$ ($29.5\times$) | $+0.21\text{ pp} \to +11.02\text{ pp}$ (**$52.5\times$**) | **$> 1.0$** | **Cooperative Synergy**: Simultaneous scaling multiplies gains beyond individual additions. |
-| **Sweep-to-Feed Ratio ($S/F$)** | $1.0$ | $10.0$ | **$10\times$** | $18.54\% \to 20.06\%$ ($1.08\times$) | $+2.28\text{ pp} \to +2.48\text{ pp}$ ($1.09\times$) | **$\approx 0.01$** | **Severely Diminishing Returns**: Transport is zeolite-diffusion limited, not sweep-dilution limited. |
-| **Trans-Membrane Driving Force ($\Delta P$)** | $0\text{ bar}$ | $99\text{ bar}$ (Vacuum) | **$\Delta P \uparrow 99\text{ bar}$** | $60.70\% \to 62.48\%$ ($+1.78\text{ pp}$) | $44.54\% \to 45.10\%$ ($+0.56\text{ pp}$) | — | Marginal thermodynamic boost, but eliminates sweep gas separation entirely. |
-| **Module B: Pd Membrane Area (SMA)** | $0.33\text{ cm}^2/\text{g}$ | $4.50\text{ cm}^2/\text{g}$ | **$13.6\times$** | $\text{HRF}: 2.04\% \to 26.16\%$ ($12.8\times$) | $+0.23\text{ pp} \to +3.36\text{ pp}$ (**$14.6\times$**) | **$\approx 1.07$** | Super-linear; relieving hydrogen poisoning on Ru active sites shifts endothermic equilibrium. |
+| **Specific Membrane Area ($O_M/V_r$)** [at high GHSV] | $26.67\text{ m}^{-1}$ | $133.33\text{ m}^{-1}$ | **$5\times$** | 2.06% → 9.41% (4.6×) | +0.21 pp → +1.03 pp (4.9×) | **≈ 0.98** | Near-linear scaling; area helps, but short residence time caps overall benefit. |
+| **Specific Membrane Area ($O_M/V_r$)** [at low GHSV] | $26.67\text{ m}^{-1}$ | $133.33\text{ m}^{-1}$ | **$5\times$** | 18.54% → 60.70% (3.3×) | +2.28 pp → +11.02 pp (4.8×) | **≈ 0.96** | Transformative; high area unlocks full equilibrium bypass once residence time is sufficient. |
+| **Gas Residence Time ($1/\text{GHSV}$)** [at base area] | 5000 h⁻¹ (τ ≈ 0.7 s) | 500 h⁻¹ (τ ≈ 7.2 s) | **$10\times$** | 2.06% → 18.54% (9.0×) | +0.21 pp → +2.28 pp (10.9×) | **≈ 1.09** | Super-linear; longer contact time allows slow zeolite diffusion to catch up with kinetics. |
+| **Gas Residence Time ($1/\text{GHSV}$)** [at high area] | 5000 h⁻¹ (τ ≈ 0.7 s) | 500 h⁻¹ (τ ≈ 7.2 s) | **$10\times$** | 9.41% → 60.70% (6.5×) | +1.03 pp → +11.02 pp (10.7×) | **≈ 1.07** | Super-linear; provides necessary contact time to utilize the expanded membrane area. |
+| **Area $\times$ Residence Time Synergy** [Combined] | Base Case (26.67, 5000) | Best Case (133.33, 500) | **$50\times$ capacity** | 2.06% → 60.70% (29.5×) | +0.21 pp → +11.02 pp (**52.5×**) | **> 1.0** | **Cooperative Synergy**: Simultaneous scaling multiplies gains beyond individual additions. |
+| **Sweep-to-Feed Ratio ($S/F$)** | $1.0$ | $10.0$ | **$10\times$** | 18.54% → 20.06% (1.08×) | +2.28 pp → +2.48 pp (1.09×) | **≈ 0.01** | **Severely Diminishing Returns**: Transport is zeolite-diffusion limited, not sweep-dilution limited. |
+| **Trans-Membrane Driving Force ($\Delta P$)** | $0\text{ bar}$ | $99\text{ bar}$ (Vacuum) | **$\Delta P \uparrow 99\text{ bar}$** | 60.70% → 62.48% (+1.78 pp) | 44.54% → 45.10% (+0.56 pp) | — | Marginal thermodynamic boost, but eliminates sweep gas separation entirely. |
+| **Module B: Pd Membrane Area (SMA)** | $0.33\text{ cm}^2/\text{g}$ | $4.50\text{ cm}^2/\text{g}$ | **$13.6\times$** | HRF: 2.04% → 26.16% (12.8×) | +0.23 pp → +3.36 pp (**14.6×**) | **≈ 1.07** | Super-linear; relieving hydrogen poisoning on Ru active sites shifts endothermic equilibrium. |
 
 #### Detailed Engineering Interpretations of the Scaling Laws
 
-1. **Membrane Area Elasticity ($\varepsilon \approx 1.0$)**:
+1. **Membrane Area Elasticity** ($\varepsilon \approx 1.0$):
    - *If you increase membrane area by $x$ times*, conversion gain ($\Delta X$) increases by approximately **$x$ times**.
    - *Caveat*: This linear proportionality holds **only** if residence time is long enough. At very high space velocities, adding membrane area yields diminishing returns because gas exits before reaching the wall.
 
-2. **Residence Time Elasticity ($\varepsilon \approx 1.07\text{--}1.09$)**:
+2. **Residence Time Elasticity** ($\varepsilon \approx 1.07\text{--}1.09$):
    - *If you increase residence time by $x$ times* (reducing GHSV by $x$ times), conversion gain increases by **$\sim x^{1.08}$ times**.
    - Residence time is slightly super-linear because slower flow simultaneously provides more reaction time AND more diffusion time, compounding the Le Chatelier product removal effect.
 
-3. **Cooperative Multiplying Effect ($52.5\times$ Gain)**:
+3. **Cooperative Multiplying Effect** ($52.5\times$ Gain):
    - When membrane area ($5\times$) and residence time ($10\times$) are scaled together, the total capacity factor increases by $50\times$.
    - The observed conversion gain increases by **$52.5\times$** (from $+0.21\text{ pp}$ to $+11.02\text{ pp}$).
    - *Takeaway*: Membrane reactor intensification is fundamentally a **two-knob optimization**. You cannot intensify a reactor by turning only one knob; both mass-transfer area and hydrodynamic contact time must be scaled in unison.
 
-4. **Sweep Gas Inefficiency ($\varepsilon \approx 0.01$)**:
+4. **Sweep Gas Inefficiency** ($\varepsilon \approx 0.01$):
    - *Increasing sweep flow by $10\times$* only yields a **$1.08\times$** increase in water extraction.
    - *Design Implication*: Do **not** expend capital or compressor power on high sweep ratios ($S/F > 2$). Operating at $S/F = 1\text{--}2$ or using vacuum permeate extraction is far more energy-efficient and avoids dilute downstream product streams.
 
