@@ -17,6 +17,7 @@
 10. [Chemical Engineering Educational Guide](#10-educational-guide)
 11. [Data-Backed Conclusions](#11-conclusions)
 12. [Bibliographic References](#12-references)
+13. [Case Study: Direct CO₂-to-DME Four-Tube Sleeve Bundle Membrane Reactor](#13-case-study-direct-co2-to-dme-four-tube-sleeve-bundle-membrane-reactor)
 
 ---
 
@@ -325,3 +326,116 @@ While increasing sweep gas flow ($S/F = 10$) maximizes trans-membrane concentrat
 - **[P3]** Hauth et al., "Design parameter optimization of a membrane reactor for methanol synthesis using a sophisticated CFD model", *Energy Advances* 4 (2025) 565-577.
 - **Sitar et al.**, "Catalytic membrane reactor for ammonia decomposition using Ru/YSZ and Pd membranes", *Journal of Membrane Science* (2022).
 - **Li et al.**, "High-performance zeolite NaA membranes for water extraction under high pressure and temperature", *Journal of Membrane Science* (2020).
+
+---
+
+## 13. Case Study: Direct CO₂-to-DME Four-Tube Sleeve Bundle Membrane Reactor
+
+> **Note on Scope:** This section provides an independent case study extending the framework to direct single-step $\text{CO}_2$ hydrogenation to dimethyl ether (DME) inside an intensified multi-tube bundle. It operates under a distinct reaction chemistry, catalyst system, and tangent-sleeve geometry, separate from the primary tube-in-tube designs for e-methanol (Module A) and ammonia decomposition (Module B).
+
+### 13.1 Reaction Chemistry & Kinetic Framework
+Direct synthesis couples exothermic methanol synthesis with in-situ methanol dehydration over a dual-function metallic/acidic catalyst ($\text{Cu/ZnO/Al}_2\text{O}_3$ + solid acid $\gamma\text{-Al}_2\text{O}_3$ or H-ZSM-5):
+
+$$
+\text{(1) } \text{CO}_2 + 3\text{H}_2 \rightleftharpoons \text{CH}_3\text{OH} + \text{H}_2\text{O}, \quad \Delta H^\circ_{298} = -49.5\text{ kJ/mol}
+$$
+
+$$
+\text{(2) } \text{CO}_2 + \text{H}_2 \rightleftharpoons \text{CO} + \text{H}_2\text{O}\text{ (RWGS)}, \quad \Delta H^\circ_{298} = +41.2\text{ kJ/mol}
+$$
+
+$$
+\text{(3) } 2\text{CH}_3\text{OH} \rightleftharpoons \text{CH}_3\text{OCH}_3\text{ (DME)} + \text{H}_2\text{O}, \quad \Delta H^\circ_{298} = -23.6\text{ kJ/mol}
+$$
+
+- **Kinetics (1 & 2):** Vanden Bussche & Froment (1996) as modified by Mignard & Pritchard (2008), validated in Hauth et al. (2025).
+- **Kinetics (3):** Clearly labelled placeholder reversible Langmuir-Hinshelwood rate expression:
+  $$r_{\text{DME}} = k_{\text{DME}} \left( p_{\text{CH}_3\text{OH}}^2 - \frac{p_{\text{DME}} p_{\text{H}_2\text{O}}}{K_{eq3}} \right)$$
+  with $k_{\text{DME}} = 0.05\text{ mol}/(\text{kg}_{\text{cat}}\cdot\text{s}\cdot\text{bar}^2)$ and $\log_{10} K_{eq3} = \frac{2226}{T} - 0.910$ (Stull 1969; Ng et al. 1999).
+- **Assumptions:** Isothermal bed ($T = 250^\circ\text{C}$), isobaric retentate ($P_{\text{ret}} = 40\text{ bar}$), isobaric lumped permeate ($P_{\text{perm}} = 1\text{ bar}$ with co-current $\text{N}_2$ sweep), negligible membrane wall thickness, and ideal tangent circle geometry.
+
+### 13.2 Sleeve Bundle Topology & Void Sealing
+Unlike a standard shell-packed reactor where catalyst is poured loosely throughout the shell, the **sleeve bundle** wraps each of the four membrane tubes in an independent, uniform annular jacket of catalyst:
+
+- **Membrane Outer Diameter ($d$):** $6.00\text{ mm}$ (permeate flows inside tube lumens).
+- **Catalyst Sleeve Thickness ($t$):** $1.118\text{ mm}$ ($1.12\text{ mm}$ baseline) to $1.500\text{ mm}$ (hydrodynamically stable design).
+- **Sleeve Outer Diameter ($d_s = d + 2t$):** $8.236\text{ mm}$.
+- **Tangent Shell Diameter ($D = (1 + \sqrt{2})d_s$):** $19.88\text{ mm}$.
+- **Catalyst Cross-Section ($A_c = 4\pi t(d + t)$):** $1.000\text{ cm}^2$ ($1.0 \times 10^{-4}\text{ m}^2$, giving $0.12\text{ kg}$ at $1200\text{ kg/m}^3, L = 1.0\text{ m}$).
+- **Specific Membrane Area ($a_v = d / [t(d + t)]$):** $754.0\text{ m}^{-1}$.
+- **Void Space Sealing:** The central diamond void ($14.56\text{ mm}^2$) and four peripheral voids ($82.85\text{ mm}^2$) constitute **$31.37\%$** of the shell space. These channels are completely sealed with impermeable inert solid filler so that $100\%$ of the feed syngas passes through the active catalyst sleeves with uniform diffusion distance $t$ to the membrane.
+
+![4-Tube Sleeve Cross-Section](figures/dme_bundle_sleeve_cross_section.png)
+![3D Cutaway](figures/dme_bundle_3d_cutaway.png)
+
+### 13.3 Thermodynamic Gibbs Validation
+A traditional reactor (TR, no membrane) with a $100\times$ longer bed ($L = 100\text{ m}$) was simulated at $250^\circ\text{C}$, $40\text{ bar}$, and $\text{H}_2/\text{CO}_2 = 3.0$ to verify equilibrium convergence:
+
+| Performance Metric | Constrained Gibbs Equilibrium | $100\times$ Bed ODE Output ($L = 100\text{ m}$) | Absolute Error | Validation Status |
+| :--- | :---: | :---: | :---: | :---: |
+| **$\text{CO}_2$ Conversion ($X_{\text{CO}_2}$)** | $48.71\%$ | **$48.72\%$** | $< 0.01\text{ pp}$ | **PASS** |
+| **DME Single-Pass Yield ($Y_{\text{DME}}$)** | $46.54\%$ | **$46.55\%$** | $< 0.01\text{ pp}$ | **PASS** |
+| **DME Carbon Selectivity ($S_{\text{DME}}$)** | $95.55\%$ | **$95.55\%$** | $< 0.01\text{ pp}$ | **PASS** |
+| **Carbon Balance Error ($\epsilon_C$)** | — | **$7.00 \times 10^{-16}$** | $< 10^{-3}$ tolerance | **PASS** |
+
+### 13.4 Membrane Library Comparison (Richard et al. 2025 Table 2)
+Evaluated at $T = 250^\circ\text{C}$, $P_{\text{ret}} = 40\text{ bar}$, $P_{\text{perm}} = 1\text{ bar}$, $\text{H}_2/\text{CO}_2 = 3.0$, and $\text{GHSV} = 1000\text{ h}^{-1}$:
+
+| Membrane Type | $\Pi_{\text{H}_2\text{O}}$ ($\text{mol}/(\text{m}^2\cdot\text{s}\cdot\text{Pa})$) | Selectivity $\alpha(\text{H}_2\text{O}/i)$ | $X_{\text{CO}_2}$ (%) | $Y_{\text{DME}}$ (%) | $S_{\text{DME}}$ (%) | $\text{H}_2\text{O}$ Removal (%) |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **NaA Zeolite (Li 2020)** | $1.8 \times 10^{-7}$ | $\text{CO}_2$: 5000, $\text{H}_2$: 1000, DME: 10000 | **96.19** | **92.39** | **96.05** | **99.75** |
+| **LTA Zeolite (Ateka 2021)** | $2.0 \times 10^{-7}$ | $\text{CO}_2$: 3000, $\text{H}_2$: 800, DME: 10000 | **96.20** | **91.72** | **95.34** | **99.78** |
+| **CMSM (Poto 2023)** | $0.6 \times 10^{-7}$ | $\text{CO}_2$: 250, $\text{H}_2$: 80, DME: 2000 | **93.89** | **85.29** | **90.85** | **99.80** |
+| **Traditional Bed (No Mem)** | — | — | **34.90** | **31.17** | **89.31** | **0.00** |
+
+### 13.5 Parametric Sweeps at Constant Catalyst Mass ($W_{\text{cat}} = 0.12\text{ kg}$)
+
+#### Sleeve Thickness Sweep ($t \in [0.5, 3.0]\text{ mm}, d = 6.0\text{ mm}$) & Hydrodynamic Practicality
+
+| $t$ (mm) | Bed $L$ (m) | $a_v$ ($\text{m}^{-1}$) | Practicality ($t \ge 5 d_p$)* | NaA $Y_{\text{DME}}$ (%) | LTA $Y_{\text{DME}}$ (%) | CMSM $Y_{\text{DME}}$ (%) | Water Removed (%) |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **0.50** | 2.45 | 1846.2 | Impractical ($t/d_p = 1.67$) | 77.18 | 73.00 | 56.32 | 99.97 |
+| **1.00** | 1.14 | 857.1 | Impractical ($t/d_p = 3.33$) | 91.53 | 90.72 | 83.48 | 99.78 |
+| **1.12** | 1.00 | 754.0 | Impractical ($t/d_p = 3.73$) | 92.39 | 91.72 | 85.29 | 99.75 |
+| **1.50** | 0.71 | 533.3 | **Practical** ($t/d_p = 5.00$) | **93.84** | **93.42** | **85.05** | 99.71 |
+| **2.00** | 0.50 | 375.0 | **Practical** ($t/d_p = 6.67$) | 92.11 | 92.79 | 59.88 | 99.36 |
+| **2.50** | 0.37 | 282.4 | **Practical** ($t/d_p = 8.33$) | 73.43 | 77.13 | 42.27 | 95.19 |
+| **3.00** | 0.29 | 222.2 | **Practical** ($t/d_p = 10.00$) | 55.44 | 60.36 | 32.61 | 88.08 |
+
+*\*Evaluated against fine industrial catalyst pellets $d_p = 0.30\text{ mm}$ ($5 d_p = 1.50\text{ mm}$). Thin sleeves ($t < 1.50\text{ mm}$) suffer from high wall voidage and particle bridging. Sizing at $t = 1.50\text{ mm}$ achieves optimal hydrodynamic packing and peak DME single-pass yield ($93.84\%$).*
+
+![Yield Trends](figures/dme_yield_vs_thickness.png)
+
+### 13.6 Architectural Benchmark (Identical $W_{\text{cat}} = 0.12\text{ kg}$)
+
+| Reactor Configuration | Specific Area $a_v$ ($\text{m}^{-1}$) | Shell $D$ (mm) | $X_{\text{CO}_2}$ (%) | $Y_{\text{DME}}$ (%) | $\text{H}_2\text{O}$ Removal (%) | Engineering Trade-off |
+| :--- | :---: | :---: | :---: | :---: | :---: | :--- |
+| **Traditional Packed Bed** | $0$ | $11.28$ | $34.90$ | $31.17$ | $0.00$ | Equilibrium capped ($48.7\%$ limit). |
+| **One Centre Tube** | $314.2$ | $15.08$ | $96.27$ | $94.13$ | $99.71$ | Thicker bed ($2.54\text{ mm}$); lower membrane area. |
+| **Four Concentric Cylinders** | $2261.9$ | $34.00$ | $96.27$ | $86.37$ | $99.88$ | Extreme surface area, but highly complex seals. |
+| **Four-Tube (Cat in Shell)** | $754.0$ | $16.47$ | $96.19$ | $92.39$ | $99.75$ | Shell packing; outer corners have longer diffusion paths. |
+| **Four-Tube (Cat in Lumens)** | $709.0$ | $16.35$ | $96.20$ | $92.57$ | $99.75$ | Catalyst inside tubes; difficult to repack/empty. |
+| **Four-Tube Sleeve Bundle** | **$754.0$** | **$19.88$** | **$96.19$** | **$92.39$** | **$99.75$** | **Uniform radial diffusion distance $t$ across all catalyst.** |
+
+![Layout Comparison](figures/dme_layout_comparison.png)
+
+### 13.7 Unsealed Void Bypass Sensitivity
+If interstitial voids ($31.37\%$ of cross-section) are left unsealed, fluid bypass severely degrades performance:
+
+| Bypass Fraction | $\text{CO}_2$ Conversion ($X_{\text{CO}_2}$) | Single-Pass DME Yield ($Y_{\text{DME}}$) | DME Selectivity ($S_{\text{DME}}$) | Loss vs. Sealed Design |
+| :---: | :---: | :---: | :---: | :---: |
+| **$0.0\%$ (Fully Sealed)** | **$96.19\%$** | **$92.39\%$** | **$96.05\%$** | Baseline |
+| **$5.0\%$ Bypass** | $91.46\%$ | $87.68\%$ | $95.87\%$ | $-4.71\text{ pp}$ |
+| **$10.0\%$ Bypass** | $86.72\%$ | $82.96\%$ | $95.66\%$ | $-9.43\text{ pp}$ |
+| **$20.0\%$ Bypass** | $77.23\%$ | $73.52\%$ | $95.19\%$ | $-18.87\text{ pp}$ |
+| **$31.4\%$ (Area-Weighted)** | **$66.39\%$** | **$62.73\%$** | **$94.49\%$** | **$-29.66\text{ pp}$** |
+
+### 13.8 Reproduction Commands
+To rerun the full simulation suite and regenerate all figures and datasets:
+```bash
+python scripts/run_dme_study.py
+```
+Output files:
+* Core modules: `dme_membrane_reactor.py`, `dme_bundle_reactor.py`
+* Numerical dataset: `results/dme_study_data.json`
+* Figures: `figures/dme_bundle_sleeve_cross_section.png`, `figures/dme_bundle_3d_cutaway.png`, `figures/dme_yield_vs_thickness.png`, `figures/dme_layout_comparison.png`
