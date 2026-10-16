@@ -179,16 +179,70 @@ All configurations evaluated on an identical catalyst mass basis ($W_{\text{cat}
 
 ---
 
-## 4. Visual Schematics & Architectural Figures
+## 4. Case Study B: Four-Tube Shell-Packed Catalytic Membrane Reactor
+*(Whole Shell Packed with Catalyst | 4 Equidistant Membrane Tubes at Half Radius)*
 
-* **To-Scale 2D Cross-Section:** [figures/dme_bundle_sleeve_cross_section.png](file:///Users/sameershekhar/Documents/GitHub/p1/figures/dme_bundle_sleeve_cross_section.png)
-* **3D Isometric Cutaway Diagram:** [figures/dme_bundle_3d_cutaway.png](file:///Users/sameershekhar/Documents/GitHub/p1/figures/dme_bundle_3d_cutaway.png)
+### 4.1 Design Philosophy & Motivation
+While the uniform sleeve architecture (Case Study A) ensures an identical radial diffusion distance around each tube, it requires sealing or filling $31.37\%$ of the shell volume with inert baffles to prevent severe bypassing. 
+
+In **Case Study B**, the reactor design is updated to eliminate all artificial voids and bypass risks:
+- The **entire shell-side volume** surrounding the four membrane tubes is packed with catalyst ($A_c = 2.3562\text{ cm}^2$, representing $75.0\%$ of the shell cross-section).
+- The four membrane tubes have outer diameter $d_t = 5.0\text{ mm}$ ($r_t = 2.5\text{ mm}$), which is **comparatively half the radius** of the standard $10.0\text{ mm}$ membrane tube ($r = 5.0\text{ mm}$).
+- The tubes are positioned **equidistant from the center** on a pitch circle radius $R_{\text{pitch}} = 5.0\text{ mm}$ (exactly half the shell radius $R_{\text{shell}}/2 = 5.0\text{ mm}$), arranged symmetrically at $90^\circ$ angles.
+
+![Shell-Packed Cross Section](figures/dme_shell_packed_cross_section.png)
+
+### 4.2 Geometric Formulation & Sizing Comparison
+
+$$\text{Shell ID: } D_{\text{shell}} = 20.0\text{ mm} \implies R_{\text{shell}} = 10.0\text{ mm}$$
+$$\text{Tube OD: } d_t = 5.0\text{ mm} \implies r_t = 2.5\text{ mm} \quad (\text{comparatively half radius})$$
+$$\text{Pitch Radius: } R_{\text{pitch}} = 5.0\text{ mm} = \frac{R_{\text{shell}}}{2}$$
+$$\text{Tube Center Coordinates: } (\pm 5.0, 0)\text{ mm}, \quad (0, \pm 5.0)\text{ mm}$$
+$$\text{Adjacent Center-to-Center Pitch: } s = \sqrt{2} R_{\text{pitch}} = 7.071\text{ mm}$$
+
+**Cross-Sectional Area Breakdown:**
+- Total Shell Interior Area: $A_{\text{shell}} = \frac{\pi}{4}(20.0)^2 = 3.1416\text{ cm}^2$
+- 4 Membrane Tubes Area: $A_{\text{tubes}} = 4 \times \frac{\pi}{4}(5.0)^2 = 0.7854\text{ cm}^2$ ($25.0\%$ of shell)
+- Catalyst Bed Cross-Section: $A_c = A_{\text{shell}} - A_{\text{tubes}} = 2.3562\text{ cm}^2$ ($75.0\%$ of shell)
+- Membrane Perimeter: $P_m = 4 \times \pi (5.0\text{ mm}) = 62.83\text{ mm}$
+- Specific Membrane Area: $a_v = \frac{P_m}{A_c} = \mathbf{266.67\text{ m}^{-1}}$ (exactly double the single 10 mm tube value of $133.33\text{ m}^{-1}$)
+
+**Clearance & Hydrodynamic Margin:**
+- Wall clearance (tube to outer shell wall): $R_{\text{shell}} - (R_{\text{pitch}} + r_t) = 10.0 - 7.5 = \mathbf{2.50\text{ mm}}$
+- Centerline clearance (tube to reactor axis): $R_{\text{pitch}} - r_t = 5.0 - 2.5 = \mathbf{2.50\text{ mm}}$
+- Inter-tube clearance (between adjacent tubes): $s - 2r_t = 7.071 - 5.0 = \mathbf{2.071\text{ mm}}$
+- Hydrodynamic packing ratio: $\frac{\delta_{\text{gap}}}{d_p} = \frac{2.071\text{ mm}}{0.30\text{ mm}} = \mathbf{6.9} \ge 5.0$ (fully compliant with Happel-Brenner packing stability criterion, eliminating bridging and wall channeling).
+
+### 4.3 Rigorous Simulation Performance (T = 250 °C, P = 40 bar, L = 1.0 m)
+
+| Performance Metric | Traditional PBR (No Membrane) | Single Centre Tube ($d_m=10\text{ mm}$) | Case Study A (Sleeve Bundle, $t=1.12\text{ mm}$) | **Case Study B (Shell-Packed 4-Tube)** |
+| :--- | :---: | :---: | :---: | :---: |
+| **Shell Diameter ($D_{\text{shell}}$)** | $11.28\text{ mm}$ | $20.00\text{ mm}$ | $19.88\text{ mm}$ | **$20.00\text{ mm}$** |
+| **Membrane Area ($A_m$)** | $0.000\text{ m}^2$ | $0.0314\text{ m}^2$ | $0.0754\text{ m}^2$ | **$0.0628\text{ m}^2$** |
+| **Specific Membrane Area ($a_v$)** | $0.0\text{ m}^{-1}$ | $133.33\text{ m}^{-1}$ | $754.0\text{ m}^{-1}$ | **$266.67\text{ m}^{-1}$** |
+| **Void / Inert Fraction** | $0.0\%$ | $0.0\%$ | $31.37\%$ (must seal) | **$0.0\%$ (Zero Voids)** |
+| **$\text{CO}_2$ Conversion ($X_{\text{CO}_2}$)** | $34.90\%$ | $93.62\%$ | $96.19\%$ | **$96.26\%$** |
+| **DME Yield ($Y_{\text{DME}}$)** | $31.17\%$ | $91.94\%$ | $92.39\%$ | **$94.28\%$** |
+| **DME Selectivity ($S_{\text{DME}}$)** | $89.29\%$ | $98.21\%$ | $96.05\%$ | **$97.94\%$** |
+| **$\text{H}_2\text{O}$ Removal Ratio** | $0.00\%$ | $99.11\%$ | $99.75\%$ | **$99.70\%$** |
+| **Carbon Balance Error** | $5.94 \times 10^{-16}$ | $< 1.0 \times 10^{-15}$ | $7.00 \times 10^{-16}$ | **$7.43 \times 10^{-16}$** |
+
+![Shell-Packed 3D Cutaway](figures/dme_shell_packed_3d_cutaway.png)
+
+---
+
+## 5. Visual Schematics & Architectural Figures
+
+* **Shell-Packed 2D Cross-Section (Case Study B):** [figures/dme_shell_packed_cross_section.png](file:///Users/sameershekhar/Documents/GitHub/p1/figures/dme_shell_packed_cross_section.png)
+* **Shell-Packed 3D Cutaway Diagram (Case Study B):** [figures/dme_shell_packed_3d_cutaway.png](file:///Users/sameershekhar/Documents/GitHub/p1/figures/dme_shell_packed_3d_cutaway.png)
+* **Sleeve Bundle 2D Cross-Section (Case Study A):** [figures/dme_bundle_sleeve_cross_section.png](file:///Users/sameershekhar/Documents/GitHub/p1/figures/dme_bundle_sleeve_cross_section.png)
+* **Sleeve Bundle 3D Cutaway Diagram (Case Study A):** [figures/dme_bundle_3d_cutaway.png](file:///Users/sameershekhar/Documents/GitHub/p1/figures/dme_bundle_3d_cutaway.png)
 * **Parametric Yield vs. Thickness & Diameter:** [figures/dme_yield_vs_thickness.png](file:///Users/sameershekhar/Documents/GitHub/p1/figures/dme_yield_vs_thickness.png)
 * **Multi-Architecture Benchmark Chart:** [figures/dme_layout_comparison.png](file:///Users/sameershekhar/Documents/GitHub/p1/figures/dme_layout_comparison.png)
 
 ---
 
-## 5. Summary Findings & Engineering Guidelines
+## 6. Summary Findings & Engineering Guidelines
 
 1. **Intensification Exceeds Gibbs Ceiling:** Continuous water removal via hydrophilic zeolite NaA membranes elevates single-pass $\text{CO}_2$ conversion from **$34.90\%$ to $96.19\%$** and DME yield from **$31.17\%$ to $92.39\%$**, surpassing the thermodynamic equilibrium limit ($48.71\%$) by **$+47.48\text{ percentage points}$**.
 2. **Superiority of Uniform Catalyst Sleeves:** Wrapping each tube in a uniform sleeve ($t = 1.12\text{--}1.50\text{ mm}$) guarantees that no catalyst pellet is more than distance $t$ from a membrane surface, eliminating the stagnant corner zones characteristic of conventional shell-packed bundles.

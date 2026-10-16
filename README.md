@@ -430,12 +430,29 @@ If interstitial voids ($31.37\%$ of cross-section) are left unsealed, fluid bypa
 | **$20.0\%$ Bypass** | $77.23\%$ | $73.52\%$ | $95.19\%$ | $-18.87\text{ pp}$ |
 | **$31.4\%$ (Area-Weighted)** | **$66.39\%$** | **$62.73\%$** | **$94.49\%$** | **$-29.66\text{ pp}$** |
 
-### 13.8 Reproduction Commands
+### 13.8 Case Study B: Four-Tube Shell-Packed CMR (Zero Voids, Half-Radius Tubes)
+To eliminate the need for inert void sealing while expanding catalyst volume and doubling specific membrane area:
+* **Shell Diameter:** $D_{\text{shell}} = 20.0\text{ mm}$ ($R_{\text{shell}} = 10.0\text{ mm}$).
+* **Four Membrane Tubes:** $d_t = 5.0\text{ mm}$ ($r_t = 2.5\text{ mm}$, half radius of single 10 mm tube) positioned equidistant at $R_{\text{pitch}} = 5.0\text{ mm} = R_{\text{shell}}/2$.
+* **Catalyst Packing:** $100\%$ of shell space around tubes is packed with catalyst ($A_c = 2.3562\text{ cm}^2$, zero voids, zero bypass).
+* **Performance:** $\text{CO}_2$ Conversion = **$96.26\%$**, DME Yield = **$94.28\%$**, DME Selectivity = **$97.94\%$**, $\text{H}_2\text{O}$ Removal = **$99.70\%$**.
+
+![Shell Packed Cross Section](figures/dme_shell_packed_cross_section.png)
+
+### 13.9 Reproduction Commands
 To rerun the full simulation suite and regenerate all figures and datasets:
 ```bash
 python scripts/run_dme_study.py
+python scripts/generate_shell_packed_diagrams.py
+python scripts/generate_shell_packed_3d.py
 ```
 Output files:
 * Core modules: `dme_membrane_reactor.py`, `dme_bundle_reactor.py`
 * Numerical dataset: `results/dme_study_data.json`
-* Figures: `figures/dme_bundle_sleeve_cross_section.png`, `figures/dme_bundle_3d_cutaway.png`, `figures/dme_yield_vs_thickness.png`, `figures/dme_layout_comparison.png`
+* Figures:
+  * `figures/dme_shell_packed_cross_section.png` (Case Study B 2D to-scale)
+  * `figures/dme_shell_packed_3d_cutaway.png` (Case Study B 3D cutaway)
+  * `figures/dme_bundle_sleeve_cross_section.png` (Case Study A 2D to-scale)
+  * `figures/dme_bundle_3d_cutaway.png` (Case Study A 3D cutaway)
+  * `figures/dme_yield_vs_thickness.png` (Yield trends)
+  * `figures/dme_layout_comparison.png` (Architectural benchmarks)
