@@ -17,7 +17,7 @@
 10. [Chemical Engineering Educational Guide](#10-educational-guide)
 11. [Data-Backed Conclusions](#11-conclusions)
 12. [Bibliographic References](#12-references)
-13. [Case Study: Direct CO₂-to-DME Four-Tube Sleeve Bundle Membrane Reactor](#13-case-study-direct-co2-to-dme-four-tube-sleeve-bundle-membrane-reactor)
+13. [Case Study: Direct CO₂-to-DME Multi-Tube Membrane Reactor Architectures & ML Surrogates](#13-case-study-direct-co2-to-dme-multi-tube-membrane-reactor-architectures--ml-surrogates)
 
 ---
 
@@ -329,9 +329,9 @@ While increasing sweep gas flow ($S/F = 10$) maximizes trans-membrane concentrat
 
 ---
 
-## 13. Case Study: Direct CO₂-to-DME Four-Tube Sleeve Bundle Membrane Reactor
+## 13. Case Study: Direct CO₂-to-DME Multi-Tube Membrane Reactor Architectures & ML Surrogates
 
-> **Note on Scope:** This section provides an independent case study extending the framework to direct single-step $\text{CO}_2$ hydrogenation to dimethyl ether (DME) inside an intensified multi-tube bundle. It operates under a distinct reaction chemistry, catalyst system, and tangent-sleeve geometry, separate from the primary tube-in-tube designs for e-methanol (Module A) and ammonia decomposition (Module B).
+> **Note on Scope:** This section provides an independent case study extending the framework to direct single-step $\text{CO}_2$ hydrogenation to dimethyl ether (DME) inside intensified multi-tube bundles (Case A uniform sleeves, Case B shell-packed equidistant tubes) with dedicated machine learning surrogate benchmarks. It operates under a distinct reaction chemistry, catalyst system, and multi-tube geometry, separate from the primary tube-in-tube designs for e-methanol (Module A) and ammonia decomposition (Module B).
 
 ### 13.1 Reaction Chemistry & Kinetic Framework
 Direct synthesis couples exothermic methanol synthesis with in-situ methanol dehydration over a dual-function metallic/acidic catalyst ($\text{Cu/ZnO/Al}_2\text{O}_3$ + solid acid $\gamma\text{-Al}_2\text{O}_3$ or H-ZSM-5):
@@ -440,19 +440,24 @@ To eliminate the need for inert void sealing while expanding catalyst volume and
 ![Shell Packed Cross Section](figures/dme_shell_packed_cross_section.png)
 
 ### 13.9 Reproduction Commands
-To rerun the full simulation suite and regenerate all figures and datasets:
+To rerun the full simulation suite, train the machine learning surrogate models, and regenerate all figures and datasets:
 ```bash
 python scripts/run_dme_study.py
+python scripts/train_dme_surrogate.py
 python scripts/generate_shell_packed_diagrams.py
 python scripts/generate_shell_packed_3d.py
 ```
 Output files:
 * Core modules: `dme_membrane_reactor.py`, `dme_bundle_reactor.py`
-* Numerical dataset: `results/dme_study_data.json`
+* Numerical datasets: `results/dme_study_data.json`, `results/dme_doe_dataset.csv`, `results/dme_ml_metrics.csv`
+* Trained ML surrogate: `results/dme_surrogate_extratrees.joblib`
+* Technical report: [`CASE_STUDY_RESULTS.md`](CASE_STUDY_RESULTS.md)
 * Figures:
   * `figures/dme_shell_packed_cross_section.png` (Case Study B 2D to-scale)
   * `figures/dme_shell_packed_3d_cutaway.png` (Case Study B 3D cutaway)
   * `figures/dme_bundle_sleeve_cross_section.png` (Case Study A 2D to-scale)
   * `figures/dme_bundle_3d_cutaway.png` (Case Study A 3D cutaway)
+  * `figures/dme_surrogate_parity.png` (ExtraTrees ML parity diagnostics)
+  * `figures/dme_feature_importance.png` (Global parameter sensitivity)
   * `figures/dme_yield_vs_thickness.png` (Yield trends)
   * `figures/dme_layout_comparison.png` (Architectural benchmarks)
