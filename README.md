@@ -437,6 +437,8 @@ To eliminate the need for inert void sealing while expanding catalyst volume and
 * **Catalyst Packing:** $100\%$ of shell space around tubes is packed with catalyst ($A_c = 2.3562\text{ cm}^2$, zero voids, zero bypass).
 * **Performance:** $\text{CO}_2$ Conversion = **$96.26\%$**, DME Yield = **$94.28\%$**, DME Selectivity = **$97.94\%$**, $\text{H}_2\text{O}$ Removal = **$99.70\%$**.
 
+![Dynamic 3D CFD Flow Simulation](figures/dme_cfd_flow_simulation.gif)
+![2D Cross-Sectional CFD Slices](figures/dme_cfd_cross_sections.png)
 ![Shell Packed Cross Section](figures/dme_shell_packed_cross_section.png)
 ![3D CFD Flow Field](figures/dme_cfd_3d_flow.png)
 ![Axial Concentration Profiles](figures/dme_cfd_axial_profiles.png)
@@ -449,13 +451,17 @@ python scripts/train_dme_surrogate.py
 python scripts/generate_shell_packed_diagrams.py
 python scripts/generate_shell_packed_3d.py
 python scripts/generate_dme_cfd_3d.py
+python scripts/simulate_dme_cfd_flowing.py
 ```
 Output files:
 * Core modules: `dme_membrane_reactor.py`, `dme_bundle_reactor.py`
 * Numerical datasets: `results/dme_study_data.json`, `results/dme_doe_dataset.csv`, `results/dme_ml_metrics.csv`
 * Trained ML surrogate: `results/dme_surrogate_extratrees.joblib`
 * Technical report: [`CASE_STUDY_RESULTS.md`](CASE_STUDY_RESULTS.md)
-* Figures:
+* Figures & Interactive Simulations:
+  * `figures/dme_cfd_flow_simulation.gif` (Dynamic 3D animated CFD flowing simulation)
+  * `figures/dme_cfd_cross_sections.png` (2D multi-slice CFD concentration contours)
+  * `figures/dme_cfd_interactive_flow.html` (Interactive 3D WebGL / Plotly flow explorer)
   * `figures/dme_cfd_3d_flow.png` (3D transport-kinetic flow field visualization)
   * `figures/dme_cfd_axial_profiles.png` (4-panel MR vs. TR axial concentration profiles)
   * `figures/dme_shell_packed_cross_section.png` (Case Study B 2D to-scale)

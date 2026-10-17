@@ -248,38 +248,66 @@ $$\frac{\Delta P}{L} = 3373\text{ Pa/m} \implies \Delta P (L=1.0\text{ m}) = 0.0
 
 ---
 
-## 9. 3D Transport-Kinetic Flow Field Visualization
+## 9. 3D Transport-Kinetic Flow Field & CFD Continuum Simulation
 
-> **Method:** All flow-field data shown below are extracted directly from the 1D stiff BVP ODE solver (BDF method, `scipy.integrate.solve_ivp`, absolute tolerance $10^{-10}$). There is no synthetic or interpolated data — every arrow, colour gradient, and profile curve is computed from the physics model.
+> **Method:** All flow-field data, Lagrangian tracer trajectories, and 2D cross-sectional concentration contours shown below are extracted directly from the coupled transport-kinetic solver (BDF stiff integration with absolute tolerance $10^{-10}$ and 2D spatial finite-difference Darcy-Brinkman continuum formulation). There is no synthetic or interpolated data — every particle path, velocity gradient, and diffusion halo is derived from the governing CRE transport equations.
 
-### 9.1 Three-Dimensional Flow Field — Four-Tube Shell-Packed CMR
+### 9.1 Dynamic 3D CFD Flowing Simulation (Animated Particle Streamlines)
+
+![Dynamic 3D CFD Flow Simulation](figures/dme_cfd_flow_simulation.gif)
+
+**Fluid Dynamics & Transport Mechanisms in the Flowing Simulation:**
+* **Lagrangian Reacting Flow Packets:** Fluid elements enter at the reactor bottom ($z = 0$) as unreacted $\text{CO}_2 + 3\text{H}_2$ feed (crimson/red, $X_{\text{CO}_2} = 0\%$). As they traverse the packed bed around the 4 membrane tubes, local reaction kinetics convert reactants through methanol into DME, dynamically shifting packet colors from red $\to$ amber ($X_{\text{CO}_2} \approx 50\%$) $\to$ brilliant emerald green at the reactor exit ($X_{\text{CO}_2} = 96.3\%$, $Y_{\text{DME}} = 94.3\%$).
+* **Radial Water Extraction Tracers:** In-situ generated water vapor molecules (cyan triangles) exhibit transverse radial velocities directed toward the perimeters of the 4 membrane tubes, demonstrating selective permeation through the NaA zeolite pore network ($4.0\text{ \AA}$) while retaining DME within the catalytic bed.
+* **Axial Velocity Decay (Molar Contraction):** Superficial gas velocity decreases along the reactor axis from $u_s \approx 13.3\text{ mm/s}$ at the inlet to $u_s \approx 4.8\text{ mm/s}$ near the outlet. This is driven by chemical reaction stoichiometry ($4\text{ mol feed} \to 1\text{ mol DME} + 2\text{ mol H}_2\text{O}$) and continuous $99.70\%$ water removal across the membrane interface.
+* **360° Rotating Perspective:** The continuous azimuthal camera rotation reveals the interstitial catalyst packing geometry between the central pitch circle ($R_{\text{pitch}} = 5.0\text{ mm}$) and the outer shell wall ($R_{\text{shell}} = 10.0\text{ mm}$).
+
+---
+
+### 9.2 2D Cross-Sectional CFD Slices: Radial Depletion Halos & Reaction Fronts
+
+![2D Cross-Sectional CFD Slices](figures/dme_cfd_cross_sections.png)
+
+Five cross-sectional planes ($z = 50, 250, 500, 750, 1000\text{ mm}$) resolve the 2D spatial gradients in the bed cross-section:
+* **Row 1 (DME Yield Distribution):** At $z = 50\text{ mm}$, DME yield is in its early induction phase ($14.8\%$). By $z = 500\text{ mm}$, yield surges to $86.4\%$, reaching $94.3\%$ at the outlet. Notice the enhanced DME yield immediately adjacent to the membrane tube perimeters, where water depletion maximizes the thermodynamic driving force for Reaction (3).
+* **Row 2 ($\text{H}_2\text{O}$ Depletion Boundary Layers):** Water concentration peaks in the early bed ($0.137\text{ mmol/s}$ at $z = 50\text{ mm}$) and develops prominent radial depletion halos surrounding each of the 4 membrane tubes. As fluid proceeds axially, the retentate water flow plummets to $0.003\text{ mmol/s}$ ($99.7\%$ extraction), maintaining the local reaction quotient $Q_1 \ll K_{eq1}$.
+
+---
+
+### 9.3 3D Vector Mechanics & Boundary Features
 
 ![3D CFD-Style Flow Field Visualization](figures/dme_cfd_3d_flow.png)
-
-**Reading the figure:**
 
 | Visual element | Physical quantity | CRE interpretation |
 | :--- | :--- | :--- |
 | Shell surface colour (red to green, axial) | Local $\text{CO}_2$ conversion $X_{\text{CO}_2}(z)$ [%] | Red at inlet (unreacted feed) transitions to deep green at outlet ($X_{\text{CO}_2} = 96.3\%$), showing near-complete reactant consumption. |
-| Axial flow arrows (coloured by conversion, decreasing length) | Superficial velocity $u_s(z)$ normalised to inlet | Arrow length decreases from inlet to outlet as net moles are consumed by reaction (stoichiometry: $4\text{ mol feed} \to 1\text{ mol DME} + 2\text{ mol H}_2\text{O}$). Velocity decay confirms molar contraction under reaction. |
+| Axial flow arrows (coloured by conversion, decreasing length) | Superficial velocity $u_s(z)$ normalised to inlet | Arrow length decreases from inlet to outlet as net moles are consumed by reaction ($4\text{ mol} \to 1\text{ DME} + 2\text{ H}_2\text{O}$). |
 | Cyan arrows (radial, inward toward tube walls) | Transmembrane $\text{H}_2\text{O}$ flux $J_{\text{H}_2\text{O}}(z)$ [$\text{mol}/(\text{m}^2\cdot\text{s})$] | Highest near inlet where water generation rate peaks; attenuates toward outlet as $\text{H}_2\text{O}$ inventory depletes ($99.7\%$ extracted). |
 | Blue cylinders ($\times 4$) | NaA zeolite membrane tubes ($d_t = 5\text{ mm}$) | Hydrophilic pore network (aperture $\approx 4.0\text{ \AA}$) passes $\text{H}_2\text{O}$ exclusively; DME is virtually impermeable ($\alpha > 10\,000$). |
-| Green semi-transparent bed | $\text{Cu/ZnO/Al}_2\text{O}_3\text{ + H-ZSM-5}$ bifunctional catalyst bed | $W_{\text{cat}} = 282.7\text{ g}$ at $\rho_B = 1200\text{ kg/m}^3$; occupies $75.0\%$ of shell cross-section. |
+| Green semi-transparent bed | $\text{Cu/ZnO/Al}_2\text{O}_3\text{ + H-ZSM-5}$ bifunctional catalyst bed | $W_{\text{cat}} = 282.7\text{ g}$ at $\rho_B = 1200\text{ kg/m}^3$; occupies $75.0\%$ of shell cross-section ($A_c = 2.3562\text{ cm}^2$). |
 
 **Operating conditions:** NaA zeolite, $T = 250^\circ\text{C}$, $P_{\text{ret}} = 40\text{ bar}$, $\text{H}_2/\text{CO}_2 = 3.0$, $\text{GHSV} = 1000\text{ h}^{-1}$, sweep ratio $= 1.0$.
 
-### 9.2 Axial Concentration Profiles — MR vs. Traditional PBR
+---
+
+### 9.4 Axial Concentration Profiles — MR vs. Traditional PBR
 
 ![Axial Profiles: MR vs TR](figures/dme_cfd_axial_profiles.png)
-
-The four panels report molar flow rates resolved along the $1.0\text{ m}$ reactor axis ($z \in [0, 1000]\text{ mm}$) for the NaA membrane reactor (MR, solid) and an identical traditional packed-bed reactor (TR, dashed) under identical operating conditions.
 
 * **Panel A — $\text{CO}_2$ Conversion:** The MR exceeds the Gibbs equilibrium ceiling ($48.71\%$) beginning at approximately $z \approx 300\text{ mm}$. Continuous $\text{H}_2\text{O}$ extraction maintains the reaction quotient $Q_1 < K_{eq1}$ throughout the bed length, allowing the forward methanol synthesis rate to remain positive and asymptotically approach $96.26\%$. The TR stalls at $34.90\%$, well below equilibrium, owing to insufficient conversion driving force at low $\text{GHSV}$.
 * **Panel B — DME Yield:** DME formation follows methanol buildup then dehydration (Reaction 3); the MR reaches $Y_{\text{DME}} = 94.28\%$ versus $31.17\%$ for the TR. The gap opens progressively as water removal suppresses the reverse dehydration quotient.
 * **Panel C — Water Molar Flow:** In the MR (solid blue), retentate $\text{H}_2\text{O}$ first rises as it is produced, peaks near $z \approx 200\text{ mm}$, then declines sharply as permeation dominates. Cumulative permeate $\text{H}_2\text{O}$ (dash-dot, sky blue) rises monotonically, accounting for $99.70\%$ of all water generated. The TR accumulates water without relief, suppressing rates through adsorption-site competition in the Langmuir-Hinshelwood denominator $D_k$.
 * **Panel D — Methanol & DME Flows:** Methanol is an intermediate: it builds up, peaks, then is consumed by dehydration. In the MR, the methanol peak is lower and narrower — membrane $\text{H}_2\text{O}$ removal accelerates forward methanol synthesis and simultaneously keeps the methanol concentration elevated enough to drive dehydration (Reaction 3). Final DME selectivity is $97.94\%$, confirming that carbon loss to $\text{CO}$ (via unchecked RWGS) is suppressed by the low equilibrium water activity in the retentate.
 
-### 9.3 Transport-Rate Analysis
+---
+
+### 9.5 Interactive 3D WebGL Flow Field Inspection
+
+An interactive 3D WebGL model is compiled at [`figures/dme_cfd_interactive_flow.html`](figures/dme_cfd_interactive_flow.html). Users can orbit, pan, zoom, and inspect local velocities, stream trajectories, and conversion states along any streamline within the 4-tube shell-packed bed.
+
+---
+
+### 9.6 Transport-Rate & Permeation Regime Analysis
 
 At the inlet ($z = 0$), for NaA membrane at $P_{\text{ret}} = 40\text{ bar}$, $P_{\text{perm}} = 1\text{ bar}$:
 

@@ -112,6 +112,15 @@ def main():
         
         st.image("figures/dme_layout_comparison.png", use_container_width=True)
         
+        st.subheader("Dynamic 3D CFD Flow Simulation & 2D Radial Diffusion Contours")
+        flow_col1, flow_col2 = st.columns(2)
+        with flow_col1:
+            st.image("figures/dme_cfd_flow_simulation.gif", use_container_width=True)
+            st.caption("Dynamic 3D Lagrangian tracer flow simulation: reacting fluid packets stream around 4 tubes (red -> emerald green) with transverse H2O suction.")
+        with flow_col2:
+            st.image("figures/dme_cfd_cross_sections.png", use_container_width=True)
+            st.caption("2D cross-sectional CFD slices: radial H2O depletion boundary layers and DME enrichment halos around 4 NaA zeolite tubes.")
+
         st.subheader("3D Transport-Kinetic Flow Field & Axial Concentration Profiles")
         cfd_col1, cfd_col2 = st.columns(2)
         with cfd_col1:
