@@ -438,6 +438,8 @@ To eliminate the need for inert void sealing while expanding catalyst volume and
 * **Performance:** $\text{CO}_2$ Conversion = **$96.26\%$**, DME Yield = **$94.28\%$**, DME Selectivity = **$97.94\%$**, $\text{H}_2\text{O}$ Removal = **$99.70\%$**.
 
 ![Shell Packed Cross Section](figures/dme_shell_packed_cross_section.png)
+![3D CFD Flow Field](figures/dme_cfd_3d_flow.png)
+![Axial Concentration Profiles](figures/dme_cfd_axial_profiles.png)
 
 ### 13.9 Reproduction Commands
 To rerun the full simulation suite, train the machine learning surrogate models, and regenerate all figures and datasets:
@@ -446,6 +448,7 @@ python scripts/run_dme_study.py
 python scripts/train_dme_surrogate.py
 python scripts/generate_shell_packed_diagrams.py
 python scripts/generate_shell_packed_3d.py
+python scripts/generate_dme_cfd_3d.py
 ```
 Output files:
 * Core modules: `dme_membrane_reactor.py`, `dme_bundle_reactor.py`
@@ -453,6 +456,8 @@ Output files:
 * Trained ML surrogate: `results/dme_surrogate_extratrees.joblib`
 * Technical report: [`CASE_STUDY_RESULTS.md`](CASE_STUDY_RESULTS.md)
 * Figures:
+  * `figures/dme_cfd_3d_flow.png` (3D transport-kinetic flow field visualization)
+  * `figures/dme_cfd_axial_profiles.png` (4-panel MR vs. TR axial concentration profiles)
   * `figures/dme_shell_packed_cross_section.png` (Case Study B 2D to-scale)
   * `figures/dme_shell_packed_3d_cutaway.png` (Case Study B 3D cutaway)
   * `figures/dme_bundle_sleeve_cross_section.png` (Case Study A 2D to-scale)

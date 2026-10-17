@@ -111,6 +111,15 @@ def main():
         st.dataframe(dme_summary.style.format({"CO2 Conv (%)": "{:.2f}", "DME Yield (%)": "{:.2f}", "DME Selectivity (%)": "{:.2f}", "H2O Removed (%)": "{:.2f}"}), use_container_width=True)
         
         st.image("figures/dme_layout_comparison.png", use_container_width=True)
+        
+        st.subheader("3D Transport-Kinetic Flow Field & Axial Concentration Profiles")
+        cfd_col1, cfd_col2 = st.columns(2)
+        with cfd_col1:
+            st.image("figures/dme_cfd_3d_flow.png", use_container_width=True)
+            st.caption("3D transport-kinetic flow field coloured by local CO2 conversion, superficial velocity decay, and radial H2O extraction flux.")
+        with cfd_col2:
+            st.image("figures/dme_cfd_axial_profiles.png", use_container_width=True)
+            st.caption("Axial concentration profiles comparing Case Study B membrane reactor vs. traditional packed bed (TR).")
 
 if __name__ == "__main__":
     main()

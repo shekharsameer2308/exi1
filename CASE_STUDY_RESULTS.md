@@ -250,7 +250,7 @@ $$\frac{\Delta P}{L} = 3373\text{ Pa/m} \implies \Delta P (L=1.0\text{ m}) = 0.0
 
 ## 9. 3D Transport-Kinetic Flow Field Visualization
 
-> **Method:** All flow-field data shown below are extracted directly from the 1D stiff BVP ODE solver (BDF method, `scipy.integrate.solve_ivp`, absolute tolerance 1e-10). There is no synthetic or interpolated data — every arrow, colour gradient, and profile curve is computed from the physics model.
+> **Method:** All flow-field data shown below are extracted directly from the 1D stiff BVP ODE solver (BDF method, `scipy.integrate.solve_ivp`, absolute tolerance $10^{-10}$). There is no synthetic or interpolated data — every arrow, colour gradient, and profile curve is computed from the physics model.
 
 ### 9.1 Three-Dimensional Flow Field — Four-Tube Shell-Packed CMR
 
@@ -260,38 +260,34 @@ $$\frac{\Delta P}{L} = 3373\text{ Pa/m} \implies \Delta P (L=1.0\text{ m}) = 0.0
 
 | Visual element | Physical quantity | CRE interpretation |
 | :--- | :--- | :--- |
-| Shell surface colour (red to green, axial) | Local CO2 conversion X_CO2(z) [%] | Red at inlet (unreacted feed) transitions to deep green at outlet (X_CO2 = 96.3%), showing near-complete reactant consumption. |
-| Axial flow arrows (coloured by conversion, decreasing length) | Superficial velocity u_s(z) normalised to inlet | Arrow length decreases from inlet to outlet as net moles are consumed by reaction (stoichiometry: 4 mol feed → 1 mol DME + 2 mol H2O). Velocity decay confirms molar contraction under reaction. |
-| Cyan arrows (radial, inward toward tube walls) | Transmembrane H2O flux J_H2O(z) [mol/m^2/s] | Highest near inlet where water generation rate peaks; attenuates toward outlet as H2O inventory depletes (99.7% extracted). |
-| Blue cylinders (x4) | NaA zeolite membrane tubes (d_t = 5 mm) | Hydrophilic pore network (aperture ~4.0 A) passes H2O exclusively; DME is virtually impermeable (alpha > 10000). |
-| Green semi-transparent bed | Cu/ZnO/Al2O3 + H-ZSM-5 bifunctional catalyst bed | W_cat = 282.7 g at rho_B = 1200 kg/m3; occupies 75.0% of shell cross-section. |
+| Shell surface colour (red to green, axial) | Local $\text{CO}_2$ conversion $X_{\text{CO}_2}(z)$ [%] | Red at inlet (unreacted feed) transitions to deep green at outlet ($X_{\text{CO}_2} = 96.3\%$), showing near-complete reactant consumption. |
+| Axial flow arrows (coloured by conversion, decreasing length) | Superficial velocity $u_s(z)$ normalised to inlet | Arrow length decreases from inlet to outlet as net moles are consumed by reaction (stoichiometry: $4\text{ mol feed} \to 1\text{ mol DME} + 2\text{ mol H}_2\text{O}$). Velocity decay confirms molar contraction under reaction. |
+| Cyan arrows (radial, inward toward tube walls) | Transmembrane $\text{H}_2\text{O}$ flux $J_{\text{H}_2\text{O}}(z)$ [$\text{mol}/(\text{m}^2\cdot\text{s})$] | Highest near inlet where water generation rate peaks; attenuates toward outlet as $\text{H}_2\text{O}$ inventory depletes ($99.7\%$ extracted). |
+| Blue cylinders ($\times 4$) | NaA zeolite membrane tubes ($d_t = 5\text{ mm}$) | Hydrophilic pore network (aperture $\approx 4.0\text{ \AA}$) passes $\text{H}_2\text{O}$ exclusively; DME is virtually impermeable ($\alpha > 10\,000$). |
+| Green semi-transparent bed | $\text{Cu/ZnO/Al}_2\text{O}_3\text{ + H-ZSM-5}$ bifunctional catalyst bed | $W_{\text{cat}} = 282.7\text{ g}$ at $\rho_B = 1200\text{ kg/m}^3$; occupies $75.0\%$ of shell cross-section. |
 
-**Operating conditions:** NaA zeolite, T = 250 C, P_ret = 40 bar, H2/CO2 = 3, GHSV = 1000 h^-1, sweep ratio = 1.0.
+**Operating conditions:** NaA zeolite, $T = 250^\circ\text{C}$, $P_{\text{ret}} = 40\text{ bar}$, $\text{H}_2/\text{CO}_2 = 3.0$, $\text{GHSV} = 1000\text{ h}^{-1}$, sweep ratio $= 1.0$.
 
 ### 9.2 Axial Concentration Profiles — MR vs. Traditional PBR
 
 ![Axial Profiles: MR vs TR](figures/dme_cfd_axial_profiles.png)
 
-The four panels report molar flow rates resolved along the 1.0 m reactor axis (z in [0, 1000] mm) for the NaA membrane reactor (MR, solid) and an identical traditional packed-bed reactor (TR, dashed) under identical operating conditions.
+The four panels report molar flow rates resolved along the $1.0\text{ m}$ reactor axis ($z \in [0, 1000]\text{ mm}$) for the NaA membrane reactor (MR, solid) and an identical traditional packed-bed reactor (TR, dashed) under identical operating conditions.
 
-**Panel A — CO2 Conversion:** The MR exceeds the Gibbs equilibrium ceiling (48.71%) beginning at approximately z = 300 mm. Continuous H2O extraction maintains the reaction quotient Q1 < K_eq1 throughout the bed length, allowing the forward methanol synthesis rate to remain positive and asymptotically approach 96.26%. The TR stalls at 34.90%, well below equilibrium, owing to insufficient conversion driving force at low GHSV.
-
-**Panel B — DME Yield:** DME formation follows methanol buildup then dehydration (Reaction 3); the MR reaches Y_DME = 94.28% versus 31.17% for the TR. The gap opens progressively as water removal suppresses the reverse dehydration quotient.
-
-**Panel C — Water Molar Flow:** In the MR (solid blue), retentate H2O first rises as it is produced, peaks near z = 200 mm, then declines sharply as permeation dominates. Cumulative permeate H2O (dash-dot, sky blue) rises monotonically, accounting for 99.70% of all water generated. The TR accumulates water without relief, suppressing rates through adsorption-site competition in the Langmuir-Hinshelwood denominator D_k.
-
-**Panel D — Methanol and DME Flows:** Methanol is an intermediate: it builds up, peaks, then is consumed by dehydration. In the MR, the methanol peak is lower and narrower — membrane H2O removal accelerates forward methanol synthesis and simultaneously keeps the methanol concentration elevated enough to drive dehydration (Reaction 3). Final DME selectivity is 97.94%, confirming that carbon loss to CO (via unchecked RWGS) is suppressed by the low equilibrium water activity in the retentate.
+* **Panel A — $\text{CO}_2$ Conversion:** The MR exceeds the Gibbs equilibrium ceiling ($48.71\%$) beginning at approximately $z \approx 300\text{ mm}$. Continuous $\text{H}_2\text{O}$ extraction maintains the reaction quotient $Q_1 < K_{eq1}$ throughout the bed length, allowing the forward methanol synthesis rate to remain positive and asymptotically approach $96.26\%$. The TR stalls at $34.90\%$, well below equilibrium, owing to insufficient conversion driving force at low $\text{GHSV}$.
+* **Panel B — DME Yield:** DME formation follows methanol buildup then dehydration (Reaction 3); the MR reaches $Y_{\text{DME}} = 94.28\%$ versus $31.17\%$ for the TR. The gap opens progressively as water removal suppresses the reverse dehydration quotient.
+* **Panel C — Water Molar Flow:** In the MR (solid blue), retentate $\text{H}_2\text{O}$ first rises as it is produced, peaks near $z \approx 200\text{ mm}$, then declines sharply as permeation dominates. Cumulative permeate $\text{H}_2\text{O}$ (dash-dot, sky blue) rises monotonically, accounting for $99.70\%$ of all water generated. The TR accumulates water without relief, suppressing rates through adsorption-site competition in the Langmuir-Hinshelwood denominator $D_k$.
+* **Panel D — Methanol & DME Flows:** Methanol is an intermediate: it builds up, peaks, then is consumed by dehydration. In the MR, the methanol peak is lower and narrower — membrane $\text{H}_2\text{O}$ removal accelerates forward methanol synthesis and simultaneously keeps the methanol concentration elevated enough to drive dehydration (Reaction 3). Final DME selectivity is $97.94\%$, confirming that carbon loss to $\text{CO}$ (via unchecked RWGS) is suppressed by the low equilibrium water activity in the retentate.
 
 ### 9.3 Transport-Rate Analysis
 
-At the inlet (z = 0), for NaA membrane at P_ret = 40 bar, P_perm = 1 bar:
+At the inlet ($z = 0$), for NaA membrane at $P_{\text{ret}} = 40\text{ bar}$, $P_{\text{perm}} = 1\text{ bar}$:
 
-Transmembrane H2O flux:
-  J_H2O = Pi_H2O * (p_H2O,ret - p_H2O,perm) = 1.8e-7 * 3.0e5 = 5.4e-2 mol/(m^2 s)
+$$J_{\text{H}_2\text{O}} = \Pi_{\text{H}_2\text{O}} \cdot (p_{\text{H}_2\text{O,ret}} - p_{\text{H}_2\text{O,perm}}) = 1.8 \times 10^{-7} \cdot (3.0 \times 10^5) = 5.4 \times 10^{-2}\text{ mol}/(\text{m}^2\cdot\text{s})$$
 
-Over 4 membrane tubes (P_m = 62.83 mm/m, L = 1.0 m):
-  n_dot_perm = J_H2O * A_m = 5.4e-2 * 0.06283 = 3.4e-3 mol/s
+Over 4 membrane tubes ($P_m = 62.83\text{ mm/m}, L = 1.0\text{ m}$):
 
-This exceeds the net H2O generation rate in the first axial element, confirming the reactor operates in the **permeation-fast / reaction-rate-limited** regime — the thermodynamically desired operating window where the membrane never becomes a bottleneck.
+$$\dot{n}_{\text{perm,H}_2\text{O}} = J_{\text{H}_2\text{O}} \cdot A_m = 5.4 \times 10^{-2} \times 0.06283 = 3.4 \times 10^{-3}\text{ mol/s}$$
 
----
+This exceeds the net $\text{H}_2\text{O}$ generation rate in the first axial element, confirming the reactor operates in the **permeation-fast / reaction-rate-limited** regime — the thermodynamically desired operating window where the membrane never becomes a bottleneck.
+
