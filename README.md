@@ -2,6 +2,10 @@
 
 **Abstract:** This technical report details the rigorous 1D steady-state physical modeling and machine-learning surrogate optimization of a tube-in-tube Catalytic Membrane Reactor (CMR) for E-Methanol synthesis (Module A, NaA zeolite water-selective membrane) and Ammonia Decomposition (Module B, metallic Pd hydrogen-selective membrane). By selectively removing inhibitory reaction byproducts (H₂O or H₂) directly from the catalytic zone, the reactor circumvents thermodynamic equilibrium limits dictated by Le Chatelier's principle. Under optimized operating conditions ($T = 250^\circ\text{C}, P = 100\text{ bar}, \text{GHSV} = 500\text{ h}^{-1}, O_M/V_r = 133.33\text{ m}^{-1}, S/F = 10$), the membrane reactor achieves **44.54%** single-pass CO₂ conversion compared to **33.52%** in a traditional plug-flow reactor—a decisive gain of **+11.02 percentage points** (+32.9% relative increase) with **60.70%** in-situ water removal. Applying a trans-membrane pressure driving force of 99 bar further elevates conversion to **45.10%**.
 
+> **Downloadable Comprehensive Reports:**
+> * **[FINAL_TECHNICAL_REPORT.pdf](FINAL_TECHNICAL_REPORT.pdf)** — Complete publication-grade technical report with embedded diagrams, 3D CFD flow fields, kinetics, and full source code listings.
+> * **[FINAL_TECHNICAL_REPORT.html](FINAL_TECHNICAL_REPORT.html)** — Self-contained standalone HTML report with embedded base64 graphics and client-side MathJax.
+
 ---
 
 ## Table of Contents

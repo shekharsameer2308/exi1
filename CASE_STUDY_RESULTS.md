@@ -1,5 +1,9 @@
 # Technical Case Study Report: Intensified Direct CO₂-to-DME Multi-Tube Membrane Reactor Architectures & ML Surrogate Benchmark
 
+> **Downloadable Full Reports:**
+> * **[FINAL_TECHNICAL_REPORT.pdf](FINAL_TECHNICAL_REPORT.pdf)** — Complete publication-grade technical report with embedded diagrams, 3D CFD flow fields, kinetics, and full source code listings.
+> * **[FINAL_TECHNICAL_REPORT.html](FINAL_TECHNICAL_REPORT.html)** — Self-contained standalone HTML report with embedded base64 graphics and client-side MathJax.
+
 ## Executive Summary & Scope Definition
 
 This report documents the design, rigorous 1D multi-component transport-kinetic simulation, and machine learning surrogate modeling for direct $\text{CO}_2$ hydrogenation to dimethyl ether (DME) within intensified multi-tube catalytic membrane reactors (CMR). 
@@ -11,6 +15,19 @@ This report evaluates two multi-tube reactor topologies:
 2. **Case Study B (Shell-Packed Bed with Equidistant Half-Radius Tubes):** Four membrane tubes ($d_t = 5.0\text{ mm}$, half radius of conventional $10.0\text{ mm}$ tubes) placed on a symmetric pitch circle ($R_{\text{pitch}} = 5.0\text{ mm} = R_{\text{shell}}/2$), where $100\%$ of the shell space surrounding the tubes is packed with catalyst ($A_c = 2.3562\text{ cm}^2$, $75.0\%$ of cross-section), eliminating all void spaces and fluid bypass.
 
 Both architectures are evaluated against fundamental Chemical Reaction Engineering (CRE) principles, verified against thermodynamic Gibbs equilibrium, and benchmarked using machine learning surrogate models trained on physics-based simulations.
+
+---
+
+## Table of Contents
+1. [Machine Learning Surrogate Model Benchmark & Diagnostic Analysis](#1-machine-learning-surrogate-model-benchmark--diagnostic-analysis)
+2. [Fundamental Reaction Chemistry, Thermodynamics & Kinetic Formulations](#2-fundamental-reaction-chemistry-thermodynamics--kinetic-formulations)
+3. [Case Study A: Four-Tube Sleeve Bundle Membrane Reactor](#3-case-study-a-four-tube-sleeve-bundle-membrane-reactor)
+4. [Case Study B: Four-Tube Shell-Packed Catalytic Membrane Reactor](#4-case-study-b-four-tube-shell-packed-catalytic-membrane-reactor)
+5. [Multi-Architecture CRE Benchmark & Performance Comparison](#5-multi-architecture-cre-benchmark--performance-comparison)
+6. [Chemical Reaction Engineering (CRE) Principles & Transport Mechanics](#6-chemical-reaction-engineering-cre-principles--transport-mechanics)
+7. [Data Sources, Parameter Provenance & Assumptions Register](#7-data-sources-parameter-provenance--assumptions-register)
+8. [Summary of Engineering Recommendations](#8-summary-of-engineering-recommendations)
+9. [3D Transport-Kinetic Flow Field & CFD Continuum Simulation](#9-3d-transport-kinetic-flow-field--cfd-continuum-simulation)
 
 ---
 
@@ -115,10 +132,14 @@ To confirm solver rigor, a traditional packed bed (TR, no membrane) with a $100\
 ### 3.1 Geometric Topology & Sizing
 In Case Study A, four ceramic membrane tubes of outer diameter $d$ are wrapped in uniform annular catalyst sleeves of thickness $t$, touching each other in square tangent circle packing:
 
-$$\text{Sleeve Outer Diameter: } d_s = d + 2t$$
-$$\text{Tangent Shell Diameter: } D = (1 + \sqrt{2}) d_s$$
-$$\text{Catalyst Bed Cross-Section: } A_c = 4 \pi t (d + t)$$
-$$\text{Specific Membrane Area: } a_v = \frac{d}{t(d + t)}$$
+$$
+\begin{aligned}
+\text{Sleeve Outer Diameter: } & d_s = d + 2t \\
+\text{Tangent Shell Diameter: } & D = (1 + \sqrt{2}) d_s \\
+\text{Catalyst Bed Cross-Section: } & A_c = 4 \pi t (d + t) \\
+\text{Specific Membrane Area: } & a_v = \frac{d}{t(d + t)}
+\end{aligned}
+$$
 
 ![Case Study A Cross Section](figures/dme_bundle_sleeve_cross_section.png)
 ![Case Study A 3D Cutaway](figures/dme_bundle_3d_cutaway.png)
@@ -215,7 +236,10 @@ Axial pressure drop was evaluated via the Ergun equation:
 $$\frac{\Delta P}{L} = 150 \frac{\mu_g (1 - \varepsilon_b)^2 u_s}{\varepsilon_b^3 d_p^2} + 1.75 \frac{\rho_g (1 - \varepsilon_b) u_s^2}{\varepsilon_b^3 d_p}$$
 
 For syngas at $250^\circ\text{C}, 40\text{ bar}$ ($\rho_g = 26.64\text{ kg/m}^3, \mu_g = 2.0 \times 10^{-5}\text{ Pa}\cdot\text{s}, u_s = 0.016\text{ m/s}, \varepsilon_b = 0.40, d_p = 0.30\text{ mm}$):
-$$\frac{\Delta P}{L} = 3373\text{ Pa/m} \implies \Delta P (L=1.0\text{ m}) = 0.0337\text{ bar}$$
+
+$$
+\frac{\Delta P}{L} = 3373\text{ Pa/m} \implies \Delta P (L=1.0\text{ m}) = 0.0337\text{ bar}
+$$
 
 *Conclusion: Bed pressure drop is $0.08\%$ of operating pressure, fully validating the isobaric assumption in the 1D model.*
 
