@@ -57,13 +57,26 @@ replacements = {
     "__CODE_SURROGATE__":  read_code_file("scripts/train_dme_surrogate.py", max_lines=180),
 }
 
-TEMPLATE = """<!DOCTYPE html>
+TEMPLATE = r"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>Technical Report: Intensified Direct CO2-to-DME Multi-Tube Membrane Reactor Architectures & ML Surrogates</title>
-<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true
+  },
+  options: {
+    renderActions: {
+      addMenu: []
+    }
+  }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 <style>
   @page {
     size: A4;
@@ -547,6 +560,8 @@ if os.path.exists(chrome_path):
         chrome_path,
         "--headless",
         "--disable-gpu",
+        "--run-all-compositor-stages-before-draw",
+        "--virtual-time-budget=8000",
         "--no-pdf-header-footer",
         f"--print-to-pdf={OUTPUT_PDF}",
         OUTPUT_HTML,

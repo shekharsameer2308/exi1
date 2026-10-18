@@ -3,8 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <title>Technical Report: Intensified Direct CO2-to-DME Multi-Tube Membrane Reactor Architectures & ML Surrogates</title>
-<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true
+  },
+  options: {
+    renderActions: {
+      addMenu: []
+    }
+  }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 <style>
   @page {
     size: A4;
@@ -254,32 +267,32 @@
     Direct DME synthesis integrates three simultaneous reactions over a bifunctional catalyst bed:
   </p>
   
-  $$	ext{(1) Methanol Synthesis: } 	ext{CO}_2 + 3	ext{H}_2 ightleftharpoons 	ext{CH}_3	ext{OH} + 	ext{H}_2	ext{O}, \quad \Delta H^\circ_{298} = -49.5	ext{ kJ/mol}$$
+  $$\text{(1) Methanol Synthesis: } \text{CO}_2 + 3\text{H}_2 \rightleftharpoons \text{CH}_3\text{OH} + \text{H}_2\text{O}, \quad \Delta H^\circ_{298} = -49.5\text{ kJ/mol}$$
   
-  $$	ext{(2) Reverse Water-Gas Shift: } 	ext{CO}_2 + 	ext{H}_2 ightleftharpoons 	ext{CO} + 	ext{H}_2	ext{O}, \quad \Delta H^\circ_{298} = +41.2	ext{ kJ/mol}$$
+  $$\text{(2) Reverse Water-Gas Shift: } \text{CO}_2 + \text{H}_2 \rightleftharpoons \text{CO} + \text{H}_2\text{O}, \quad \Delta H^\circ_{298} = +41.2\text{ kJ/mol}$$
   
-  $$	ext{(3) Methanol Dehydration: } 2	ext{CH}_3	ext{OH} ightleftharpoons 	ext{CH}_3	ext{OCH}_3	ext{ (DME)} + 	ext{H}_2	ext{O}, \quad \Delta H^\circ_{298} = -23.6	ext{ kJ/mol}$$
+  $$\text{(3) Methanol Dehydration: } 2\text{CH}_3\text{OH} \rightleftharpoons \text{CH}_3\text{OCH}_3\text{ (DME)} + \text{H}_2\text{O}, \quad \Delta H^\circ_{298} = -23.6\text{ kJ/mol}$$
 
   <p>
-    Kinetics for (1) & (2) follow the dual-site Langmuir-Hinshelwood formulation over commercial \(	ext{Cu/ZnO/Al}_2	ext{O}_3\) (Vanden Bussche & Froment 1996, modified by Mignard & Pritchard 2008):
+    Kinetics for (1) & (2) follow the dual-site Langmuir-Hinshelwood formulation over commercial \(\text{Cu/ZnO/Al}_2\text{O}_3\) (Vanden Bussche & Froment 1996, modified by Mignard & Pritchard 2008):
   </p>
 
-  $$r_{	ext{CO}_2} = rac{k_1 p_{	ext{CO}_2} p_{	ext{H}_2} \left[ 1 - rac{p_{	ext{H}_2	ext{O}} p_{	ext{CH}_3	ext{OH}}}{K_{eq1} p_{	ext{H}_2}^3 p_{	ext{CO}_2}} ight]}{D_k^3}$$
+  $$r_{\text{CO}_2} = \frac{k_1 p_{\text{CO}_2} p_{\text{H}_2} \left[ 1 - \frac{p_{\text{H}_2\text{O}} p_{\text{CH}_3\text{OH}}}{K_{eq1} p_{\text{H}_2}^3 p_{\text{CO}_2}} \right]}{D_k^3}$$
 
-  $$r_{	ext{RWGS}} = rac{k_2 p_{	ext{CO}_2} \left[ 1 - rac{p_{	ext{H}_2	ext{O}} p_{	ext{CO}}}{K_{eq2} p_{	ext{H}_2} p_{	ext{CO}_2}} ight]}{D_k}$$
+  $$r_{\text{RWGS}} = \frac{k_2 p_{\text{CO}_2} \left[ 1 - \frac{p_{\text{H}_2\text{O}} p_{\text{CO}}}{K_{eq2} p_{\text{H}_2} p_{\text{CO}_2}} \right]}{D_k}$$
 
-  $$D_k = 1 + K_{	ext{H}_2	ext{O},	ext{H}_2}\left(rac{p_{	ext{H}_2	ext{O}}}{p_{	ext{H}_2}}ight) + \sqrt{K_{	ext{H}_2} p_{	ext{H}_2}} + K_{	ext{H}_2	ext{O}} p_{	ext{H}_2	ext{O}}$$
+  $$D_k = 1 + K_{\text{H}_2\text{O},\text{H}_2}\left(\frac{p_{\text{H}_2\text{O}}}{p_{\text{H}_2}}\right) + \sqrt{K_{\text{H}_2} p_{\text{H}_2}} + K_{\text{H}_2\text{O}} p_{\text{H}_2\text{O}}$$
 
   <p>
-    Solid acid dehydration (Reaction 3) over \(	ext{H-ZSM-5}\):
+    Solid acid dehydration (Reaction 3) over \(\text{H-ZSM-5}\):
   </p>
 
-  $$r_{	ext{DME}} = k_{	ext{DME}} \left( p_{	ext{CH}_3	ext{OH}}^2 - rac{p_{	ext{DME}} p_{	ext{H}_2	ext{O}}}{K_{eq3}} ight)$$
+  $$r_{\text{DME}} = k_{\text{DME}} \left( p_{\text{CH}_3\text{OH}}^2 - \frac{p_{\text{DME}} p_{\text{H}_2\text{O}}}{K_{eq3}} \right)$$
 
   <p>Thermodynamic equilibrium constants (Graaf et al. 1986, Stull 1969, Ng et al. 1999):</p>
-  $$\log_{10} K_{eq1} = rac{3066}{T} - 10.592 \implies K_{eq1}(523.15	ext{ K}) = 1.856 	imes 10^{-5}	ext{ bar}^{-2}$$
-  $$\log_{10} K_{eq2} = -rac{2073}{T} + 2.029 \implies K_{eq2}(523.15	ext{ K}) = 0.01165$$
-  $$\log_{10} K_{eq3} = rac{2226}{T} - 0.910 \implies K_{eq3}(523.15	ext{ K}) = 2213.1$$
+  $$\log_{10} K_{eq1} = \frac{3066}{T} - 10.592 \implies K_{eq1}(523.15\text{ K}) = 1.856 \times 10^{-5}\text{ bar}^{-2}$$
+  $$\log_{10} K_{eq2} = -\frac{2073}{T} + 2.029 \implies K_{eq2}(523.15\text{ K}) = 0.01165$$
+  $$\log_{10} K_{eq3} = \frac{2226}{T} - 0.910 \implies K_{eq3}(523.15\text{ K}) = 2213.1$$
 
   <div class="page-break"></div>
 
@@ -333,7 +346,7 @@
   <h2>5. Machine Learning Surrogate Modeling & Diagnostic Analysis</h2>
   <p>
     An ensemble surrogate model was trained on 120 validated 1D stiff BVP ODE simulations across operating space:
-    \(T \in [220, 270]^\circ	ext{C}\), \(P \in [30, 60]	ext{ bar}\), \(d_t \in [3.0, 6.0]	ext{ mm}\), and membrane permeances (NaA, LTA, CMSM).
+    \(T \in [220, 270]^\circ\text{C}\), \(P \in [30, 60]\text{ bar}\), \(d_t \in [3.0, 6.0]\text{ mm}\), and membrane permeances (NaA, LTA, CMSM).
   </p>
 
   <table>
@@ -350,7 +363,7 @@
     <tbody>
       <tr>
         <td>Random Forest</td>
-        <td>CO₂ Conversion (\(X_{	ext{CO}_2}\))</td>
+        <td>CO₂ Conversion (\(X_{\text{CO}_2}\))</td>
         <td>0.800</td>
         <td>2.28</td>
         <td>4.36</td>
@@ -358,7 +371,7 @@
       </tr>
       <tr>
         <td>Random Forest</td>
-        <td>DME Yield (\(Y_{	ext{DME}}\))</td>
+        <td>DME Yield (\(Y_{\text{DME}}\))</td>
         <td>0.814</td>
         <td>2.60</td>
         <td>4.74</td>
@@ -366,7 +379,7 @@
       </tr>
       <tr class="highlight-cell">
         <td><strong>ExtraTrees (Selected Best)</strong></td>
-        <td><strong>CO₂ Conversion (\(X_{	ext{CO}_2}\))</strong></td>
+        <td><strong>CO₂ Conversion (\(X_{\text{CO}_2}\))</strong></td>
         <td><strong>0.867</strong></td>
         <td><strong>1.85</strong></td>
         <td><strong>3.56</strong></td>
@@ -374,7 +387,7 @@
       </tr>
       <tr class="highlight-cell">
         <td><strong>ExtraTrees (Selected Best)</strong></td>
-        <td><strong>DME Yield (\(Y_{	ext{DME}}\))</strong></td>
+        <td><strong>DME Yield (\(Y_{\text{DME}}\))</strong></td>
         <td><strong>0.870</strong></td>
         <td><strong>2.14</strong></td>
         <td><strong>3.97</strong></td>
@@ -382,7 +395,7 @@
       </tr>
       <tr class="highlight-cell">
         <td><strong>ExtraTrees (Selected Best)</strong></td>
-        <td><strong>DME Selectivity (\(S_{	ext{DME}}\))</strong></td>
+        <td><strong>DME Selectivity (\(S_{\text{DME}}\))</strong></td>
         <td><strong>0.865</strong></td>
         <td><strong>0.52</strong></td>
         <td><strong>0.80</strong></td>
@@ -390,7 +403,7 @@
       </tr>
       <tr class="highlight-cell">
         <td><strong>ExtraTrees (Selected Best)</strong></td>
-        <td><strong>Water Removal (\(f_{	ext{H}_2	ext{O,rem}}\))</strong></td>
+        <td><strong>Water Removal (\(f_{\text{H}_2\text{O,rem}}\))</strong></td>
         <td><strong>0.884</strong></td>
         <td><strong>0.43</strong></td>
         <td><strong>0.91</strong></td>
@@ -398,7 +411,7 @@
       </tr>
       <tr>
         <td>Gradient Boosting</td>
-        <td>CO₂ Conversion (\(X_{	ext{CO}_2}\))</td>
+        <td>CO₂ Conversion (\(X_{\text{CO}_2}\))</td>
         <td>0.855</td>
         <td>1.86</td>
         <td>3.70</td>
@@ -406,7 +419,7 @@
       </tr>
       <tr>
         <td>Gradient Boosting</td>
-        <td>DME Yield (\(Y_{	ext{DME}}\))</td>
+        <td>DME Yield (\(Y_{\text{DME}}\))</td>
         <td>0.860</td>
         <td>2.09</td>
         <td>4.12</td>
