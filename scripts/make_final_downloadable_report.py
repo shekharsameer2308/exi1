@@ -51,10 +51,10 @@ replacements = {
     "__IMG_ML_FEATURE__":  get_base64_img("dme_feature_importance.png"),
     "__IMG_LAYOUT_CMP__":  get_base64_img("dme_layout_comparison.png"),
     "__IMG_THICKNESS__":   get_base64_img("dme_yield_vs_thickness.png"),
-    "__CODE_REACTOR__":    read_code_file("dme_membrane_reactor.py", max_lines=220),
-    "__CODE_BUNDLE__":     read_code_file("dme_bundle_reactor.py", max_lines=180),
-    "__CODE_CFD__":        read_code_file("scripts/simulate_dme_cfd_flowing.py", max_lines=200),
-    "__CODE_SURROGATE__":  read_code_file("scripts/train_dme_surrogate.py", max_lines=180),
+    "__CODE_REACTOR__":    read_code_file("dme_membrane_reactor.py", max_lines=46),
+    "__CODE_BUNDLE__":     read_code_file("dme_bundle_reactor.py", max_lines=46),
+    "__CODE_CFD__":        read_code_file("scripts/simulate_dme_cfd_flowing.py", max_lines=46),
+    "__CODE_SURROGATE__":  read_code_file("scripts/train_dme_surrogate.py", max_lines=46),
 }
 
 TEMPLATE = r"""<!DOCTYPE html>
@@ -165,14 +165,18 @@ window.MathJax = {
   }
   .img-card {
     text-align: center;
-    margin: 20px 0;
-    padding: 12px;
+    margin: 16px 0;
+    padding: 10px;
     background: #ffffff;
     border: 1px solid #e2e8f0;
     border-radius: 6px;
+    page-break-inside: avoid;
+    break-inside: avoid;
   }
   .img-card img {
     max-width: 100%;
+    max-height: 280px;
+    object-fit: contain;
     height: auto;
     border-radius: 4px;
   }
@@ -186,16 +190,20 @@ window.MathJax = {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
+    page-break-inside: avoid;
+    break-inside: avoid;
   }
   pre {
     background-color: #0f172a;
     color: #f8fafc;
-    padding: 14px;
+    padding: 10px 14px;
     border-radius: 6px;
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 11.5px;
+    font-size: 10px;
     overflow-x: auto;
-    line-height: 1.45;
+    line-height: 1.35;
+    page-break-inside: avoid;
+    break-inside: avoid;
   }
   code {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
@@ -369,6 +377,8 @@ window.MathJax = {
     </div>
   </div>
 
+  <div class="page-break"></div>
+
   <h3>3.2 Case Study A: Four-Tube Uniform Sleeve Bundle</h3>
   <div class="grid-2">
     <div class="img-card">
@@ -394,6 +404,8 @@ window.MathJax = {
     <img src="__IMG_CFD_SLICES__" alt="2D Cross-Sectional CFD Slices">
     <div class="img-caption">Figure 4: 2D Multi-Slice CFD Contours at z = 50, 250, 500, 750, 1000 mm. Row 1 shows DME yield progression; Row 2 shows radial water depletion halos surrounding the 4 NaA zeolite tubes.</div>
   </div>
+
+  <div class="page-break"></div>
 
   <div class="img-card">
     <img src="__IMG_CFD_AXIAL__" alt="Axial Concentration Profiles">
@@ -512,6 +524,8 @@ window.MathJax = {
     </div>
   </div>
 
+  <div class="page-break"></div>
+
   <h2>7. Essential Source Code Listings</h2>
   
   <h3>7.1 Stiff BDF 1D Multicomponent ODE Solver (`dme_membrane_reactor.py`)</h3>
@@ -522,8 +536,12 @@ window.MathJax = {
   <h3>7.2 Multi-Tube Bundle Geometry & Packing Model (`dme_bundle_reactor.py`)</h3>
   <pre><code>__CODE_BUNDLE__</code></pre>
 
+  <div class="page-break"></div>
+
   <h3>7.3 3D Continuum Darcy-Brinkman CFD Flow Simulator (`scripts/simulate_dme_cfd_flowing.py`)</h3>
   <pre><code>__CODE_CFD__</code></pre>
+
+  <div class="page-break"></div>
 
   <h3>7.4 Machine Learning ExtraTrees Surrogate Training Pipeline (`scripts/train_dme_surrogate.py`)</h3>
   <pre><code>__CODE_SURROGATE__</code></pre>
