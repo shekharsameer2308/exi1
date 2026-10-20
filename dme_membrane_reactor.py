@@ -81,32 +81,37 @@ def calculate_equilibrium_constants(T_K):
     Thermodynamic equilibrium constants for direct CO2-to-DME network:
       Keq1: CO2 + 3H2 <-> CH3OH + H2O      [bar^-2] (Graaf / Mignard & Pritchard)
       Keq2: CO2 + H2  <-> CO + H2O          [-]      (Graaf / Bisotti)
-      Keq3: 2 CH3OH   <-> DME + H2O         [-]      (Stull / Ng et al. 1999)
+      Kp3:  2 CH3OH   <-> DME + H2O         [-]      (Lu et al. 2004 / Poto et al. 2021)
     """
     Keq1 = 10.0 ** (3066.0 / T_K - 10.592)          # bar^-2
     Keq2 = 10.0 ** (-2073.0 / T_K + 2.029)          # dimensionless
-    Keq3 = 10.0 ** (2226.0 / T_K - 0.910)           # dimensionless (Stull / Ng 1999)
-    return Keq1, Keq2, Keq3
+    ln_Kp3 = (
+        4019.0 / T_K
+        + 3.707 * np.log(T_K)
+        - 2.783e-3 * T_K
+        + 3.8e-7 * (T_K ** 2)
+        - 6.561e4 / (T_K ** 3)
+        - 26.64
+    )
+    Kp3 = np.exp(ln_Kp3)                            # dimensionless
+    return Keq1, Keq2, Kp3
 
 
-def calculate_dme_kinetics(T_K, p_bar, k_dme_placeholder=0.05):
+def calculate_dme_kinetics(T_K, p_bar, k3=None, k_dme_placeholder=None):
     """
     Reaction rate evaluation [mol / (kg_cat * s)].
 
     Reactions:
-      (1) CO2 + 3H2 <-> CH3OH + H2O
-      (2) CO2 + H2   <-> CO + H2O
-      (3) 2 CH3OH    <-> DME + H2O
-
-    NOTE on Reaction 3:
-      As required by project instructions, the dehydration rate constant
-      `k_dme_placeholder` is a clearly labelled placeholder constant:
-      k_DME = 0.05 mol / (kg_cat * s * bar^2) (bifunctional acid catalyst).
+      (1) CO2 + 3H2 <-> CH3OH + H2O (Mignard & Pritchard 2008)
+      (2) CO2 + H2   <-> CO + H2O    (Mignard & Pritchard 2008)
+      (3) 2 CH3OH    <-> DME + H2O   (Lu et al. 2004 / Poto et al. 2021)
+          r3 = k3 * (p_MeOH^2 / p_H2O - p_DME / Kp3)
+          k3 = 8.2894e7 * exp(-5.2940e4 / (R * T)) [mol / (kg_cat * s * bar)]
     """
     p_safe = np.maximum(p_bar, 1e-12)
     pCO2, pH2, pH2O, pMeOH, pCO, pDME = p_safe
 
-    Keq1, Keq2, Keq3 = calculate_equilibrium_constants(T_K)
+    Keq1, Keq2, Kp3 = calculate_equilibrium_constants(T_K)
 
     # --- Kinetics 1 & 2: Mignard & Pritchard (2008) ---
     k1 = 1.07 * np.exp(40000.0 / (R_GAS * T_K))
@@ -123,10 +128,15 @@ def calculate_dme_kinetics(T_K, p_bar, k_dme_placeholder=0.05):
     r1 = k1 * pCO2 * pH2 * (1.0 - term1) / (D_k ** 3)
     r2 = k2 * pCO2 * (1.0 - term2) / D_k
 
-    # --- Kinetics 3: Methanol Dehydration (Clearly Labelled Placeholder) ---
-    # r3 = k_DME * (p_MeOH^2 - (p_DME * p_H2O) / Keq3)
-    term3 = (pDME * pH2O) / (Keq3 * (pMeOH ** 2))
-    r3 = k_dme_placeholder * (pMeOH ** 2) * (1.0 - term3)
+    # --- Kinetics 3: Lu et al. (2004) / Poto et al. (2021) ---
+    if k3 is None:
+        if k_dme_placeholder is not None and k_dme_placeholder != 0.05:
+            k3 = k_dme_placeholder
+        else:
+            k3 = 8.2894e7 * np.exp(-5.2940e4 / (R_GAS * T_K))
+
+    pH2O_safe = np.maximum(pH2O, 1e-6)
+    r3 = k3 * ((pMeOH ** 2) / pH2O_safe - pDME / Kp3)
 
     return r1, r2, r3
 
@@ -197,7 +207,8 @@ def run_dme_simulation(
     sweep_ratio=1.0,
     L_m=1.0,
     rho_B=1200.0,
-    k_dme=0.05,
+    k3=None,
+    k_dme=None,
     bypass_fraction=0.0,
     F_feed_tot=None,
 ):
@@ -216,7 +227,7 @@ def run_dme_simulation(
       sweep_ratio: sweep to feed ratio (default 1.0)
       L_m: reactor length (default 1.0 m)
       rho_B: catalyst bulk density (default 1200 kg/m^3)
-      k_dme: placeholder DME dehydration rate constant
+      k3: rate constant for Reaction 3 [mol / (kg_cat * s * bar)] (default: Lu et al.)
       bypass_fraction: fraction of feed bypassing catalyst (if unsealed voids)
       F_feed_tot: total molar feed rate [mol/s] (optional, overrides GHSV)
 
@@ -282,7 +293,7 @@ def run_dme_simulation(
         p_perm_Pa = (F_perm / F_tot_perm) * P_perm_Pa
 
         # Chemical Kinetics
-        r1, r2, r3 = calculate_dme_kinetics(T_K, p_ret_bar, k_dme_placeholder=k_dme)
+        r1, r2, r3 = calculate_dme_kinetics(T_K, p_ret_bar, k3=k3, k_dme_placeholder=k_dme)
 
         # Net reaction rates [mol / (kg_cat * s)]
         # Species: CO2, H2, H2O, CH3OH, CO, DME

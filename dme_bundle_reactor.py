@@ -30,6 +30,7 @@ def bundle_layout(
     rho_B=1200.0,
     dp=0.0003,  # 0.3 mm typical fine pellet diameter
     d1_centre=0.010,  # 10 mm default for single centre tube
+    D_shell=None,
 ):
     """
     Compute geometric parameters for membrane reactor layouts.
@@ -43,6 +44,7 @@ def bundle_layout(
       rho_B: catalyst bulk density [kg/m^3] (default 1200 kg/m^3)
       dp: catalyst particle diameter [m] (default 0.3 mm = 3e-4 m)
       d1_centre: membrane diameter for centre_tube layout [m]
+      D_shell: reactor shell inner diameter [m] (default 20 mm for centre_tube & shell)
 
     Returns:
       dict with complete geometry, areas, diameters, membrane area per volume,
@@ -129,11 +131,15 @@ def bundle_layout(
 
     elif catalyst == "centre_tube":
         # One membrane tube in center of annular catalyst bed
+        d1 = d if d is not None else d1_centre
+        if D_shell is None and Ac is None:
+            D_shell = 0.020  # 20 mm standard benchmark shell ID
         if Ac is None:
-            Ac = 1.0e-4
-        d1 = d1_centre
+            Ac = (np.pi / 4.0) * (D_shell ** 2 - d1 ** 2)
+        else:
+            D_shell = np.sqrt(4.0 * Ac / np.pi + d1 ** 2)
+
         Pm = np.pi * d1
-        D_shell = np.sqrt(4.0 * Ac / np.pi + d1 ** 2)
         a_v = Pm / Ac
         W_cat = rho_B * Ac * L
         A_mem_total = Pm * L
