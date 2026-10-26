@@ -2,7 +2,7 @@
 
 **Sameer Shekhar**  
 *Laboratory for Advanced Chemical Reaction Engineering \& Process Intensification, Department of Chemical Engineering*  
-*Corresponding Author Email:* `sameershekhar@alumni.stanford.edu`  
+*Corresponding Author Email:* `sameershekhar@alumni.edu`  
 
 [![GitHub Repository](https://img.shields.io/badge/GitHub-Repository-181717?logo=github)](https://github.com/shekharsameer2308/exi1)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
